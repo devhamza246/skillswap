@@ -1,0 +1,283 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% block title %}
+    Company Details
+{% endblock title %}
+{% block extra_css %}
+    <link rel="stylesheet"
+          href="{% static 'js/DataTables/datatables.min.css' %}">
+    <!--datatable css-->
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Leads" title="Company Details" %}
+                {% endblock pagetitle %}
+                {% include "partials/messages.html" %}
+                <div class="row">
+                    <div class="col-xl-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                    <h5 class="card-title flex-grow-1 mb-0">Persons</h5>
+                                </div>
+                            </div>
+                            <div class="card-body border border-dashed border-end-0 border-start-0">
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-xxl-5 col-sm-12">
+                                            <div class="search-box">
+                                                <input type="text"
+                                                       id="searchInput"
+                                                       class="form-control search bg-light border-light"
+                                                       placeholder="Search for name or email...">
+                                                <i class="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
+                            <!--end card-body-->
+                            <div class="card-body">
+                                <div class="table-responsive table-card mb-4">
+                                    <table class="table align-middle table-nowrap mb-0" id="person-table">
+                                        <thead class="table-light text-muted">
+                                            <tr>
+                                                <th>First Name</th>
+                                                <th>Last Name</th>
+                                                <th>Company</th>
+                                                <th>Email</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="list form-check-all">
+                                            {% for row in person_list %}
+                                                <tr>
+                                                    <td>{{ row.first_name }}</td>
+                                                    <td>{{ row.last_name }}</td>
+                                                    <td>{{ row.company }}</td>
+                                                    <td>{{ row.email }}</td>
+                                                    <td>{{ row.get_status_display }}</td>
+                                                    <td>
+                                                        <ul class="list-inline hstack gap-2 mb-0">
+                                                             <li class="list-inline-item view"
+                                                                    data-bs-toggle="tooltip"
+                                                                    data-bs-trigger="hover"
+                                                                    data-bs-placement="top"
+                                                                    title="view">
+                                                                    <a role="button"
+                                                                       href="{% url 'leads:person_details' pk=row.id %}"
+                                                                       class="text-primary d-inline-block edit-item-btn">
+                                                                        <i class="ri-eye-fill fs-16"></i>
+                                                                    </a>
+                                                                </li>
+                                                            {% if perms.leads.change_person %}
+                                                                <li class="list-inline-item edit"
+                                                                    data-bs-toggle="tooltip"
+                                                                    data-bs-trigger="hover"
+                                                                    data-bs-placement="top"
+                                                                    title="Edit">
+                                                                    <a href="{% url 'leads:person_edit' pk=row.id %}"
+                                                                       class="text-primary d-inline-block edit-item-btn">
+                                                                        <i class="ri-pencil-fill fs-16"></i>
+                                                                    </a>
+                                                                </li>
+                                                            {% endif %}
+                                                            <li class="list-inline-item"
+                                                                data-bs-toggle="tooltip"
+                                                                data-bs-trigger="hover"
+                                                                data-bs-placement="top"
+                                                                title="linkdin">
+                                                                <a class="delete-btn text-danger d-inline-block remove-item-btn"
+                                                                   href="{% if row.linkedin %}{{ row.linkedin }} {% else %} https://in.linkedin.com/ {% endif %}"
+                                                                   target="_blank">
+                                                                    <i class="ri-linkedin-fill"></i>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <!--end table-->
+                                </div>
+                                {% include "partials/pagination.html" with is_paginated=is_paginated page_obj=page_obj paginator=paginator %}
+                            </div>
+                            <!--end card-body-->
+                            <div class="card-body border border-dashed border-end-0 border-start-0">
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-xxl-5 col-sm-12">
+                                            <div class="search-box">
+                                                <input type="text"
+                                                       id="searchInput2"
+                                                       class="form-control search bg-light border-light"
+                                                       placeholder="Search for leads or something...">
+                                                <i class="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
+                            <!--end card-body-->
+                            <div class="card-header border-0">
+                                <div class="d-flex align-items-center">
+                                    <h1 class="card-title mb-0 flex-grow-1">Leads</h1>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive table-card mb-4">
+                                    <table class="table align-middle table-nowrap mb-0" id="leads-table">
+                                        <thead class="table-light text-muted">
+                                            <tr>
+                                                <th>Company Name</th>
+                                                <th>First Name</th>
+                                                <th>Last Name</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="list form-check-all">
+                                            {% for row in leads_list %}
+                                                <tr>
+                                                    <td class="client_name">{{ row.person.company }}</td>
+                                                    <td class="client_name">{{ row.person.first_name }}</td>
+                                                    <td class="client_name">{{ row.person.last_name }}</td>
+                                                    <td class="client_name">{{ row.get_status_display }}</td>
+                                                    <td>
+                                                        <ul class="list-inline hstack gap-2 mb-0">
+                                                             <li class="list-inline-item view"
+                                                                    data-bs-toggle="tooltip"
+                                                                    data-bs-trigger="hover"
+                                                                    data-bs-placement="top"
+                                                                    title="view">
+                                                                    <a role="button"
+                                                                       href="{% url 'leads:lead_detail' pk=row.id %}"
+                                                                       class="text-primary d-inline-block edit-item-btn">
+                                                                        <i class="ri-eye-fill fs-16"></i>
+                                                                    </a>
+                                                                </li>
+                                                            {% if perms.leads.change_lead %}
+                                                                <li class="list-inline-item edit"
+                                                                    data-bs-toggle="tooltip"
+                                                                    data-bs-trigger="hover"
+                                                                    data-bs-placement="top"
+                                                                    title="Edit">
+                                                                    <a href="{% url 'leads:lead_edit' pk=row.id %}"
+                                                                       class="text-primary d-inline-block edit-item-btn">
+                                                                        <i class="ri-pencil-fill fs-16"></i>
+                                                                    </a>
+                                                                </li>
+                                                            {% endif %}
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <!--end table-->
+                                </div>
+                                {% include "partials/pagination.html" with is_paginated=is_paginated page_obj=page_obj paginator=paginator %}
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                    <div class="col-xl-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Company Detail</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled vstack gap-2 fs-13 mb-0">
+                                    <li>
+                                        <b>Company Name: </b>{{ company.name }}
+                                    </li>
+                                    <li>
+                                        <b>Domain</b>: <a href="{{ company.domain }}" target="_blank">{{ company.domain }}</a>
+                                    </li>
+                                    <li>
+                                        <b>LinkedIn</b>: <a href="{{ company.linkedin }}" target="_blank">{{ company.linkedin }}</a>
+                                    </li>
+                                    <li title="Contact">
+                                        <b>Address</b>: {{ company.address }}
+                                    </li>
+                                    <li title="Contact">
+                                        {{ company.city }}
+                                        {% if company.state %}, {{ company.state }}{% endif %}
+                                        {% if company.country %},  {{ company.country }}{% endif %}
+                                    </li>
+                                    <li title="Contact">
+                                        <b>Phone</b>: {{ company.phone }}
+                                    </li>
+                                    <li title="Contact">
+                                        <b>No Of Employees</b>: {{ company.number_of_employees }}
+                                    </li>
+                                    <li>
+                                        <b>Assigned To</b>: {% if assigned_to %} {{ assigned_to.first_name }} {{ assigned_to.last_name }} {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+        {% block footer %}
+            {% include "partials/footer.html" %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_js %}
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <!--datatable js-->
+    <script src="{% static 'js/DataTables/datatables.min.js' %}"></script>
+    <script>
+ $(document).ready(function () {
+      var table_first = $('#leads-table').DataTable({"dom": 'lrtip',
+                "columnDefs": [
+                    {
+                        // Hide the ID column
+                        targets: 0,
+                        visible: true,
+                        searchable: true,
+                    }]
+                 });
+     var table_second = $('#person-table').DataTable({"dom": 'lrtip',
+                    "columnDefs": [
+                        {
+                            // Hide the ID column
+                            targets: 0,
+                            visible: true,
+                            searchable: true,
+                        }
+                         ]
+                });
+    $('#searchInput').on( 'keyup', function () {
+      table_second.search( this.value ).draw();
+    });
+    $('#searchInput2').on( 'keyup', function () {
+          table_first.search( this.value ).draw();
+    });
+ });
+
+    </script>
+{% endblock extra_js %}

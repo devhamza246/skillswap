@@ -1,0 +1,56 @@
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+<form action="" method="get">
+  <div class="row g-3 mb-3">
+    <div class="col-xxl-5 col-sm-12">
+      <div class="search-box">
+        <input type="text" class="form-control search bg-light border-light" placeholder="Search..." id="id_search" />
+        <i class="ri-search-line search-icon"></i>
+      </div>
+    </div>
+    <!-- end col -->
+  </div>
+  <!-- end row -->
+  <div class="row g-3 form_class">
+    <div class="col-xxl-2 col-sm-4">
+      <div class="mb-3">
+        <div id="div_id_companies" class="form-group">
+          <label for="id_companies" class="">Companies</label>
+          <div>
+            <select name="companies" class="select form-control" id="id_companies">
+              <option value="" selected>---------</option>
+              <option value="all_companies">All Companies</option>
+              <option value="assigned_companies">Assigned Companies</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xxl-2 col-sm-4">
+      <div class="mb-3">
+        <div id="div_id_assigned_to" class="form-group">
+          <label for="id_assigned_to" class="">Assigned To</label>
+          <div>
+            <select name="assigned_to" class="select form-control" id="id_assigned_to">
+              <option value="" selected>---------</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xxl-2 col-sm-4">
+      <div class="mb-3">
+        <div id="div_id_status" class="form-group">
+          <label for="id_status" class="">Status</label>
+          <div>
+            <select name="status" class="select form-control" id="id_status">
+              <option value="1" selected>New</option>
+              <option value="2">All Contacted</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end row -->
+</form>

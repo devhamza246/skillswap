@@ -1,0 +1,103 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% block title %}
+    Create Lead Tasks
+{% endblock title %}
+{% block extra_css %}
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% if object %}
+                        {% include "partials/page-title.html" with pagetitle="Leads" title="Update Lead Tasks" %}
+                    {% else %}
+                        {% include "partials/page-title.html" with pagetitle="Leads" title="Create Lead Tasks" %}
+                    {% endif %}
+                {% endblock pagetitle %}
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.keyword|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.location|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.job_title|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.job_link|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.company|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.company_link|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.job_location|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.post_time|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.applicants_count|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.seniority_level|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.employment_type|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.job_function|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.industries|as_crispy_field }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end card body -->
+                            </div>
+                            <!-- end card -->
+                            <div class="text-end mb-4">
+                                <a href="{% url 'leads:leadtasks_list' %}" class="btn btn-light w-sm">Cancel</a>
+                                <button type="submit" class="btn btn-success w-sm">
+                                    {% if object %}
+                                        Update
+                                    {% else %}
+                                        Create
+                                    {% endif %}
+                                </button>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                </form>
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+        {% block footer %}
+            {% include "partials/footer.html" %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_content %}
+{% endblock extra_content %}
+{% block extra_js %}
+{% endblock extra_js %}

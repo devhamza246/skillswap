@@ -1,0 +1,244 @@
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+<form action="" method="get">
+    <div class="row g-3 form_class mb-3">
+        <div class="col-xxl-4">
+            <div class="search-box">
+                <input type="text"
+                       class="form-control search bg-light border-light"
+                       placeholder="Search..."
+                       id="id_search"/>
+                <i class="ri-search-line search-icon"></i>
+            </div>
+        </div>
+        <div class="flex-shrink-0 col-xxl-4">
+            <button type='button' class="btn btn-primary add-btn" id='btn-search'>
+                <i class="ri-search-line align-middle me-1"></i> Search
+            </button>
+        </div>
+    </div>
+    <div class="row g-3 form_class">
+        <!--end col-->
+        <div class="col-xxl-2 col-sm-4">
+            <div class="mb-3">
+                <div id="div_id_source" class="form-group">
+                    <label for="id_source" class="">Source</label>
+                    <div>
+                        <select name="source" class="select form-control" id="id_source">
+                            <option value="" selected="">
+                                ---------
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end col-->
+        <div class="col-xxl-2 col-sm-4 d-none">
+            <div class="mb-3">
+                <div id="div_id_sales_task__robot" class="form-group">
+                    <label for="id_sales_task__robot" class="">Robot</label>
+                    <div>
+                        <select name="sales_task__robot"
+                                class="select form-control"
+                                id="id_sales_task__robot">
+                            <option value="" selected>
+                                ---------
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end col-->
+        <div class="col-xxl-2 col-sm-4 d-none">
+            <div class="mb-3">
+                <div id="div_id_sales_task__robot__team" class="form-group">
+                    <label for="id_sales_task__robot__team" class="">Team</label>
+                    <div>
+                        <select name="sales_task__robot__team"
+                                class="select form-control"
+                                id="id_sales_task__robot__team">
+                            <option value="" selected>
+                                ---------
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end col-->
+        <div class="col-xxl-2 col-sm-4 d-none">
+            <div class="mb-3">
+                <div id="div_id_user" class="form-group">
+                    <label for="id_user" class="">User</label>
+                    <div>
+                        <select name="user" class="select form-control" id="id_user">
+                            <option value="" selected>
+                                ---------
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end col-->
+        <div class="col-xxl-2 col-sm-4 d-none">
+            <div class="mb-3">
+                <div id="div_id_sales_task" class="form-group">
+                    <label for="id_sales_task" class="">Sales Task</label>
+                    <div>
+                        <select name="sales_task" class="select form-control" id="id_sales_task">
+                            <option value="" selected>
+                                ---------
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end col-->
+        <div class="col-xxl-2 col-sm-4">
+            <div class="mb-3">
+                <div id="div_id_person__country" class="form-group">
+                    <label for="id_person__country" class="">Person Country</label>
+                    <div>
+                        <select name="person__country"
+                                class="select form-control"
+                                id="id_person__country">
+                            <option value="" selected="">
+                                ---------
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end col-->
+        <div class="col-xxl-2 col-sm-4">
+            <div class="mb-3">
+                <div id="div_id_lead_status" class="form-group">
+                    <label for="id_lead_status" class="">Status</label>
+                    <div>
+                        <select name="status" class="select form-control" id="id_lead_status">
+                            <option value="" selected="">
+                                ---------
+                            </option>
+                            <option value="1">
+                                OPEN
+                            </option>
+                            <option value="2">
+                                CLOSED
+                            </option>
+                            <option value="3">
+                                EMAIL_NOT_FOUND
+                            </option>
+                            <option value="4">
+                                SCHEDULED
+                            </option>
+                            <option value="5">
+                                SENT
+                            </option>
+                            <option value="6">
+                                READY
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-2 col-sm-4">
+            <div class="mb-3">
+                <div id="div_id_outbound_email" class="form-group">
+                    <label for="id_outbound_email" class="">Outbound Email</label>
+                    <div>
+                        <select name="outbound_email"
+                                class="select form-control"
+                                id="id_outbound_email">
+                            <option value="" selected="">
+                                ---------
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-2 col-sm-4">
+            <div class="mb-3">
+                <div id="div_id_resume_sent" class="form-group">
+                    <label for="id_resume_sent" class="">Resume sent</label>
+                    <div>
+                        <select name="resume_sent" class="select form-control" id="id_resume_sent">
+                            <option value="" selected="">
+                                ---------
+                            </option>
+                            <option value="true">
+                                YES
+                            </option>
+                            <option value="false">
+                                NO
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-2 col-sm-4">
+            <div class="mb-3">
+                <div id="div_id_contract_signed" class="form-group">
+                    <label for="id_contract_signed" class="">Contract Signed</label>
+                    <div>
+                        <select name="contract_signed"
+                                class="select form-control"
+                                id="id_contract_signed">
+                            <option value="" selected="">
+                                ---------
+                            </option>
+                            <option value="true">
+                                YES
+                            </option>
+                            <option value="false">
+                                NO
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-2 col-sm-4">
+            <div class="mb-3">
+                <div id="div_id_bot_lead" class="form-group">
+                    <label for="id_bot_lead" class="">Bot Lead</label>
+                    <div>
+                        <select name="bot_lead" class="select form-control" id="id_bot_lead">
+                            <option value="" selected="">
+                                ---------
+                            </option>
+                            <option value="true">
+                                YES
+                            </option>
+                            <option value="false">
+                                NO
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end col-->
+        <div class="col-xxl-3 col-sm-4">
+            <div class="form-group">
+                <label class="form-label">Date</label>
+                <div class="form-icon right">
+                    <input type="text"
+                           class="form-control form-control-icon"
+                           readonly="readonly"
+                           id="id_date_range"/>
+                    <i class="ri-close-circle-line fs-18 cursor-pointer" id="clearDateRange"></i>
+                </div>
+            </div>
+        </div>
+        <!--end col-->
+    </div>
+    <!--end row-->
+</form>

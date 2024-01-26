@@ -70,6 +70,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         """Roles for user model"""
 
         ADMIN = 1
+        USER = 2
 
     email = models.EmailField(_("email address"), unique=True)
     first_name = models.CharField(_("First Name"), max_length=50, blank=True, null=True)

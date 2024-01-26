@@ -1,0 +1,510 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Sales Task List
+{% endblock title %}
+{% block extra_css %}
+    <!-- Sweet Alert css-->
+    <link href="{% static 'libs/sweetalert2/dist/sweetalert2.min.css' %}"
+          rel="stylesheet"
+          type="text/css"/>
+    <link rel="stylesheet"
+          href="{% static 'js/DataTables/datatables.min.css' %}">
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Robots" title="Sales Task List" %}
+                {% endblock pagetitle %}
+                {% include "partials/messages.html" %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card" id="tasksList">
+                            <div class="card-header border-0">
+                                <div class="d-flex align-items-center gap-3">
+                                    <h5 class="card-title mb-0 flex-grow-1">All Sales Tasks</h5>
+                                    <div class="flex-shrink-0">
+                                        <button type="submit" class="btn btn-primary btn-update-ls">Change All Last Started</button>
+                                        <button type="button" class="btn btn-primary btn-load d-none">
+                                            <span class="d-flex align-items-center">
+                                                <span class="flex-grow-1 me-2">Loading...</span>
+                                                <span class="spinner-border flex-shrink-0" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class="flex-shrink-0">
+                                        {% if perms.robots.add_salestask %}
+                                            <a role="button"
+                                               href="{% url 'robots:salestask_create' %}"
+                                               class="btn btn-danger add-btn">
+                                                <i class="ri-add-line align-bottom me-1"></i> Create Sales Task
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body border border-dashed border-end-0 border-start-0">
+                                <!-- Filters Form -->
+                                <form action="" method="get">
+                                    {% include 'robots/partials/salestask_filter.html' with form=sales_task_filter.form %}
+                                </form>
+                                <!-- End Filters Form -->
+                            </div>
+                            <!--end card-body-->
+                            <div class="card-body">
+                                <div class="table-responsive table-card mb-4">
+                                    <table class="table align-middle table-nowrap mb-0"
+                                           id="salesTaskTable"
+                                           data-server-side="true"
+                                           data-ajax="/api/salestask/?format=datatables">
+                                        <thead class="table-light text-muted">
+                                            <tr>
+                                                <th data-data="id">ID</th>
+                                                <th data-data="name">Name</th>
+                                                <th data-data="source.name">Source</th>
+                                                <th data-data="robot.name" data-name="robot.id">Robot</th>
+                                                <th data-data="robot.team.name" data-name="robot.team.id">Team</th>
+                                                <th data-data="sales_template.name">Template</th>
+                                                <th data-data="status">Status</th>
+                                                <th data-data="last_started">Last Started</th>
+                                                <th data-data="search_url">Search URL</th>
+                                                <th data-data="lead_count">Lead_Count</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="list form-check-all">
+                                        </tbody>
+                                    </table>
+                                    <!--end table-->
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+                <div class="modal fade flip"
+                     id="deleteOrder"
+                     tabindex="-1"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body p-5 text-center">
+                                <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#405189,secondary:#f06548" style="width:90px;height:90px"></lord-icon>
+                                <div class="mt-4 text-center">
+                                    <h4>You are about to delete ?</h4>
+                                    <p class="text-muted fs-14 mb-4">
+                                        Deleting your task will remove all of
+                                        your information from our database.
+                                    </p>
+                                    <div class="hstack gap-2 justify-content-center remove">
+                                        <button class="btn btn-link btn-ghost-success fw-medium text-decoration-none"
+                                                data-bs-dismiss="modal">
+                                            <i class="ri-close-line me-1 align-middle"></i> Close
+                                        </button>
+                                        <a class="btn btn-danger" id="delete-record">Yes, Delete It</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end delete modal -->
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+        <div id="salesUpdate"
+             class="modal fade"
+             tabindex="-1"
+             aria-labelledby="personUpdateLabel"
+             aria-hidden="true"
+             style="display: none;">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <form action="" id="SalesTaskUpdateForm" method="post">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="personUpdateLabel">Edit Sales Task</h5>
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-8 offset-lg-2">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">{{ form.name|as_crispy_field }}</div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">{{ form.subject|as_crispy_field }}</div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="mb-3">{{ form.email_message|as_crispy_field }}</div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="mb-3">{{ form.sms_message|as_crispy_field }}</div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="mb-3">{{ form.linkedin_message|as_crispy_field }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- end card body -->
+                                </div>
+                                <!-- end card -->
+                                <div class="text-end mb-4">
+                                    <a href="{% url 'robots:salestask_list' %}" class="btn btn-light w-sm">Cancel</a>
+                                    <button type="submit" class="btn btn-success w-sm">Update</button>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-load d-none">
+                                    <span class="d-flex align-items-center">
+                                        <span class="flex-grow-1 me-2">Loading...</span>
+                                        <span class="spinner-border flex-shrink-0" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </span>
+                                    </span>
+                                </button>
+                            </div>
+                            <!-- end col -->
+                        </div>
+                        <!-- end row -->
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% block footer %}
+            {% include "partials/footer.html" %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_js %}
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <!--datatable js-->
+    <script src="{% static 'js/DataTables/datatables.min.js' %}"></script>
+    <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script>
+    var table = $('#salesTaskTable').DataTable( {
+        "dom": 'lrtip',
+        "columnDefs": [
+        {
+            targets: 1,
+            defaultContent: '-',
+        },
+
+        {
+            targets: 2,
+            defaultContent: '-',
+        },
+
+        {
+            targets: 3,
+            defaultContent: '-',
+        },
+
+        {
+            targets: 4,
+            defaultContent: '-',
+        },
+
+        {
+            targets: 5,
+            defaultContent: '-',
+        },
+
+        {
+            targets: 6,
+            defaultContent: '-',
+        },
+
+        {
+            targets: 7,
+            render: (data, type, row)=>{
+                if(data == null){
+                    return '-';
+                }
+                else{
+                    return moment.utc(row.last_started).format('MMM DD, YYYY hh:mm A');
+                }
+            }
+        },
+
+        {
+            targets: 8,
+            visible: false
+        },
+
+        {
+            targets: 9,
+            searchable: false,
+            sortable: false
+        },
+        {
+            targets: -1,  // -1 is the last column, 0 the first, 1 the second, etc.
+            sortable: false,
+            searchable: false,
+            // The `data` parameter refers to the data for the cell.
+            // The `rows`argument is an object representing all the data for the current row.
+            render: ( data, type, row ) => {
+                
+                let detailURL = "{% url 'robots:salestask_details' pk=0 %}"
+                let editURL = "{% url 'robots:salestask_edit' pk=0 %}"
+                let deleteURL = "{% url 'robots:salestask_delete' pk=0 %}"
+                
+                let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
+                    
+                    {% if perms.robots.view_salestask %}
+                    actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="url">
+                    <a href="${row.search_url}" class="text-primary d-inline-block edit-item-btn" target="_blank" style="${(!row.search_url) ? 'pointer-events: none;' : ''}">
+                        <i class="ri-globe-fill fs-16" style="${(!row.search_url) ? 'color:grey;' : ''}"></i>
+                    </a>
+                    </li>`
+                    {% endif %}
+                
+                    {% if perms.robots.view_salestask %}
+                    actions += `
+                    <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="view">
+                    <a href="${detailURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                        <i class="ri-eye-fill fs-16"></i>
+                    </a>
+                    </li>`
+                    {% endif %}
+            
+                    {% if perms.robots.change_salestask %}
+                    actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                    <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                        <i class="ri-pencil-fill fs-16"></i>
+                    </a>
+                    </li>`
+                    {% endif %}
+
+                    {% if perms.robots.delete_salestask %}
+                    actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                    <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
+                    <i class="ri-delete-bin-5-fill fs-16"></i>
+                    </a>
+                    </li>`
+                    {% endif %}
+
+                    actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Change Status">
+                    <a href="#change-status-row"  class="change-status-row  d-inline-block edit-item-btn ${row.status==="Active"?"text-primary":"text-danger"}" data-sales_id='${row.id}' data-sales_name = '${row.name}' data-sales_source = '${row.source.id}' data-sales_robot = '${row.robot.id}' data-sales_team = '${row.robot.team.id}' data-sales_template = '${row.sales_template.id}' data-sales_status = '${row.status}'>
+                    <i class="ri-star-fill fs-16"></i>
+                    </a>
+                    </li>`
+
+                    actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Change Last Started">
+                    <a href="#change-last-started"  class="change-last-started d-inline-block edit-item-btn" style="${row.last_started===null?'pointer-events:none;' : ''}" data-sales_id='${row.id}' data-sales_name = '${row.name}' data-sales_source = '${row.source.id}' data-sales_robot = '${row.robot.id}' data-sales_team = '${row.robot.team.id}' data-sales_template = '${row.sales_template.id}' data-sales_status = '${row.status}' data-sales_last_started = '${row.last_started}'>
+                    <i class="ri-hammer-fill fs-16 ${row.last_started===null?'text-muted' : 'text-primary'}"></i>
+                    </a>
+                    </li>`
+
+                    actions += `</ul>`
+                    return actions
+            },
+        }
+        ]
+    });
+
+{% if user.get_role_display == 'Admin' %}
+const robotChoices = new Choices(document.querySelector('#id_robot'))
+const teamChoices = new Choices(document.querySelector('#id_robot__team'))
+{% endif %}
+const statusChoices = new Choices(document.querySelector('#id_status'))
+
+{% if user.get_role_display == 'Admin' %}
+// Handle OnChange for Robot Filter
+robotChoices.passedElement.element.addEventListener('change', function(event) {
+    // get the all person that are part of selected company and update the choices in person dropdown
+    console.log(event.detail.value);
+    table.columns(3).search( event.detail.value ).draw();
+},
+false,
+);
+// Handle OnChange for Team Filter
+teamChoices.passedElement.element.addEventListener('change', function(event) {
+    // get the all person that are part of selected company and update the choices in person dropdown
+    console.log(event.detail.value);
+    table.columns(4).search( event.detail.value ).draw();
+},
+false,
+);
+{% endif %}
+
+// Handle OnChange for Status Filter
+statusChoices.passedElement.element.addEventListener('change', function(event) {
+    // get the all person that are part of selected company and update the choices in person dropdown
+    console.log(event.detail.value);
+    table.columns(6).search( event.detail.value ).draw();
+},
+false,
+);
+
+$(document).ready(function(){
+    // Update the Delete URL in Delete Confirm Modal
+    $('#salesTaskTable').on('click', '.delete-btn', (event) => {
+        $('#delete-record').attr('href', $(event.currentTarget).data('url'))
+    })
+    
+    // Filters for table
+    $('#id_search').on('keyup', function () {
+        table.search( this.value ).draw();
+    } );
+    
+    $('#salesTaskTable').on('click', '.change-status-row',function(){
+        let SalesTaskid =$(this).data('sales_id')
+        let SalesTaskname =$(this).data('sales_name')
+        let SalesTasksource =$(this).data('sales_source')
+        let SalesTaskrobot =$(this).data('sales_robot')
+        let SalesTaskteam =$(this).data('sales_team')
+        let SalesTasktemplate =$(this).data('sales_template')
+        let SalesTaskstatus = $(this).data('sales_status')
+        
+        let new_status = SalesTaskstatus === "Active"? 2 : 1
+        
+        $.ajax({
+            type: "PUT",
+            headers: { "X-CSRFToken": '{{csrf_token}}' },
+            url: `/api/salestask/${SalesTaskid}/`,
+            data: {"name":SalesTaskname,"source":SalesTasksource,"robot":SalesTaskrobot,
+            "team":SalesTaskteam,"sales_template":SalesTasktemplate  ,"status":new_status},
+            success: function(response){
+                console.log(response)
+                table.ajax.reload(null, false)
+            }
+        })
+    });
+    
+    
+})
+// Ajax for Change All Last Started Button
+$('.btn-update-ls').click(function(){
+    $('.btn-load').removeClass('d-none');
+    $('.btn-update-ls').addClass('d-none');
+    $.ajax({
+        type: "GET",
+        url: '/robots/sales-task/changelaststarted/',
+        success: function(response){
+            if (response.status === 'success'){
+                table.ajax.reload()
+                $('.btn-load').addClass('d-none');
+                $('.btn-update-ls').removeClass('d-none');
+                Toastify({
+                    text: "Successfully Changed Last Started!",
+                    className: 'bg-success'
+                }).showToast();
+            }
+        }
+    })
+});
+
+$('#salesTaskTable').on('click', '.change-last-started',function(){
+    let SalesTaskid =$(this).data('sales_id')
+    let SalesTaskname =$(this).data('sales_name')
+    let SalesTasksource =$(this).data('sales_source')
+    let SalesTaskrobot =$(this).data('sales_robot')
+    let SalesTaskteam =$(this).data('sales_team')
+    let SalesTasktemplate =$(this).data('sales_template')
+    let SalesTaskstatus = $(this).data('sales_status')
+    let SalesLastStarted = $(this).data('sales_last_started')
+    
+    if ( SalesLastStarted === null ) {
+        return;
+    }
+    if ( SalesTaskstatus === "Active" ) {
+        new_status = 1
+    }
+    else{
+        new_status = 2
+    }
+    
+    
+    $.ajax({
+        type: "PUT",
+        headers: { "X-CSRFToken": '{{csrf_token}}' },
+        url: `/api/salestask/${SalesTaskid}/`,
+        data: {"name":SalesTaskname,"source":SalesTasksource,"robot":SalesTaskrobot,
+        "team":SalesTaskteam,"sales_template":SalesTasktemplate,"status":new_status  ,"last_started": null},
+        success: function(response){
+            table.ajax.reload(null, false)
+        }
+    })
+});
+
+
+
+// Load the candidate for edit mode in modal
+$('.sales-edit-btn').click(function(){
+    let SalesTaskId = $(this).data('id')
+    $('#SalesTaskUpdateForm').data('id', SalesTaskId)
+    $.ajax({
+        type: "GET",
+        url: `/api/salestemplate/${SalesTaskId}/`,
+        success: function(response){
+            console.log(response)
+            let textFields = ['name', 'subject']
+            
+            let textField = ['email_message', 'sms_message', 'linkedin_message']
+            
+            textFields.forEach((field)=>{
+                $(`input[name='${field}']`).val(response[field])
+            })
+            
+            textField.forEach((field)=>{
+                if(response[field]){
+                    $(`textarea[name='${field}']`).val(response[field])
+                }
+            })
+            
+            
+        }
+    })
+});
+
+// Bulk Create Candidates from LinkedIn URLs
+$('#SalesTaskUpdateForm').submit(function(e){
+    e.preventDefault(); // avoid to execute the actual submit of the form.
+    
+    $('.btn-load').removeClass('d-none');
+    $('.btn-update-person').addClass('d-none');
+    
+    var form = $(this);
+    let candidatesId = form.data('id')
+    $.ajax({
+        type: "PUT",
+        headers: { "X-CSRFToken": '{{csrf_token}}' },
+        url: `/api/salestemplate/${candidatesId}/`,
+        data: form.serialize(), // serializes the form's elements.
+        success: function(response)
+        {
+            $('.btn-load').addClass('d-none');
+            $('.btn-update-person').removeClass('d-none');
+            $(`.sales-name[data-id='${candidatesId}']`).text(response.name)
+            $(`.sales-subject[data-id='${candidatesId}']`).text(response.subject)
+            $(`.sales-email[data-id='${candidatesId}']`).text(response.email_message)
+            $(`.sales-sms_message[data-id='${candidatesId}'] span`).text(response.sms_message)
+            $(`.sales-linkedin_message[data-id='${candidatesId}'] span`).text(response.linkedin_message)
+            
+            $('#salesUpdate').modal('hide');
+            form.trigger("reset");
+            $('.close-btn').trigger('click')
+        }
+    });
+});
+
+    </script>
+{% endblock extra_js %}

@@ -1,0 +1,603 @@
+{% extends "partials/base.html" %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% load static %}
+{% block title %}
+    Assigned Lead Tasks List
+{% endblock title %}
+{% block extra_css %}
+    <link rel="stylesheet"
+          href="{% static 'js/DataTables/datatables.min.css' %}">
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Leads" title="Assigned Lead Tasks List" %}
+                {% endblock pagetitle %}
+                {% include "partials/messages.html" %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card"  id="assignedTasksList">
+                            <div class="card-header border-0">
+                                <div class="d-flex align-items-center">
+                                    <h5 class="card-title mb-0 flex-grow-1">Assigned Lead Tasks</h5>
+                                    <div class="flex-shrink-0">
+                                        <button type="button" class="btn btn-primary btn-load d-none">
+                                            <span class="d-flex align-items-center">
+                                                <span class="flex-grow-1 me-2">Loading Data...</span>
+                                                <span class="spinner-border spinner-border-sm flex-shrink-0" role="status">
+                                                    <span class="visually-hidden">Loading Data...</span>
+                                                </span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body border border-dashed border-end-0 border-start-0">
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-xxl-5 col-sm-12">
+                                            <div class="search-box">
+                                                <input type="text"
+                                                       class="form-control search bg-light border-light"
+                                                       placeholder="Search..."
+                                                       id="id_search"/>
+                                                <i class="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
+                            <!--end card-body-->
+                            <div class="card-body">
+                                <div class="table-responsive table-card mb-4">
+                                    <table class="table align-middle table-nowrap mb-0" id="assignedLeadTasksTable">
+                                        <thead class="table-light text-muted">
+                                            <tr>
+                                                <th>Create</th>
+                                                <th data-data="id">ID</th>
+                                                <th data-data="keyword">Keyword</th>
+                                                <th data-data="location">Location</th>
+                                                <th data-data="job_title">Job Title</th>
+                                                <th data-data="job_link">Job Link</th>
+                                                <th data-data="company">Company</th>
+                                                <th data-data="company_link">Company Link</th>
+                                                <th data-data="job_location">Job Location</th>
+                                                <th data-data="post_time">Post Time</th>
+                                                <th data-data="applicants_count">Applicants Count</th>
+                                                <th data-data="seniority_level">Seniority Level</th>
+                                                <th data-data="employment_type">Employment Type</th>
+                                                <th data-data="job_function">Job Function</th>
+                                                <th data-data="industries">Industries</th>
+                                                <th data-data="created">Created</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="list form-check-all">
+                                        </tbody>
+                                    </table>
+                                    <!--end table-->
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+                <div class="modal fade flip"
+                     id="deleteOrder"
+                     tabindex="-1"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body p-5 text-center">
+                                <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#405189,secondary:#f06548" style="width:90px;height:90px"></lord-icon>
+                                <div class="mt-4 text-center">
+                                    <h4>You are about to delete ?</h4>
+                                    <p class="text-muted fs-14 mb-4">
+                                        Deleting your task will remove all of
+                                        your information from our database.
+                                    </p>
+                                    <div class="hstack gap-2 justify-content-center remove">
+                                        <button class="btn btn-link btn-ghost-success fw-medium text-decoration-none"
+                                                data-bs-dismiss="modal">
+                                            <i class="ri-close-line me-1 align-middle"></i> Close
+                                        </button>
+                                        <a class="btn btn-danger" id="delete-record">Yes, Delete It</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end delete modal -->
+                <!-- Modal FORM for Create New Company -->
+                <div id="companyModal"
+                    class="modal fade"
+                    tabindex="-1"
+                    aria-labelledby="companyLabel"
+                    aria-hidden="true"
+                    style="display: none;">
+                <div class="modal-dialog modal-md modal-dialog-centered">
+                    <div class="modal-content">
+                        <form action="" id="companyForm" data-leadtask-id="" data-job-title="" data-job-link="" data-job-location="">
+                            {% csrf_token %}
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="companyLabel">
+                                    Company
+                                </h5>
+                                <div class="flex-shrink-0">
+                                    <button type="button" class="btn btn-primary btn-load-company">
+                                        <span class="d-flex align-items-center">
+                                            <span class="flex-grow-1 me-2">
+                                                Loading Data...
+                                            </span>
+                                            <span class="spinner-border spinner-border-sm flex-shrink-0" role="status">
+                                                <span class="visually-hidden">Loading Data...</span>
+                                            </span>
+                                        </span>
+                                    </button>
+                                    <button type="button"
+                                            class="btn-close"
+                                            data-bs-dismiss="modal"
+                                            aria-label="Close">
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <div id="div_id_industry" class="form-group">
+                                                <label for="id_com_industry" class="">
+                                                    Industry
+                                                </label>
+                                                <div>
+                                                    <select name="industry" class="select form-control" id="id_com_industry">
+                                                        <option value="" selected="">
+                                                            ---------
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <div id="div_id_name" class="form-group">
+                                                <label for="id_name" class="" requiredField>
+                                                    Name<span class="asteriskField">*</span>
+                                                </label>
+                                                <div>
+                                                    <input type="text"
+                                                            name="name"
+                                                            maxlength="200"
+                                                            class="textinput textInput form-control"
+                                                            required
+                                                            id="id_name">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <div id="div_id_domain" class="form-group">
+                                                <label for="id_domain" class="" requiredField>
+                                                    Domain<span class="asteriskField">*</span>
+                                                </label>
+                                                <div>
+                                                    <input type="text"
+                                                            name="domain"
+                                                            maxlength="200"
+                                                            class="textinput textInput form-control"
+                                                            required
+                                                            id="id_domain">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <div id="div_id_linkedin" class="form-group">
+                                                <label for="id_linkedin" class="" requiredField>
+                                                    Linkedin<span class="asteriskField">*</span>
+                                                </label>
+                                                <div>
+                                                    <input type="text"
+                                                            name="linkedin"
+                                                            maxlength="1000"
+                                                            class="textinput textInput form-control"
+                                                            required
+                                                            id="id_linkedin">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <div id="div_id_country" class="form-group">
+                                                <label for="id_country" class=" requiredField">
+                                                    Country<span class="asteriskField">*</span>
+                                                </label>
+                                                <div>
+                                                    <select name="country"
+                                                            class="select form-control"
+                                                            id="id_company_country"
+                                                            required>
+                                                        <option value="" selected="">
+                                                            -----------------
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light close-btn" data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                                <button type="submit" class="btn btn-primary btn-create-company">
+                                    Create
+                                </button>
+                                <button type="button" class="btn btn-primary btn-load d-none">
+                                    <span class="d-flex align-items-center">
+                                        <span class="flex-grow-1 me-2">
+                                            Loading...
+                                        </span>
+                                        <span class="spinner-border flex-shrink-0" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </span>
+                                    </span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+        {% block footer %}
+            {% include "partials/footer.html" %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_js %}
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <!--datatable js-->
+    <script src="{% static 'js/DataTables/datatables.min.js' %}"></script>
+    <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
+    <script>
+    $(document).ready(function () {
+        var assignedLeadTasksTableParams = {
+            start_date: '',
+            end_date: ''
+        }
+        var table = $('#assignedLeadTasksTable').DataTable({
+            serverSide: true,
+            processing: true,
+            order: [[14, 'desc']],
+            "ajax": {
+                "url": "/api/leadtasks/?format=datatables",
+                "data": function ( d ) {
+                    $('.btn-load').removeClass('d-none');
+                    return  $.extend(d, assignedLeadTasksTableParams);
+                },
+                "dataSrc": function (e) {
+                    //Make your callback here.
+                    $('.btn-load').addClass('d-none');
+                    return e.data;
+                }
+            },
+            "dom": 'lrtip',
+            "columnDefs": [
+            {  
+                targets: 0,
+                sortable: false,
+                searchable: false,
+                render: ( data, type, row ) => {                    
+                    let actions =  `<ul class="list-inline hstack gap-2 mb-0">`                        
+                        actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Create Company">
+                        <a href="javascript:void(0)" type="button" data-id="${ row.id }" data-name="${ row.company }" data-location="${ row.location }" data-link="${ row.company_link }" data-industry="${ row.industries }" data-job-title="${ row.job_title }" data-job-link="${ row.job_link }" data-job-location="${row.job_location}" class="btn btn-success d-inline-block create-company" data-bs-toggle="modal" data-bs-target="#companyModal">
+                            Create
+                        </a>
+                        </li>`
+                    actions += `</ul>`
+                    return actions
+                },
+            },
+            {
+                targets: 1,
+                visible: false
+            },
+            {
+                targets: 2,
+                defaultContent: '-',
+                visible: false
+            },
+            {
+                targets: 3,
+                defaultContent: '-',
+                visible: false
+            },
+            {
+                targets: 4,
+                render: function (data, type, row) {
+                    // Truncate the text to 30 characters and add ellipsis
+                    var truncatedText = data.length > 30 ? data.substr(0, 30) + '...' : data;
+                    // Add tooltip with complete text
+                    return '<span title="' + data + '">' + truncatedText + '</span>';
+                },
+            },
+            {
+                targets: 5,
+                defaultContent: '-',
+                visible: false,
+            },
+            {
+                targets: 6,
+                render: function (data, type, row) {
+                    // Truncate the text to 30 characters and add ellipsis
+                    var truncatedText = data.length > 30 ? data.substr(0, 30) + '...' : data;
+                    // Add tooltip with complete text
+                    return '<span title="' + data + '">' + truncatedText + '</span>';
+                },
+            },
+            {
+                targets: 7,
+                defaultContent: '-',
+                visible: false,
+            },
+            {
+                targets: 8,
+                defaultContent: '-',
+            },
+            {
+                targets: 9,
+                defaultContent: '-',
+            },
+            {
+                targets: 10,
+                defaultContent: '-',
+            },
+            {
+                targets: 11,
+                defaultContent: '-',
+            },
+            {
+                targets: 12,
+                defaultContent: '-',
+                visible: false
+            },
+            {
+                targets: 13,
+                defaultContent: '-',
+            },
+            {
+                targets: 14,
+                render: function (data, type, row) {
+                    // Truncate the text to 40 characters and add ellipsis
+                    var truncatedText = data.length > 40 ? data.substr(0, 40) + '...' : data;
+                    // Add tooltip with complete text
+                    return '<span title="' + data + '">' + truncatedText + '</span>';
+                },
+            },
+            {
+                targets: 15,
+                render: (data, type, row)=>{
+                    return moment(row.created).format('MMM DD, YYYY hh:mm A');
+                }
+            },
+            {
+                targets: -1,  // -1 is the last column, 0 the first, 1 the second, etc.
+                sortable: false,
+                searchable: false,
+                // The `data` parameter refers to the data for the cell.
+                // The `rows`argument is an object representing all the data for the current row.
+                render: ( data, type, row ) => {
+                    let viewLeadTasksURL = "{% url 'leads:assignedleadtasks_details' pk=0 %}"
+                    let deleteLeadTaskURL = "{% url 'leads:assignedleadtasks_delete' pk=0 %}"
+                    let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
+                        if (row.job_link){
+                            if(row.job_link){
+                                let link = (row.job_link.indexOf('://') === -1) ? 'http://' + row.job_link : row.job_link;
+                                actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Job Link">
+                                <a href="${link}" target="__blank" class="text-success d-inline-block">
+                                    <i class="ri-linkedin-fill fs-16"></i>
+                                </a>
+                                </li>`
+                            }
+                        }
+                        if (row.company_link){
+                            if(row.company_link){
+                                let link = (row.company_link.indexOf('://') === -1) ? 'http://' + row.company_link : row.company_link;
+                                actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Company Link">
+                                <a href="${link}" target="__blank" class="text-primary d-inline-block">
+                                    <i class="ri-linkedin-fill fs-16"></i>
+                                </a>
+                                </li>`
+                            }
+                        }
+
+                        actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View Details">
+                        <a href="${viewLeadTasksURL.replace('0', row.id)}" class="text-info d-inline-block">
+                            <i class="ri-eye-fill fs-16"></i>
+                        </a>
+                        </li>`
+
+                        actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteLeadTaskURL.replace('0', row.id)}">
+                            <i class="ri-delete-bin-5-fill fs-16"></i>
+                            </a>
+                        </li>`
+                        
+                    actions += `</ul>`
+                    return actions
+                },
+            }
+            ]
+        });
+
+
+    // Update the Delete URL in Delete Confirm Modal
+    $('#assignedLeadTasksTable').on('click', '.delete-btn', (event) => {
+        $('#delete-record').attr('href', $(event.currentTarget).data('url'))
+    })
+
+    $('#id_search').on( 'keyup', function () {
+        table.search( this.value ).draw();
+    });
+    
+    var companyProgress=0;
+    const industryChoices = new Choices(document.querySelector('#id_com_industry'), {searchResultLimit: 50})
+    const companyCountryChoices = new Choices(document.querySelector('#id_company_country'), {searchResultLimit: 50, shouldSort: false})
+    $('#assignedLeadTasksTable').on('click', '.create-company', (event) => {
+        event.preventDefault();
+        let companyName = $(event.currentTarget).data('name')
+        let companyLink = $(event.currentTarget).data('link')
+        let leadTaskID = $(event.currentTarget).data('id')
+        let jobTitle = $(event.currentTarget).data('job-title')
+        let jobLink = $(event.currentTarget).data('job-link')
+        let jobLocation = $(event.currentTarget).data('job-location')
+        let industry = $(event.currentTarget).data('industry')
+        let country = $(event.currentTarget).data('location')
+        var companyForm = document.getElementById('companyForm');
+        companyForm.setAttribute('data-job-title', jobTitle);
+        companyForm.setAttribute('data-job-link', jobLink);
+        companyForm.setAttribute('data-job-location', jobLocation);
+        companyForm.setAttribute('data-leadtask-id', leadTaskID);
+        var nameField = companyForm.elements['id_name'];
+        var linkedinField = companyForm.elements['id_linkedin'];
+        nameField.value = companyName;
+        linkedinField.value = companyLink;
+        $.ajax({
+            type: "GET",
+            url: `/api/industry/?action=dropdown&search=${industry}`,
+            success: function(response){
+                if(response.results.length){
+                    value = response.results[0]
+                    industryChoices.clearChoices()
+                    industryChoices.setChoices([{ value: value.id, label: value.name }])
+                    industryChoices.setChoiceByValue(value.id);
+                }
+                else{
+                    $.ajax({
+                        type: "GET",
+                        url: `/api/industry/?action=dropdown&search=Manufacturing`,
+                        success: function(response){
+                            value = response.results[0]
+                            industryChoices.clearChoices()
+                            industryChoices.setChoices([{ value: value.id, label: value.name }])
+                            industryChoices.setChoiceByValue(value.id);
+                        },
+                    })
+                }
+            },
+            complete: function(){
+                companyProgress+=1;
+                if(companyProgress==2){
+                    $('.btn-load-company').addClass('d-none');
+                }
+            }
+            
+        })
+
+        $.ajax({
+            type: "GET",
+            url: '/leads/countrieslist/',
+            data: {},
+            success: function(response){
+                newChoices = response.data.map((row) => ({'value': row.Code, 'label': row.Name ?? ''}))
+                companyCountryChoices.clearChoices()
+                newChoices.unshift({'value': '', 'label': '---------'})
+                companyCountryChoices.setChoices(newChoices);
+                companyCountryChoices.setChoiceByValue(country);
+            },
+            complete: function(){
+                companyProgress+=1;
+                if(companyProgress==2){
+                    $('.btn-load-company').addClass('d-none');
+                }
+            }
+        })
+    });
+
+    // Create New Company
+    $('#companyForm').submit(function(e){
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+        $('.btn-load').removeClass('d-none');
+        $('.btn-create-company').addClass('d-none');
+        let company_link = this.linkedin.value
+        var form = $(this);
+        var jobTitle = form.data('job-title');
+        var jobLink = form.data('job-link');
+        var jobLocation = form.data('job-location');
+        var leadTaskID = form.data('leadtask-id');
+        $.ajax({
+            type: "POST",
+            headers: { "X-CSRFToken": '{{csrf_token}}' },
+            url: `/api/company/?action=create`,
+            data: form.serialize(), // serializes the form's elements.
+            success: (response) => {
+                // Show the success message
+                form.trigger("reset");
+                Toastify({
+                    text: "The company has been added successfully",
+                }).showToast();
+                $('.btn-load').addClass('d-none');
+                $('.btn-create-company').removeClass('d-none');
+                $('.close-btn').trigger('click')
+                window.location.reload();
+                window.open(`/leads/assignedleadtasks/create/?company_link=${company_link}&leadtask_id=${leadTaskID}&job_title=${jobTitle}&job_link=${jobLink}&job_location=${jobLocation}`, '_blank');
+            },
+            error: (xhr, status, error) => {
+                // Handle Ajax Error for API
+                form.trigger("reset");
+                var err = eval("(" + xhr.responseText + ")");
+                if(Object.keys(err).length){
+                    Object.keys(err).forEach((field) => {
+                        Toastify({
+                            text: `Error: ${err[field]}`,
+                            className: 'bg-danger',
+                        }).showToast();
+                    })
+                    
+                } else {
+                    Toastify({
+                        text: "Oops something went wrong.",
+                        className: 'bg-danger'
+                    }).showToast();
+                }
+                $('.btn-load').addClass('d-none');
+                $('.btn-create-company').removeClass('d-none');
+                
+            },
+        });
+    })
+    $('#companyModal').on('hidden.bs.modal', function () {
+        $('#companyForm')[0].reset();
+    });
+
+    $('#assignedLeadTasksTable').on('click', '.delete-btn', (event) => {
+        $('#delete-record').attr('href', $(event.currentTarget).data('url'))
+    })
+
+});
+    </script>
+{% endblock extra_js %}

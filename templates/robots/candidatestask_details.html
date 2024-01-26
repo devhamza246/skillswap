@@ -1,0 +1,146 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% block title %}
+    Candidate Details
+{% endblock title %}
+{% block extra_css %}
+    <!-- Sweet Alert css-->
+    <link href="{% static 'libs/sweetalert2/dist/sweetalert2.min.css' %}"
+          rel="stylesheet"
+          type="text/css"/>
+    <link rel="stylesheet"
+          href="{% static 'js/DataTables/datatables.min.css' %}">
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Robots" title="Candidate Details" %}
+                {% endblock pagetitle %}
+                {% include "partials/messages.html" %}
+                <div class="row">
+                    <div class="col-xl-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                    <h5 class="card-title flex-grow-1 mb-0">Candidates</h5>
+                                </div>
+                            </div>
+                            <div class="card-body border border-dashed border-end-0 border-start-0">
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-xxl-5 col-sm-12">
+                                            <div class="search-box">
+                                                <input type="text"
+                                                       id="searchInput"
+                                                       class="form-control search bg-light border-light"
+                                                       placeholder="Search for name or email...">
+                                                <i class="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
+                            <!--end card-body-->
+                            <div class="card-body">
+                                <div class="table-responsive table-card mb-4">
+                                    <table class="table align-middle table-nowrap mb-0" id="candidates-table">
+                                        <thead class="table-light text-muted">
+                                            <tr>
+                                                <th>First Name</th>
+                                                <th>Last Name</th>
+                                                <th>Email</th>
+                                                <th>Email 2</th>
+                                                <th>Email 3</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="list form-check-all">
+                                            {% for row in object_list.0.job.candidates.all %}
+                                                <tr>
+                                                    <td class="client_name">{{ row.first_name }}</td>
+                                                    <td class="client_name">{{ row.last_name }}</td>
+                                                    <td class="client_name">{{ row.email }}</td>
+                                                    <td class="client_name">{{ row.email2 }}</td>
+                                                    <td class="client_name">{{ row.email3 }}</td>
+                                                    <td class="client_name">
+                                                        <span class="badge {% if row.status == row.Status.OPEN %} badge-soft-primary {% elif row.status == row.Status.CLOSED %} badge-soft-warning {% else %} badge-soft-success {% endif %} ">
+                                                            {{ row.get_status_display }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <!--end table-->
+                                </div>
+                                {% include "partials/pagination.html" with is_paginated=is_paginated page_obj=page_obj paginator=paginator %}
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                    <div class="col-xl-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Candidate task Detail</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled vstack gap-2 fs-13 mb-0 ">
+                                    <li>
+                                        <b>Task</b>: {{ object_list.0.name }}
+                                    </li>
+                                    <li class="d-flex align-items-center "
+                                        data-bs-toggle="tooltip"
+                                        data-bs-trigger="hover"
+                                        data-bs-placement="top"
+                                        title="view">
+                                        <b>Job</b>: {{ object_list.0.job.name }}&nbsp;
+                                        <a href="{% url 'candidates:job_edit' pk=object_list.0.job.id %}"
+                                           class="text-primary d-inline-block edit-item-btn">
+                                            <i class="ri-eye-fill px-1 fs-16"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_js %}
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <!--datatable js-->
+    <script src="{% static 'js/DataTables/datatables.min.js' %}"></script>
+    <script>
+ $(document).ready(function () {
+      var table = $('#candidates-table').DataTable({"dom": 'lrtip',
+                "columnDefs": [
+                    {
+                        // Hide the ID column
+                        targets: 0,
+                        visible: true,
+                        searchable: true,
+                    }]
+                 });
+    $('#searchInput').on( 'keyup', function () {
+      table.search( this.value ).draw();
+    });
+ });
+    </script>
+{% endblock extra_js %}

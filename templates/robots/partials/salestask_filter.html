@@ -1,0 +1,17 @@
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+<form action="" method="get">
+    <div class="row g-3">
+        <div class="col-xxl-12 col-sm-6">{{ form.q|attr:"id:id_search"|attr:"placeholder:Search..."|as_crispy_field }}</div>
+        <!--end col-->
+        {% if user.get_role_display == 'Admin' %}
+        <div class="col-xxl-2 col-sm-4">{{ form.robot|as_crispy_field }}</div>
+        <!--end col-->
+        <div class="col-xxl-2 col-sm-4">{{ form.robot__team|as_crispy_field }}</div>
+        <!--end col-->
+        {% endif %}
+        <div class="col-xxl-2 col-sm-4">{{ form.status|as_crispy_field }}</div>
+        <!--end col-->
+    </div>
+    <!--end row-->
+</form>

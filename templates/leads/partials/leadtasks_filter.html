@@ -1,0 +1,42 @@
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+<form action="" method="get">
+  <div class="row g-3 mb-3">
+    <div class="col-xxl-5 col-sm-12">
+      <div class="search-box">
+        <input type="text" class="form-control search bg-light border-light" placeholder="Search..." id="id_search" />
+        <i class="ri-search-line search-icon"></i>
+      </div>
+    </div>
+    <!-- end col -->
+  </div>
+  <!-- end row -->
+  <div class="row g-3 form_class">
+    <div class="col-xxl-2 col-sm-4">
+      <div class="mb-3">
+        <div id="div_id_assigned_to" class="form-group">
+          <label for="id_assigned_to" class="">Assigned To</label>
+          <div>
+            <select name="assigned_to" class="select form-control" id="id_assigned_to">
+              <option value="" selected>---------</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xxl-2 col-sm-4">
+      <div class="mb-3">
+        <div id="div_id_completed" class="form-group">
+          <label for="id_completed" class="">Status</label>
+          <div>
+            <select name="completed" class="select form-control" id="id_completed">
+              <option value="false" selected="">---------</option>
+              <option value="true">Completed</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end row -->
+</form>

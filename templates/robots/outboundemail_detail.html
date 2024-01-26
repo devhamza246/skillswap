@@ -1,0 +1,291 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+    OutBound Email
+{% endblock title %}
+{% block extra_css %}
+    <link rel="stylesheet"
+          href="{% static 'js/DataTables/datatables.min.css' %}">
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Robots" title="OutBound Email" %}
+                {% endblock pagetitle %}
+                <div class="row">
+                    <div class="col-xl-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                    <h5 class="card-title flex-grow-1 mb-0">Messages</h5>
+                                </div>
+                            </div>
+                            <div class="card-body border border-dashed border-end-0 border-start-0">
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-xxl-5 col-sm-12">
+                                            <div class="search-box">
+                                                <input type="text"
+                                                       id="searchInput"
+                                                       class="form-control search bg-light border-light"
+                                                       placeholder="Search for name or email...">
+                                                <i class="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                                <div class="card-body border border-dashed border-end-0 border-start-0">
+                                    <!-- Filters Form -->
+                                    <form action="" method="get">
+                                        {% include 'robots/partials/messages_detail_filter.html' with form=message_filter.form %}
+                                    </form>
+                                    <!-- End Filters Form -->
+                                </div>
+                                <!--end card-body-->
+                            </div>
+                            <!--end card-body-->
+                            <div class="card-body">
+                                <div class="table-responsive table-card">
+                                    <table id="allMessages"
+                                           class="table table-nowrap align-middle table-borderless mb-0"
+                                           data-server-side="true">
+                                        <thead class="table-light text-muted">
+                                            <tr>
+                                                <th data-data="id">ID</th>
+                                                <th data-data="lead.person.first_name">Full Name</th>
+                                                <th data-data="sent_to">Sent To</th>
+                                                <th data-data="scheduled_for">Scheduled For</th>
+                                                <!-- Hidden field addd for Filters -->
+                                                <th data-data="is_followup">Follow Up</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                    <div class="col-xl-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Outbound Email Detail</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled vstack gap-2 fs-13 mb-0">
+                                    <li class="fw-medium fs-14">Name: {{ object.first_name }} {{ object.last_name }}</li>
+                                    <li>Email: {{ object.email }}</li>
+                                    <li title="Contact">Robot: {{ object.robot }}</li>
+                                    <li title="Contact">User: {{ object.user }}</li>
+                                    <li title="Contact">Type: {{ object.get_type_display }}</li>
+                                    <li title="Contact">Emails Scheduled for Tomorrow: {{ object.tomorrow_message_count }}</li>
+                                    <li>
+                                        <h5>
+                                            <span class="badge {% if job.status == job.Status.OPEN %} badge-soft-secondary {% elif job.status == job.Status.CLOSED %} badge-soft-danger {% else %} badge-soft-success {% endif %} text-uppercase">{{ object.get_status_display }}</span>
+                                        </h5>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+        {% block footer %}
+            {% include "partials/footer.html" %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_js %}
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <!--datatable js-->
+    <script src="{% static 'js/DataTables/datatables.min.js' %}"></script>
+    <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
+    <script>
+    var messageTableParams = {
+        start_date: '',
+        end_date: ''
+    }
+    var table = $('#allMessages').DataTable({
+        "ajax": {
+            "url": "/api/message/?format=datatables&email={{object.email}}",
+            "data": function (d) {
+                return $.extend(d, messageTableParams);
+            }
+        },
+        "dom": 'lrtip',
+        "columnDefs": [
+            {
+                // Hide the ID column
+                targets: 0,
+                visible: false,
+                searchable: false,
+            },
+            {
+                targets: 1,
+                visible: true,
+            },
+            {
+                // Hide the Status column
+                targets: 2,
+                visible: true,
+            },
+            {
+                // Remove searchable for action column
+                targets: 3,
+                searchable: true,
+            },
+            {
+                // Remove searchable for action column
+                targets: 4,
+                searchable: true,
+                visible: false,
+
+            },
+            {
+                // Remove searchable for action column
+                targets: 5,
+                searchable: true,
+                visible: true,
+
+            },
+            {
+                targets: -1,  // -1 is the last column, 0 the first, 1 the second, etc.
+                sortable: false,
+                searchable: false,
+
+                render: (data, type, row) => {
+                    let viewURL = "{% url 'leads:message_details_view_page' pk=0 %}"
+
+                    let actions = `<ul class="list-inline hstack gap-2 mb-0">`
+
+                    {% if perms.leads.change_message %}
+                    actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                        <a href="${viewURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                            <i class="ri-eye-fill fs-16"></i>
+                        </a>
+                    </li>`
+                    {% endif %}
+                    actions += `</ul>`
+                    return actions
+                },
+
+            }
+        ]
+
+    });
+
+    $(document).ready(function () {
+        $('#searchInput').on('keyup', function () {
+            table.search(this.value).draw();
+        });
+
+        $('#statusInput').on('change', function () {
+            table
+                .columns(4)
+                .search(this.value)
+                .draw();
+        });
+
+        $('#candidateForm').submit(function (e) {
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+
+            var form = $(this);
+            $.ajax({
+                type: "POST",
+                headers: { "X-CSRFToken": '{{csrf_token}}' },
+                url: '/api/candidates/',
+                data: form.serialize(), // serializes the form's elements.
+                success: function (response) {
+                    console.log(response); // show response from the php script.
+                    $.ajax({
+                        type: "POST",
+                        headers: { "X-CSRFToken": '{{csrf_token}}' },
+                        url: '/api/jobs/candidate/',
+                        data: { job: form.data('job'), candidate: response.id },
+                        success: function (response) {
+                            table.ajax.reload(null, false);
+                            form.trigger("reset");
+                            $('.close-btn').trigger('click')
+                        }
+                    })
+                }
+            });
+        })
+
+        $('#allMessages').on('click', '.change-status', function (event) {
+            event.preventDefault();
+            let candidateId = $(this).data('id')
+            $('input[name="candidate_id"]').val(candidateId)
+        });
+
+        // Date Range Picker Filter
+        const dateRangePicker = flatpickr("#id_date_rangeMessage", {
+            mode: 'range',
+            onChange: (selectedDates, dateStr, instance) => {
+                //...
+                if (selectedDates.length > 1) {
+                    // Set the required date format
+                    let start_date = moment(selectedDates[0]).format('YYYY-MM-DD')
+                    let end_date = moment(selectedDates[1]).format('YYYY-MM-DD')
+                    // Set the datatables get params and reload the data
+                    messageTableParams.start_date = start_date
+                    messageTableParams.end_date = end_date
+                    table.ajax.reload(null, false)
+                }
+            }
+        })
+
+        const isFollowUpChoices = new Choices(document.querySelector('#id_message__is_followup'), {
+            shouldSort: false,
+            searchEnabled: false
+        })
+
+        // Handle OnChange for Status Filter
+        isFollowUpChoices.passedElement.element.addEventListener(
+            'change',
+            function (event) {
+                // get the all person that are part of selected company and update the choices in person dropdown
+                table
+                    .columns(4)
+                    .search(event.detail.value)
+                    .draw();
+            },
+            false,
+        );
+
+        $('#clearDateRange').click(function (e) {
+
+            // Clear the Date Range Picker Filter
+            $('#id_date_rangeMessage')[0]._flatpickr.clear()
+
+            // Clear the values for datatable get params and reload the data
+            messageTableParams.start_date = ''
+            messageTableParams.end_date = ''
+            table.ajax.reload(null, false)
+        })
+
+
+    })
+
+
+
+    </script>
+{% endblock extra_js %}

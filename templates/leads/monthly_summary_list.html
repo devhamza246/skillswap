@@ -1,0 +1,273 @@
+{% extends "partials/base.html" %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% load static %}
+{% block title %}
+    Monthly Summary
+{% endblock title %}
+{% block extra_css %}
+    <link rel="stylesheet"
+          href="{% static 'js/DataTables/datatables.min.css' %}">
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Leads" title="Monthly Summary List" %}
+                {% endblock pagetitle %}
+                {% include "partials/messages.html" %}
+                <div class="row">
+                    <div class="col-lg-9">
+                        <div class="card"  id="tasksList">
+                            <div class="card-header border-0">
+                                <div class="d-flex align-items-center">
+                                    <h5 class="card-title mb-0 flex-grow-1">All User Monthly Summary</h5>
+                                    <div class="flex-shrink-0">
+                                        {% if user.get_role_display == 'Admin' %}
+                                        <button type="submit" class="btn btn-primary btn-create">Create Monthly Summary</button>
+                                        <button type="button" class="btn btn-primary btn-load d-none">
+                                            <span class="d-flex align-items-center">
+                                                <span class="flex-grow-1 me-2">Loading...</span>
+                                                <span class="spinner-border flex-shrink-0" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </span>
+                                            </span>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body border border-dashed border-end-0 border-start-0">
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-xxl-5 col-sm-12">
+                                            <div class="search-box">
+                                                <input type="text"
+                                                       class="form-control search bg-light border-light"
+                                                       placeholder="Search..."
+                                                       id="id_search"/>
+                                                <i class="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
+                            <!--end card-body-->
+                            <div class="card-body">
+                                <div class="table-responsive table-card mb-4">
+                                    <table class="table align-middle table-nowrap mb-0" id="m_summaryTable">
+                                        <thead class="table-light text-muted">
+                                            <tr>
+                                                <th data-data="user.id">User ID</th>
+                                                <th data-data="user.first_name">Full Name</th>
+                                                <th data-data="total_leads">Total Company Count</th>
+                                                <th data-data="total_candidates">Total Candidates</th>
+                                                <th data-data="total_lead_days">Total Lead Days</th>
+                                                <th data-data="total_candidate_days">Total Candidate Days</th>
+                                                <th data-data="total_leads_target">Total Lead Target</th>
+                                                <th data-data="total_candidates_target">Total Candidate Target</th>
+                                                <th data-data="lead_difference">Lead Difference</th>
+                                                <th data-data="candidate_difference">Candidate Difference</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="list form-check-all">
+                                        </tbody>
+                                    </table>
+                                    <!--end table-->
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                    <div class="col-xl-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex">
+                                    <h5 class="card-title flex-grow-1 mb-0">Lead Tasks Detail</h5>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled vstack gap-2 fs-13 mb-0">
+                                    <li title="Assigned">
+                                        <b>Assigned:</b> {{total_assigned_lead_tasks}}
+                                    </li>
+                                    <li title="Unassigned">
+                                        <b>Unassigned:</b> {{total_unassigned_lead_tasks}}
+                                    </li>
+                                    <li title="Completed">
+                                        <b>Completed:</b> {{total_completed_lead_tasks}}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+        {% block footer %}
+            {% include "partials/footer.html" %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_js %}
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <!--datatable js-->
+    <script src="{% static 'js/DataTables/datatables.min.js' %}"></script>
+    <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        $('.btn-create').click(function(){
+            $('.btn-load').removeClass('d-none');
+            $('.btn-create').addClass('d-none');
+            $.ajax({
+                type: "POST",
+                headers: { "X-CSRFToken": '{{csrf_token}}' },
+                url: `/api/monthlysummary/`,
+                success: function(response){},
+                complete: function(){
+                    table.ajax.reload()
+                    $('.btn-load').addClass('d-none');
+                    $('.btn-create').removeClass('d-none');
+                    Toastify({
+                        text:'Created Successfully!',
+                        className: 'bg-success'
+                      }).showToast();
+                }
+            })
+        })
+        //var m_summaryTableParams = {}
+        var table = $('#m_summaryTable').DataTable({
+            "ajax": {
+                "url": "/api/monthlysummary/?format=datatables",
+                /*"data": function ( d ) {
+                    return  $.extend(d, m_summaryTableParams);
+                }*/
+            },
+            "dom": 'lrtip',
+            "columnDefs": [
+            {  
+                targets: 0,
+                visible: true,
+                searchable: true,
+            },
+
+            {
+                targets: 1,
+                defaultContent: '-',
+            },       
+            {
+                targets: 2,
+                defaultContent: '-',
+            },       
+            {
+                targets: 3,
+                defaultContent: '-',
+            },       
+            {
+                targets: 4,
+                defaultContent: '-',
+            },       
+            {
+                targets: 5,
+                defaultContent: '-',
+            },       
+            {
+                targets: 6,
+                defaultContent: '-',
+            },       
+            {
+                targets: 7,
+                defaultContent: '-',
+            },   
+            {
+                targets: 8,
+                defaultContent: '-',
+            },   
+            {
+                targets: 9,
+                defaultContent: '-',
+            }   
+ 
+            /*{
+                targets: 2,
+                render: (data, type, row)=>{
+                    if(data=="-"){
+                        return data
+                    }
+                    else{
+                        return moment.utc(row.created).format('MMM DD, YYYY hh:mm A');
+                    }
+                }
+            }*/
+            ]
+        });
+        $('#id_search').on( 'keyup', function () {
+            table.search( this.value ).draw();
+        });
+        
+        /*const userChoices = new Choices(document.querySelector('#id_user'),{
+            shouldSort: false
+        })
+    
+        userChoices.passedElement.element.addEventListener(
+            'change',
+            function(event) {
+                user_id = event.detail.value;
+                m_summaryTableParams.user_id = user_id
+                table.ajax.reload()
+            },
+            false,
+            );
+            
+
+        // Date Range Picker Filter
+        const dateRangePicker = flatpickr("#id_date_range", {
+            mode: 'range',
+            onChange: (selectedDates, dateStr, instance) => {
+                // Set the required date format
+                if(selectedDates.length > 1 ){
+                let start_date = moment(selectedDates[0]).format('YYYY-MM-DD');
+                let end_date = moment(selectedDates[1]).format('YYYY-MM-DD');
+
+                // Set the datatables get params and reload the data
+                if(userChoices.getValue(true)){
+                m_summaryTableParams.start_date = start_date
+                m_summaryTableParams.end_date = end_date
+                table.ajax.reload();
+                }
+                else {
+                    Toastify({
+                        text:'Please select a User' ,
+                        className: 'bg-danger'
+                    }).showToast();
+                }
+            }
+        }        
+        })
+        
+        $('#clearDateRange').click(function(e){
+            
+            // Clear the Date Range Picker Filter
+            $('#id_date_range')[0]._flatpickr.clear()
+            m_summaryTableParams.start_date = ''
+            m_summaryTableParams.end_date = ''
+            table.ajax.reload();
+        })*/
+    });
+    </script>
+{% endblock extra_js %}

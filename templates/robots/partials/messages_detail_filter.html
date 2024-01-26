@@ -1,0 +1,21 @@
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+<form action="Message" method="get">
+    <div class="row g-3">
+        <div class="col-xxl-3 col-sm-4">{{ form.message__is_followup|as_crispy_field }}</div>
+        <div class="col-xxl-4 col-sm-4">
+            <div class="form-group">
+                <label class="form-label">Date</label>
+                <div class="form-icon right">
+                    <input type="text"
+                           class="form-control form-control-icon"
+                           readonly="readonly"
+                           id="id_date_rangeMessage"/>
+                    <i class="ri-close-circle-line fs-18 cursor-pointer" id="clearDateRange"></i>
+                </div>
+            </div>
+        </div>
+        <!--end col-->
+    </div>
+    <!--end row-->
+</form>
