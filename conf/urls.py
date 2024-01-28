@@ -26,6 +26,12 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("dashboards.urls")),
     path("community/", include("community.urls")),
+    path("feedback/", include("feedback.urls")),
+    path("matching/", include("matching.urls")),
+    path("messaging/", include("messaging.urls")),
+    path("profiles/", include("profiles.urls")),
+    path("progress_tracking/", include("progress_tracking.urls")),
+    path("scheduling/", include("scheduling.urls")),
     path("accounts/", include("allauth.urls")),
     path(
         "ckeditor/upload/",
