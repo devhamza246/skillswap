@@ -42,8 +42,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "allauth",
-    "allauth.account",
+    # "allauth",
+    # "allauth.account",
     "crispy_forms",
     "crispy_bootstrap4",
     "rest_framework",
@@ -72,19 +72,21 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
+    # "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "conf.urls"
 
 AUTH_USER_MODEL = "accounts.User"
+LOGIN_REDIRECT_URL = "dashboards"  # Route defined in home/urls.py
+LOGOUT_REDIRECT_URL = "dashboards"  # Route defined in home/urls.py
 
-AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
-    "django.contrib.auth.backends.ModelBackend",
-    # `allauth` specific authentication methods, such as login by e-mail
-    "allauth.account.auth_backends.AuthenticationBackend",
-]
+# AUTHENTICATION_BACKENDS = [
+#     # Needed to login by username in Django admin, regardless of `allauth`
+#     "django.contrib.auth.backends.ModelBackend",
+#     # `allauth` specific authentication methods, such as login by e-mail
+#     "allauth.account.auth_backends.AuthenticationBackend",
+# ]
 
 TEMPLATES = [
     {
@@ -104,18 +106,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "conf.wsgi.application"
 
-LOGIN_REDIRECT_URL = "/"
-ACCOUNT_LOGOUT_ON_GET = True
-ACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_LOGIN_ATTEMPTS_LIMIT = None
-ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}
+# LOGIN_REDIRECT_URL = "/"
+# ACCOUNT_LOGOUT_ON_GET = True
+# ACCOUNT_EMAIL_VERIFICATION = "none"
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# ACCOUNT_AUTHENTICATION_METHOD = "email"
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_UNIQUE_EMAIL = True
+# ACCOUNT_USERNAME_REQUIRED = False
+# ACCOUNT_LOGIN_ATTEMPTS_LIMIT = None
+# ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 

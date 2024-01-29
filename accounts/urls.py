@@ -7,8 +7,6 @@ from django.contrib.auth.views import LogoutView
 router = routers.DefaultRouter()
 router.register(r"users", UserViewSet)
 
-app_name = "accounts"
-
 # urlpatterns = [
 #     path("register/", RegisterView.register, name="register"),
 #     path("login/", LoginView.login, name="login"),
