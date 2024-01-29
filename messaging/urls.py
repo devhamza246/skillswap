@@ -1,4 +1,4 @@
-from os import path
+from django.urls import path
 from messaging.views import (
     ConversationCreateView,
     ConversationDeleteView,
@@ -10,6 +10,7 @@ from messaging.views import (
     MessageUpdateView,
 )
 
+app_name = "messaging"
 
 urlpatterns = [
     path("message/list/", MessageListView.as_view(), name="message_list"),

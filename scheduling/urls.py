@@ -1,4 +1,4 @@
-from os import path
+from django.urls import path
 from .views import (
     AvailabilityListView,
     AvailabilityCreateView,
@@ -11,6 +11,8 @@ from .views import (
     MeetingProposalUpdateView,
     MeetingProposalDeleteView,
 )
+
+app_name = "scheduling"
 
 urlpatterns = [
     path(

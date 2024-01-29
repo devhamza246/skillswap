@@ -1,4 +1,4 @@
-from os import path
+from django.urls import path
 from .views import (
     SkillListView,
     SkillDetailView,
@@ -11,6 +11,8 @@ from .views import (
     UserProfileUpdateView,
     UserProfileDeleteView,
 )
+
+app_name = "profiles"
 
 urlpatterns = [
     path("skill/list/", SkillListView.as_view(), name="skill_list"),

@@ -1,82 +1,37 @@
-from django.urls import reverse_lazy
-from django.views.generic import TemplateView, UpdateView, ListView, DeleteView
-from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Notification
-
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from django import template
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseRedirect
+from django.template import loader
+from django.urls import reverse
 
 
-# Create your views here.
+@login_required(login_url="/login/")
+def index(request):
+    context = {"segment": "index"}
+
+    html_template = loader.get_template("home/index.html")
+    return HttpResponse(html_template.render(context, request))
 
 
-class DashboardView(LoginRequiredMixin, TemplateView):
-    pass
+@login_required(login_url="/login/")
+def pages(request):
+    context = {}
+    # All resource paths end in .html.
+    # Pick out the html file name from the url. And load that template.
+    try:
+        load_template = request.path.split("/")[-1]
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["notification"] = Notification.objects.all()
-        context["tips"] = Notification.objects.filter(type=3)
-        context["warning"] = Notification.objects.filter(type=2)
-        return context
+        if load_template == "admin":
+            return HttpResponseRedirect(reverse("admin:index"))
+        context["segment"] = load_template
 
+        html_template = loader.get_template("home/" + load_template)
+        return HttpResponse(html_template.render(context, request))
 
-class ProfileUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = User
-    fields = [
-        "first_name",
-        "last_name",
-        "photo",
-        "mobile",
-        "address",
-        "city",
-        "state",
-        "country",
-        "zip_code",
-    ]
-    template_name = "dashboards/profile.html"
-    success_url = reverse_lazy("dashboards:dashboard")
-    success_message = "Profile has been updated successfully."
+    except template.TemplateDoesNotExist:
+        html_template = loader.get_template("home/page-404.html")
+        return HttpResponse(html_template.render(context, request))
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["notification"] = Notification.objects.all()
-        context["tips"] = Notification.objects.filter(type=3)
-        context["warning"] = Notification.objects.filter(type=2)
-        return context
-
-
-dashboard_view = DashboardView.as_view(template_name="dashboards/index.html")
-
-
-class NotificationListView(LoginRequiredMixin, ListView):
-    """Show the list of teams for role admin in the frontend"""
-
-    model = Notification
-    paginate_by = 10
-    template_name = "dashboards/notification_list.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["notification"] = Notification.objects.all()
-        context["tips"] = Notification.objects.filter(type=3)
-        context["warning"] = Notification.objects.filter(type=2)
-        return context
-
-
-class NotificationDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
-    """Delete the email from unsubscribe list"""
-
-    model = Notification
-    success_url = reverse_lazy("dashboards:notification_list")
-    success_message = "Record was deleted successfully"
-
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, self.success_message)
-        return super(NotificationDeleteView, self).delete(request, *args, **kwargs)
+    except:
+        html_template = loader.get_template("home/page-500.html")
+        return HttpResponse(html_template.render(context, request))

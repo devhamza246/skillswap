@@ -1,4 +1,4 @@
-from os import path
+from django.urls import path
 from .views import (
     ReviewCreateView,
     ReviewDeleteView,
@@ -6,6 +6,8 @@ from .views import (
     ReviewListView,
     ReviewUpdateView,
 )
+
+app_name = "feedback"
 
 urlpatterns = [
     path("review/list/", ReviewListView.as_view(), name="review_list"),

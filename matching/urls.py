@@ -1,5 +1,4 @@
-from os import path
-
+from django.urls import path
 from matching.views import (
     MatchCreateView,
     MatchDeleteView,
@@ -8,6 +7,7 @@ from matching.views import (
     MatchUpdateView,
 )
 
+app_name = "matching"
 
 urlpatterns = [
     path("match/list/", MatchListView.as_view(), name="match_list"),

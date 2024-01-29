@@ -1,4 +1,4 @@
-from os import path
+from django.urls import path
 from .views import (
     GoalListView,
     GoalDetailView,
@@ -11,6 +11,8 @@ from .views import (
     ProgressUpdateUpdateView,
     ProgressUpdateDeleteView,
 )
+
+app_name = "progress_tracking"
 
 urlpatterns = [
     path("goal/list/", GoalListView.as_view(), name="goal_list"),

@@ -1,4 +1,4 @@
-from os import path
+from django.urls import path
 from community.views import (
     CommunityEventCreateView,
     CommunityEventDeleteView,
@@ -12,6 +12,7 @@ from community.views import (
     ForumPostUpdateView,
 )
 
+app_name = "community"
 
 urlpatterns = [
     # ForumPost CRUD
