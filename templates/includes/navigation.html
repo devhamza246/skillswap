@@ -171,7 +171,7 @@
       </ul>
       <ul class="navbar-nav align-items-center ml-auto ml-md-0">
         <li class="nav-item dropdown">
-          <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link pr-0" href="{% url 'profile_detail' pk=request.user.id %}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
             <div class="media align-items-center">
               <span class="avatar avatar-sm rounded-circle"><img alt="Image placeholder" src="/static/assets/img/theme/team-4.jpg" /></span>
               <div class="media-body ml-2 d-none d-lg-block">
@@ -187,22 +187,11 @@
               <i class="ni ni-single-02"></i>
               <span>My profile</span>
             </a>
-            <a target="_blank" href="http://appseed.us/support" class="dropdown-item">
-              <i class="ni ni-support-16"></i>
-              <span>Support</span>
-            </a>
             <div class="dropdown-divider"></div>
             {% comment %} <a href="{% url 'logout' %}" class="dropdown-item">
               <i class="ni ni-user-run text-red"></i>
               <span>Logout</span>
             </a> {% endcomment %}
-            <form method="post" action="{% url 'logout' %}">
-              {% csrf_token %}
-              <button type="submit" class="dropdown-item">
-                <i class="ni ni-user-run text-red"></i>
-                <span>Logout</span>
-              </button>
-            </form>
           </div>
         </li>
       </ul>

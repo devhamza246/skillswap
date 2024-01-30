@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from .forms import LoginForm, SignUpForm
-
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from accounts.models import User
+from .forms import LoginForm, SignUpForm, UserProfileForm
+from django.views.generic import UpdateView, DetailView
 
 
 def login_view(request):
@@ -52,3 +55,21 @@ def register_user(request):
         "accounts/register.html",
         {"form": form, "msg": msg, "success": success},
     )
+
+
+class ProfileDetailView(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = "home/profile_detail.html"
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = UserProfileForm
+    template_name = "home/profile_update.html"
+    success_message = "Profile updated"
+
+    def form_valid(self, form):
+        print("Form is valid")
+        form.instance = self.request.user
+        form.save()
+        return redirect("")
