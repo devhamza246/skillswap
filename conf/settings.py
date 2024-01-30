@@ -34,7 +34,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -42,16 +42,17 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # "allauth",
-    # "allauth.account",
-    "crispy_forms",
-    "crispy_bootstrap4",
+]
+
+THIRD_PARTY_APPS = [
     "rest_framework",
     "django_filters",
-    "widget_tweaks",
     "ckeditor",
     "ckeditor_uploader",
     "channels",
+]
+
+USER_APPS = [
     "accounts",
     "dashboards",
     "ai_integration",
@@ -65,6 +66,9 @@ INSTALLED_APPS = [
 ]
 
 
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + USER_APPS
+
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -73,21 +77,14 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "conf.urls"
 
 AUTH_USER_MODEL = "accounts.User"
-LOGIN_REDIRECT_URL = "dashboards"  # Route defined in home/urls.py
-LOGOUT_REDIRECT_URL = "dashboards"  # Route defined in home/urls.py
-
-# AUTHENTICATION_BACKENDS = [
-#     # Needed to login by username in Django admin, regardless of `allauth`
-#     "django.contrib.auth.backends.ModelBackend",
-#     # `allauth` specific authentication methods, such as login by e-mail
-#     "allauth.account.auth_backends.AuthenticationBackend",
-# ]
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 TEMPLATES = [
     {
@@ -106,23 +103,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "conf.wsgi.application"
-
-# LOGIN_REDIRECT_URL = "/"
-# ACCOUNT_LOGOUT_ON_GET = True
-# ACCOUNT_EMAIL_VERIFICATION = "none"
-# ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-# ACCOUNT_AUTHENTICATION_METHOD = "email"
-# ACCOUNT_EMAIL_REQUIRED = True
-# ACCOUNT_UNIQUE_EMAIL = True
-# ACCOUNT_USERNAME_REQUIRED = False
-# ACCOUNT_LOGIN_ATTEMPTS_LIMIT = None
-# ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}
-
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
-
-CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # https://django-ckeditor.readthedocs.io/en/latest/
 CKEDITOR_UPLOAD_PATH = "uploads/"
@@ -171,11 +151,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "/static/"
-STATIC_ROOT = Path.joinpath(BASE_DIR, "staticfiles")
-STATICFILES_DIRS = [
-    Path.joinpath(BASE_DIR, "static"),
-]
+# STATIC_URL = "/static/"
+# STATIC_ROOT = Path.joinpath(BASE_DIR, "staticfiles")
+# STATICFILES_DIRS = [
+#     Path.joinpath(BASE_DIR, "static"),
+# ]
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.9/howto/static-files/
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path.joinpath(BASE_DIR, "media")
