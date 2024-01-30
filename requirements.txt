@@ -1,6 +1,7 @@
 asgiref==3.7.2
 certifi==2023.11.17
 cffi==1.16.0
+channels==4.0.0
 charset-normalizer==3.3.2
 crispy-bootstrap4==2023.1
 cryptography==42.0.1

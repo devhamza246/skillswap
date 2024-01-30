@@ -1,6 +1,7 @@
 from django.db import models
 
 from accounts.models import User
+from messaging.models import Conversation
 
 
 class Skill(models.Model):
@@ -23,6 +24,7 @@ class UserProfile(models.Model):
         User,
         on_delete=models.CASCADE,
     )
+    conversations = models.ManyToManyField(Conversation, blank=True)
     skills = models.ManyToManyField(Skill, blank=True)
     experience_level = models.IntegerField(
         choices=Levels.choices, default=Levels.ENTRY_LEVEL
