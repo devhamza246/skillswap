@@ -5,6 +5,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from scheduling.forms import AvailabilityForm, MeetingProposalForm
 from scheduling.models import Availability, MeetingProposal
 
 
@@ -14,6 +15,7 @@ class AvailabilityListView(ListView):
 
 class AvailabilityCreateView(CreateView):
     model = Availability
+    form_class = AvailabilityForm
     fields = ["user", "day_of_week", "start_time", "end_time"]
 
 
@@ -36,6 +38,7 @@ class MeetingProposalListView(ListView):
 
 class MeetingProposalCreateView(CreateView):
     model = MeetingProposal
+    form_class = MeetingProposalForm
     fields = ["proposer", "proposee", "proposed_time", "status"]
 
 

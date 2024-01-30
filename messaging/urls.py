@@ -2,10 +2,12 @@ from django.urls import path
 from messaging.views import (
     ConversationCreateView,
     ConversationDeleteView,
+    ConversationDetailView,
     ConversationListView,
     ConversationUpdateView,
     MessageCreateView,
     MessageDeleteView,
+    MessageDetailView,
     MessageListView,
     MessageUpdateView,
 )
@@ -14,14 +16,16 @@ app_name = "messaging"
 
 urlpatterns = [
     path("message/list/", MessageListView.as_view(), name="message_list"),
-    path("message/detail/<int:pk>/", MessageListView.as_view(), name="message_detail"),
+    path("message/detail/<int:pk>", MessageDetailView.as_view(), name="message_detail"),
     path("message/create/", MessageCreateView.as_view(), name="message_create"),
     path("message/update/<int:pk>", MessageUpdateView.as_view(), name="message_update"),
     path("message/delete/<int:pk>", MessageDeleteView.as_view(), name="message_delete"),
-    path("conversation/list/", MessageListView.as_view(), name="conversation_list"),
     path(
-        "conversation/detail/<int:pk>/",
-        ConversationListView.as_view(),
+        "conversation/list/", ConversationListView.as_view(), name="conversation_list"
+    ),
+    path(
+        "conversation/detail/<int:pk>",
+        ConversationDetailView.as_view(),
         name="conversation_detail",
     ),
     path(

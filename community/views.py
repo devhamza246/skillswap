@@ -5,6 +5,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from community.forms import CommunityEventForm, ForumPostForm
 from community.models import CommunityEvent, ForumPost
 
 
@@ -14,6 +15,7 @@ class ForumPostListView(ListView):
 
 class ForumPostCreateView(CreateView):
     model = ForumPost
+    form_class = ForumPostForm
     fields = ["content"]
 
     def form_valid(self, form):
@@ -40,6 +42,7 @@ class CommunityEventListView(ListView):
 
 class CommunityEventCreateView(CreateView):
     model = CommunityEvent
+    form_class = CommunityEventForm
     fields = ["title", "description", "date"]
 
     def form_valid(self, form):

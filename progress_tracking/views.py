@@ -5,6 +5,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from progress_tracking.forms import GoalForm, ProgressUpdateForm
 from progress_tracking.models import Goal, ProgressUpdate
 
 
@@ -18,6 +19,7 @@ class GoalDetailView(DetailView):
 
 class GoalCreateView(CreateView):
     model = Goal
+    form_class = GoalForm
     fields = ["description", "target_date"]
 
 
@@ -40,6 +42,7 @@ class ProgressUpdateDetailView(DetailView):
 
 class ProgressUpdateCreateView(CreateView):
     model = ProgressUpdate
+    form_class = ProgressUpdateForm
     fields = ["goal", "content"]
 
 

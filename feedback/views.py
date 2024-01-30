@@ -5,6 +5,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from feedback.forms import ReviewForm
 
 from feedback.models import Review
 
@@ -15,6 +16,7 @@ class ReviewListView(ListView):
 
 class ReviewCreateView(CreateView):
     model = Review
+    form_class = ReviewForm
     fields = ["rating", "feedback_content"]
 
 

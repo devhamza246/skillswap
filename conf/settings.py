@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "widget_tweaks",
     "ckeditor",
     "ckeditor_uploader",
+    "channels",
     "accounts",
     "dashboards",
     "ai_integration",
