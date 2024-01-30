@@ -33,7 +33,6 @@ urlpatterns = [
     path("profiles/", include("profiles.urls")),
     path("progress_tracking/", include("progress_tracking.urls")),
     path("scheduling/", include("scheduling.urls")),
-    # path("accounts/", include("allauth.urls")),
     path(
         "ckeditor/upload/",
         login_required(ckeditor_views.upload),
