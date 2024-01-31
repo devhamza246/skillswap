@@ -49,7 +49,7 @@ class UserProfileCreateView(CreateView):
 
 class UserProfileUpdateView(UpdateView):
     model = UserProfile
-    template_name = "home/profile.html"
+    template_name = "dashboard/profile.html"
     fields = ["experience_level", "learning_interests"]
 
     def form_valid(self, form):

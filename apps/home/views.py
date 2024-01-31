@@ -9,7 +9,7 @@ from django.urls import reverse
 def index(request):
     context = {"segment": "index"}
 
-    html_template = loader.get_template("home/index.html")
+    html_template = loader.get_template("dashboard/index.html")
     return HttpResponse(html_template.render(context, request))
 
 
@@ -25,13 +25,13 @@ def pages(request):
             return HttpResponseRedirect(reverse("admin:index"))
         context["segment"] = load_template
 
-        html_template = loader.get_template("home/" + load_template)
+        html_template = loader.get_template("dashboard/" + load_template)
         return HttpResponse(html_template.render(context, request))
 
     except template.TemplateDoesNotExist:
-        html_template = loader.get_template("home/page-404.html")
+        html_template = loader.get_template("dashboard/page-404.html")
         return HttpResponse(html_template.render(context, request))
 
     except:
-        html_template = loader.get_template("home/page-500.html")
+        html_template = loader.get_template("dashboard/page-500.html")
         return HttpResponse(html_template.render(context, request))
