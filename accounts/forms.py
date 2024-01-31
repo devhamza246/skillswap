@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
+from django_countries.fields import CountryField
+from django_countries.widgets import CountrySelectWidget
 
 User = get_user_model()
 
@@ -43,4 +45,13 @@ class UserProfileForm(forms.ModelForm):
             "email",
             "first_name",
             "last_name",
+            "address",
+            "city",
+            "country",
         ]
+        widgets = {
+            "country": CountrySelectWidget(
+                attrs={"class": "form-control"},
+                layout='{widget}',
+            )
+        }

@@ -90,7 +90,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     address = models.TextField(_("Address"), blank=True, null=True)
     city = models.CharField(_("City/Town"), max_length=50, blank=True, null=True)
     state = models.CharField(_("State/Province"), max_length=50, blank=True, null=True)
-    country = CountryField(blank=True)
+    country = models.CharField(
+        max_length=200,
+        null=True,
+        choices=CountryField().choices + [("", "Select Country")],
+    )
     zip_code = models.CharField(max_length=50, blank=True, null=True)
 
     is_staff = models.BooleanField(default=False)

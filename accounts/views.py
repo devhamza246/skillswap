@@ -1,3 +1,6 @@
+from typing import Any
+from django.forms.forms import BaseForm
+from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.urls import reverse_lazy
@@ -67,11 +70,9 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = User
     form_class = UserProfileForm
     template_name = "accounts/user_update.html"
-    success_url = reverse_lazy("accounts:user_detail")
+    success_url = reverse_lazy("dashboards:home")
     success_message = "Profile updated"
-
-    def form_valid(self, form):
-        print("Form is valid")
-        form.instance = self.request.user
-        form.save()
-        return redirect(self.success_url)
+    
+    def form_valid(self, form: BaseForm) -> HttpResponse:
+        print(form)
+        return super().form_valid(form)
