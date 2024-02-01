@@ -39,6 +39,12 @@ class SignUpForm(UserCreationForm):
 
 
 class UserProfileForm(forms.ModelForm):
+    photo = forms.ImageField(
+        label="Profile Photo",
+        required=False,  # Set this to True if the photo is mandatory
+        widget=forms.FileInput(attrs={"class": "form-control"}),
+    )
+
     class Meta:
         model = User
         fields = [
@@ -48,10 +54,16 @@ class UserProfileForm(forms.ModelForm):
             "address",
             "city",
             "country",
+            "photo",
         ]
         widgets = {
+            "email": forms.EmailInput(attrs={"class": "form-control"}),
+            "first_name": forms.TextInput(attrs={"class": "form-control"}),
+            "last_name": forms.TextInput(attrs={"class": "form-control"}),
+            "address": forms.TextInput(attrs={"class": "form-control"}),
+            "city": forms.TextInput(attrs={"class": "form-control"}),
             "country": CountrySelectWidget(
                 attrs={"class": "form-control"},
-                layout='{widget}',
-            )
+                layout="{widget}",
+            ),
         }

@@ -3,7 +3,6 @@
 {% block title %}
   Profile Detail
 {% endblock %}
-
 {% block content %}
   <div class="header pb-6 d-flex align-items-center" style="min-height: 500px; background-image: url(/static/assets/img/theme/profile-cover.jpg); background-size: cover; background-position: center top;">
     <!-- Mask -->
@@ -12,7 +11,7 @@
     <div class="container-fluid d-flex align-items-center">
       <div class="row">
         <div class="col-lg-7 col-md-10">
-          <h1 class="display-2 text-white">Hello {{ request.user.first_name }}</h1>
+          <h1 class="display-2 text-white">Hello {{ request.user.get_full_name }}</h1>
           <a href="{% url 'user_update' pk=request.user.pk %}" class="btn btn-neutral">Edit profile</a>
         </div>
       </div>
@@ -27,7 +26,7 @@
           <div class="row justify-content-center">
             <div class="col-lg-3 order-lg-2">
               <div class="card-profile-image">
-                <a href="#"><img src="/static/assets/img/theme/team-4.jpg" class="rounded-circle" /></a>
+                <a href="#"><img src="{{ user.photo.url }}" class="rounded-circle" /></a>
               </div>
             </div>
           </div>
@@ -57,7 +56,7 @@
               </div>
             </div>
             <div class="text-center">
-              <h5 class="h3">{{ request.user.email }}</h5>
+              <h5 class="h3">{{ request.user.get_full_name }}</h5>
               <div class="h5 font-weight-300">{{ request.user.email }}</div>
               <div class="h5 mt-4">
                 <i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer

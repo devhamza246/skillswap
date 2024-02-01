@@ -72,7 +72,3 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     template_name = "accounts/user_update.html"
     success_url = reverse_lazy("dashboards:home")
     success_message = "Profile updated"
-    
-    def form_valid(self, form: BaseForm) -> HttpResponse:
-        print(form)
-        return super().form_valid(form)
