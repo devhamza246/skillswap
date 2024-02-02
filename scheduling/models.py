@@ -1,7 +1,6 @@
 from django.db import models
 
 
-# Create your models here.
 class Availability(models.Model):
     class DayOfWeek(models.IntegerChoices):
         MONDAY = 1
@@ -13,7 +12,7 @@ class Availability(models.Model):
         SUNDAY = 7
 
     user = models.ForeignKey(
-        "profiles.UserProfile",
+        "accounts.User",
         on_delete=models.CASCADE,
     )
     day_of_week = models.IntegerField(
@@ -33,12 +32,12 @@ class MeetingProposal(models.Model):
         DECLINED = 3
 
     proposer = models.ForeignKey(
-        "profiles.UserProfile",
+        "accounts.User",
         on_delete=models.CASCADE,
         related_name="proposer",
     )
     proposee = models.ForeignKey(
-        "profiles.UserProfile",
+        "accounts.User",
         on_delete=models.CASCADE,
         related_name="proposee",
     )

@@ -4,12 +4,12 @@ from django.db import models
 # Create your models here.
 class Message(models.Model):
     sender = models.ForeignKey(
-        "profiles.UserProfile",
+        "accounts.User",
         on_delete=models.CASCADE,
         related_name="sender",
     )
     receiver = models.ForeignKey(
-        "profiles.UserProfile",
+        "accounts.User",
         on_delete=models.CASCADE,
         related_name="receiver",
     )
@@ -22,7 +22,7 @@ class Message(models.Model):
 
 class Conversation(models.Model):
     participants = models.ManyToManyField(
-        "profiles.UserProfile",
+        "accounts.User",
         blank=True,
     )
     last_message = models.ForeignKey(

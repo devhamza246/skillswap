@@ -4,12 +4,12 @@ from django.db import models
 # Create your models here.
 class Review(models.Model):
     reviewer = models.ForeignKey(
-        "profiles.UserProfile",
+        "accounts.User",
         on_delete=models.CASCADE,
         related_name="reviewer",
     )
     reviewed_user = models.ForeignKey(
-        "profiles.UserProfile",
+        "accounts.User",
         on_delete=models.CASCADE,
         related_name="reviewed_user",
     )

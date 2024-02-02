@@ -1,7 +1,6 @@
 from django.db import models
 
 
-# Create your models here.
 class Goal(models.Model):
     class Status(models.IntegerChoices):
         NOT_STARTED = 1
@@ -9,7 +8,7 @@ class Goal(models.Model):
         COMPLETED = 3
 
     user = models.ForeignKey(
-        "profiles.UserProfile",
+        "accounts.User",
         on_delete=models.CASCADE,
     )
     description = models.TextField()

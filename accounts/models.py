@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django.core.validators import RegexValidator
 from django_countries.fields import CountryField
 
+from messaging.models import Conversation
+
 
 class BaseModel(models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)
@@ -62,6 +64,15 @@ phone_regex = RegexValidator(
 )
 
 
+class Skill(models.Model):
+    name = models.CharField(max_length=50)
+    category = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model to add more fields"""
 
@@ -71,6 +82,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
         ADMIN = 1
         USER = 2
+
+    class Levels(models.IntegerChoices):
+        ENTRY_LEVEL = 1
+        INTERMEDIATE = 2
+        MID_LEVEL = 3
+        SENIOR = 4
 
     email = models.EmailField(_("email address"), unique=True)
     first_name = models.CharField(_("First Name"), max_length=50, blank=True, null=True)
@@ -96,7 +113,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         choices=CountryField().choices + [("", "Select Country")],
     )
     zip_code = models.CharField(max_length=50, blank=True, null=True)
-
+    conversations = models.ManyToManyField(Conversation, blank=True)
+    skills = models.ManyToManyField(Skill, blank=True)
+    experience_level = models.IntegerField(
+        choices=Levels.choices, default=Levels.ENTRY_LEVEL
+    )
+    learning_interests = models.TextField(blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(_("date joined"), auto_now_add=True)

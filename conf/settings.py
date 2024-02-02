@@ -60,7 +60,6 @@ USER_APPS = [
     "feedback",
     "matching",
     "messaging",
-    "profiles",
     "progress_tracking",
     "scheduling",
 ]

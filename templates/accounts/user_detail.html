@@ -26,7 +26,13 @@
           <div class="row justify-content-center">
             <div class="col-lg-3 order-lg-2">
               <div class="card-profile-image">
-                <a href="#"><img src="{{ user.photo.url }}" class="rounded-circle" /></a>
+                <a href="#">
+                  {% if user.photo %}
+                    <img src="{{ user.photo.url }}" class="rounded-circle" />
+                  {% else %}
+                    <img src="/static/assets/img/theme/team-1.jpg" class="rounded-circle" />
+                  {% endif %}
+                </a>
               </div>
             </div>
           </div>

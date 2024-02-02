@@ -4,7 +4,7 @@ from django.db import models
 # Create your models here.
 class ForumPost(models.Model):
     author = models.ForeignKey(
-        "profiles.UserProfile",
+        "accounts.User",
         on_delete=models.CASCADE,
     )
     content = models.TextField()
@@ -16,7 +16,7 @@ class ForumPost(models.Model):
 
 class CommunityEvent(models.Model):
     organizer = models.ForeignKey(
-        "profiles.UserProfile",
+        "accounts.User",
         on_delete=models.CASCADE,
     )
     title = models.CharField(max_length=100)
