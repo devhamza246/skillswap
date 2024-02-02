@@ -65,9 +65,12 @@ class UserProfileForm(forms.ModelForm):
             "city",
             "country",
             "photo",
+            "skills",
+            "experience_level",
+            "learning_interests",
         ]
         widgets = {
-            "email": forms.EmailInput(attrs={"class": "form-control"}),
+            "email": forms.EmailInput(attrs={"class": "form-control", "readonly": True}),
             "first_name": forms.TextInput(attrs={"class": "form-control"}),
             "last_name": forms.TextInput(attrs={"class": "form-control"}),
             "address": forms.TextInput(attrs={"class": "form-control"}),
@@ -76,4 +79,7 @@ class UserProfileForm(forms.ModelForm):
                 attrs={"class": "form-control"},
                 layout="{widget}",
             ),
+            "skills": forms.SelectMultiple(attrs={"class": "form-control"}),
+            "experience_level": forms.Select(attrs={"class": "form-control"}),
+            "learning_interests": forms.Textarea(attrs={"class": "form-control"}),
         }
