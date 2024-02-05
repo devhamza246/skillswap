@@ -2,19 +2,19 @@
   <div class="scrollbar-inner">
     <!-- Brand -->
     <div class="sidenav-header align-items-center">
-      <a class="navbar-brand" href="/"><img src="/static/assets/img/brand/blue.png" class="navbar-brand-img" alt="SkillSwap Design - Jinja Template Logo." /></a>
+      <a class="navbar-brand" href="/"><h1 class="text-primary">SkillSwap</h1></a>
     </div>
     <div class="navbar-inner">
       <!-- Collapse -->
       <div class="collapse navbar-collapse" id="sidenav-collapse-main">
         <!-- Nav items -->
         <ul class="navbar-nav">
-          <li class="nav-item">
+          {% comment %} <li class="nav-item">
             <a class="nav-link {% if 'index' in segment %}{% endif %}" href="/">
               <i class="ni ni-tv-2 text-primary"></i>
               <span class="nav-link-text">Dashboard</span>
             </a>
-          </li>
+          </li> {% endcomment %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'accounts:skill_list' %}">
               <i class="ni ni-bulb-61 text-default"></i>
