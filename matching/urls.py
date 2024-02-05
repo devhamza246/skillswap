@@ -6,6 +6,12 @@ from matching.views import (
     MatchListView,
     MatchUpdateView,
 )
+from .viewsets import MatchViewSet, TrainedModelViewSet
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register("match", MatchViewSet)
+router.register("trainedmodel", TrainedModelViewSet)
 
 app_name = "matching"
 
