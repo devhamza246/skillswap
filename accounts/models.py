@@ -114,7 +114,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     zip_code = models.CharField(max_length=50, blank=True, null=True)
     conversations = models.ManyToManyField(Conversation, blank=True)
-    skills = models.ManyToManyField(Skill, blank=True)
+    skills = models.ManyToManyField("accounts.Skill", blank=True, default=list)
     experience_level = models.IntegerField(
         choices=Levels.choices, default=Levels.ENTRY_LEVEL
     )

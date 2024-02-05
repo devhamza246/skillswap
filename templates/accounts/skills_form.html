@@ -4,9 +4,31 @@
   Skills
 {% endblock %}
 {% block content %}
-  <div class="header pb-6 d-flex align-items-center">
-    <!-- Mask -->
-    <span class="mask bg-gradient-default opacity-8"></span>
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">
+              {% if object %}
+                Edit
+              {% else %}
+                Add
+              {% endif %}Skill
+            </h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item">
+                  <a href="/"><i class="fas fa-home"></i></a>
+                </li>
+                <li class="breadcrumb-item"><a href="{% url 'accounts:skill_list' %}">Skills</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{% if object %}Edit{% else %}Add{% endif %} Skill</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <!-- Page content -->
   <div class="container-fluid mt--5">
@@ -16,90 +38,33 @@
           <div class="card-header">
             <div class="row align-items-center">
               <div class="col-8">
-                <h3 class="mb-0">Add Skill</h3>
+                <h3 class="mb-0">{% if object %}Edit{% else %}Add{% endif %} Skill</h3>
               </div>
             </div>
           </div>
           <div class="card-body">
             <form action="" method="POST">
               {% csrf_token %}
-              <h6 class="heading-small text-muted mb-4">User information</h6>
               <div class="pl-lg-4">
                 <div class="row">
                   <div class="col-lg-4">
-                    <div class="form-group">{{ form.photo }}</div>
+                    <label class="form-control-label" for="id_name">Name</label>
+                    <div class="form-group">{{ form.name }}</div>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-lg-6">
+                  <div class="col-lg-4">
                     <div class="form-group">
-                      <label class="form-control-label" for="id_first-name">First name</label>
-                      {{ form.first_name }}
-                    </div>
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="form-group">
-                      <label class="form-control-label" for="id_last-name">Last name</label>
-                      {{ form.last_name }}
+                      <label class="form-control-label" for="id_category">Category</label>
+                      {{ form.category }}
                     </div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-lg-6">
                     <div class="form-group">
-                      <label class="form-control-label" for="id_email">Email address</label>
-                      {{ form.email }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <hr class="my-4" />
-              <!-- Address -->
-              <h6 class="heading-small text-muted mb-4">Contact information</h6>
-              <div class="pl-lg-4">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <label class="form-control-label" for="id_address">Address</label>
-                      {{ form.address }}
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label class="form-control-label" for="id_city">City</label>
-                      {{ form.city }}
-                    </div>
-                  </div>
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label class="form-control-label" for="id_country">Country</label>
-                      {{ form.country }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="pl-lg-4">
-                <div class="row">
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label class="form-control-label" for="id_experience_level">Experience Level</label>
-                      {{ form.experience_level }}
-                    </div>
-                  </div>
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label class="form-control-label" for="id_skills">Skills</label>
-                      {{ form.skills }}
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-4">
-                    <div class="form-group">
-                      <label class="form-control-label" for="id_learning_interests">Learning Interests</label>
-                      {{ form.learning_interests }}
+                      <label class="form-control-label" for="id_description">Description</label>
+                      {{ form.description }}
                     </div>
                   </div>
                 </div>

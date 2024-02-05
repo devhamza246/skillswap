@@ -17,12 +17,19 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework import routers
 from ckeditor_uploader import views as ckeditor_views
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
+from accounts.urls import router as accounts_router
+
+router = routers.DefaultRouter()
+router.registry.extend(accounts_router.registry)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/", include("rest_framework.urls")),
+    path("api/", include(router.urls)),
     path("", include("accounts.urls")),
     path("", include("dashboards.urls")),
     path("community/", include("community.urls")),
@@ -31,6 +38,7 @@ urlpatterns = [
     path("messaging/", include("messaging.urls")),
     path("progress_tracking/", include("progress_tracking.urls")),
     path("scheduling/", include("scheduling.urls")),
+    # path("api/", include(router.urls)),
     path(
         "ckeditor/upload/",
         login_required(ckeditor_views.upload),

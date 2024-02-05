@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
+from accounts.models import Skill
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 
@@ -54,6 +55,10 @@ class UserProfileForm(forms.ModelForm):
         required=False,  # Set this to True if the photo is mandatory
         widget=forms.FileInput(attrs={"class": "form-control"}),
     )
+    skills = forms.MultipleChoiceField(
+        widget=forms.SelectMultiple(attrs={"class": "form-control"}),
+        choices=Skill.objects.all().values_list("id", "name"),
+    )
 
     class Meta:
         model = User
@@ -70,7 +75,9 @@ class UserProfileForm(forms.ModelForm):
             "learning_interests",
         ]
         widgets = {
-            "email": forms.EmailInput(attrs={"class": "form-control", "readonly": True}),
+            "email": forms.EmailInput(
+                attrs={"class": "form-control", "readonly": True}
+            ),
             "first_name": forms.TextInput(attrs={"class": "form-control"}),
             "last_name": forms.TextInput(attrs={"class": "form-control"}),
             "address": forms.TextInput(attrs={"class": "form-control"}),
@@ -79,7 +86,21 @@ class UserProfileForm(forms.ModelForm):
                 attrs={"class": "form-control"},
                 layout="{widget}",
             ),
-            "skills": forms.SelectMultiple(attrs={"class": "form-control"}),
             "experience_level": forms.Select(attrs={"class": "form-control"}),
             "learning_interests": forms.Textarea(attrs={"class": "form-control"}),
+        }
+
+
+class SkillsForm(forms.ModelForm):
+    class Meta:
+        model = Skill
+        fields = [
+            "name",
+            "category",
+            "description",
+        ]
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "form-control"}),
+            "category": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control"}),
         }

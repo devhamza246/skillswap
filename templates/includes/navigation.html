@@ -71,7 +71,7 @@
                         <small>3 hrs ago</small>
                       </div>
                     </div>
-                    <p class="text-sm mb-0">A new issue has been reported for Argon.</p>
+                    <p class="text-sm mb-0">A new issue has been reported for SkillSwap.</p>
                   </div>
                 </div>
               </a>
@@ -128,7 +128,7 @@
                         <small>3 hrs ago</small>
                       </div>
                     </div>
-                    <p class="text-sm mb-0">A new issue has been reported for Argon.</p>
+                    <p class="text-sm mb-0">A new issue has been reported for SkillSwap.</p>
                   </div>
                 </div>
               </a>
@@ -190,7 +190,7 @@
             <div class="dropdown-header noti-title">
               <h6 class="text-overflow m-0">Welcome!</h6>
             </div>
-            <a href="{% url 'user_detail' pk=request.user.pk %}" class="dropdown-item">
+            <a href="{% url 'accounts:user_detail' pk=request.user.pk %}" class="dropdown-item">
               <i class="ni ni-single-02"></i>
               <span>My profile</span>
             </a>
@@ -199,7 +199,7 @@
               <i class="ni ni-user-run text-red"></i>
               <span>Logout</span>
             </a> {% endcomment %}
-            <form method="post" action="{% url 'logout' %}">
+            <form method="post" action="{% url 'accounts:logout' %}">
               {% csrf_token %}
               <button type="submit" class="dropdown-item">
                 <i class="ni ni-user-run text-red"></i>

@@ -5,10 +5,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from accounts.models import User
-from .forms import LoginForm, SignUpForm, UserProfileForm
-from django.views.generic import UpdateView, DetailView
+from accounts.models import Skill, User
+from .forms import LoginForm, SignUpForm, SkillsForm, UserProfileForm
+from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 
 
 def login_view(request):
@@ -72,3 +73,42 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     template_name = "accounts/user_update.html"
     success_url = reverse_lazy("dashboards:home")
     success_message = "Profile updated"
+
+
+class SkillsListView(LoginRequiredMixin, ListView):
+    model = Skill
+    template_name = "accounts/skills_list.html"
+
+
+class SkillsDetailView(LoginRequiredMixin, DetailView):
+    model = Skill
+    template_name = "accounts/skills_detail.html"
+
+
+class SkillsCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Skill
+    template_name = "accounts/skills_form.html"
+    form_class = SkillsForm
+    success_url = reverse_lazy("accounts:skill_list")
+    success_message = "Skill created"
+
+
+class SkillsUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Skill
+    template_name = "accounts/skills_form.html"
+    form_class = SkillsForm
+    success_url = reverse_lazy("accounts:skill_list")
+    success_message = "Skill updated"
+
+
+class SkillsDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = Skill
+    success_url = reverse_lazy("accounts:skill_list")
+    success_message = "Skill deleted"
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
+        messages.success(self.request, self.success_message)
+        return redirect(success_url)

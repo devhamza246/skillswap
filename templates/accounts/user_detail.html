@@ -12,7 +12,7 @@
       <div class="row">
         <div class="col-lg-7 col-md-10">
           <h1 class="display-2 text-white">Hello {{ request.user.get_full_name }}</h1>
-          <a href="{% url 'user_update' pk=request.user.pk %}" class="btn btn-neutral">Edit profile</a>
+          <a href="{% url 'accounts:user_update' pk=user.pk %}" class="btn btn-neutral">Edit profile</a>
         </div>
       </div>
     </div>
@@ -62,8 +62,8 @@
               </div>
             </div>
             <div class="text-center">
-              <h5 class="h3">{{ request.user.get_full_name }}</h5>
-              <div class="h5 font-weight-300">{{ request.user.email }}</div>
+              <h5 class="h3">{{ object.get_full_name }}</h5>
+              <div class="h5 font-weight-300">{{ object.email }}</div>
               <div class="h5 mt-4">
                 <i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
               </div>
@@ -91,13 +91,13 @@
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label class="form-control-label" for="input-first-name">First name</label>
-                      <input type="text" id="input-first-name" class="form-control" placeholder="First name" value="{{ request.user.first_name }}" disabled />
+                      <input type="text" id="input-first-name" class="form-control" placeholder="First name" value="{{ object.first_name }}" disabled />
                     </div>
                   </div>
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label class="form-control-label" for="input-last-name">Last name</label>
-                      <input type="text" id="input-last-name" class="form-control" placeholder="Last name" value="{{ request.user.last_name }}" disabled />
+                      <input type="text" id="input-last-name" class="form-control" placeholder="Last name" value="{{ object.last_name }}" disabled />
                     </div>
                   </div>
                 </div>
@@ -105,7 +105,32 @@
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label class="form-control-label" for="input-email">Email address</label>
-                      <input type="email" id="input-email" class="form-control" value="{{ request.user.email }}" disabled />
+                      <input type="email" id="input-email" class="form-control" value="{{ object.email }}" disabled />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="input-skills">Skills</label>
+                      <input type="text"
+                        id="input-skills"
+                        class="form-control"
+                        placeholder="Skills"
+                        value="{% for skill in object.skills.all %}{{ skill.name }} | {% endfor %}"
+                        disabled />
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="input-experience_level">Experience Level</label>
+                      <input type="text" id="input-experience_level" class="form-control" placeholder="Experience Level" value="{{ object.get_experience_level_display }}" disabled />
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="input-learning_interests">Learning Interests</label>
+                      <input type="text" id="input-learning_interests" class="form-control" placeholder="Learning Interests" value="{{ object.learning_interests }}" disabled />
                     </div>
                   </div>
                 </div>
@@ -118,7 +143,7 @@
                   <div class="col-md-12">
                     <div class="form-group">
                       <label class="form-control-label" for="input-address">Address</label>
-                      <input id="input-address" class="form-control" placeholder="Home Address" value="{{ request.user.address }}" type="text" disabled />
+                      <input id="input-address" class="form-control" placeholder="Home Address" value="{{ object.address }}" type="text" disabled />
                     </div>
                   </div>
                 </div>
@@ -126,13 +151,13 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label class="form-control-label" for="input-city">City</label>
-                      <input type="text" id="input-city" class="form-control" placeholder="City" value="{{ request.user.city }}" disabled />
+                      <input type="text" id="input-city" class="form-control" placeholder="City" value="{{ object.city }}" disabled />
                     </div>
                   </div>
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label class="form-control-label" for="input-country">Country</label>
-                      <input type="text" id="input-country" class="form-control" placeholder="Country" value="{{ request.user.country }}" disabled />
+                      <input type="text" id="input-country" class="form-control" placeholder="Country" value="{{ object.country }}" disabled />
                     </div>
                   </div>
                 </div>
