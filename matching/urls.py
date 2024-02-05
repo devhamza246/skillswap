@@ -1,10 +1,15 @@
 from django.urls import path
-from matching.views import (
+from .views import (
     MatchCreateView,
     MatchDeleteView,
     MatchDetailView,
     MatchListView,
     MatchUpdateView,
+    TrainedModelListView,
+    TrainedModelDetailView,
+    TrainedModelCreateView,
+    TrainedModelUpdateView,
+    TrainedModelDeleteView,
 )
 from .viewsets import MatchViewSet, TrainedModelViewSet
 from rest_framework import routers
@@ -21,4 +26,27 @@ urlpatterns = [
     path("match/create/", MatchCreateView.as_view(), name="match_create"),
     path("match/update/<int:pk>", MatchUpdateView.as_view(), name="match_update"),
     path("match/delete/<int:pk>", MatchDeleteView.as_view(), name="match_delete"),
+    path(
+        "trainedmodel/list/", TrainedModelListView.as_view(), name="trainedmodel_list"
+    ),
+    path(
+        "trainedmodel/detail/<int:pk>",
+        TrainedModelDetailView.as_view(),
+        name="trainedmodel_detail",
+    ),
+    path(
+        "trainedmodel/create/",
+        TrainedModelCreateView.as_view(),
+        name="trainedmodel_create",
+    ),
+    path(
+        "trainedmodel/update/<int:pk>",
+        TrainedModelUpdateView.as_view(),
+        name="trainedmodel_update",
+    ),
+    path(
+        "trainedmodel/delete/<int:pk>",
+        TrainedModelDeleteView.as_view(),
+        name="trainedmodel_delete",
+    ),
 ]
