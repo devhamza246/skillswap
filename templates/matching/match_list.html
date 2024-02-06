@@ -1,0 +1,105 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+  Match List
+{% endblock %}
+
+{% block content %}
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Match</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item">
+                  <a href="/"><i class="fas fa-home"></i></a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Match</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page content -->
+  <div class="container-fluid mt--6">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <div class="d-flex flex-wrap pt-2">
+            {% for match in matches %}
+              <div class="col-lg-4">
+                <div class="card card-profile">
+                  <img src="/static/assets/img/theme/img-1-1000x600.jpg" alt="Image placeholder" class="card-img-top" />
+                  <div class="row justify-content-center">
+                    <div class="col-lg-3 order-lg-2">
+                      <div class="card-profile-image">
+                        <a href="#">
+                          {% if match.photo %}
+                            <img src="{{ match.photo.url }}" class="rounded-circle" />
+                          {% else %}
+                            <img src="/static/assets/img/theme/team-1.jpg" class="rounded-circle" />
+                          {% endif %}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+                    <div class="d-flex justify-content-between">
+                      <a href="#" class="btn btn-sm btn-info mr-4">Connect</a>
+                      <a href="#" class="btn btn-sm btn-default float-right">Message</a>
+                    </div>
+                  </div>
+                  <div class="card-body pt-0">
+                    <div class="row">
+                      <div class="col">
+                        <div class="card-profile-stats d-flex justify-content-center">
+                          <div>
+                            <span class="heading">22</span>
+                            <span class="description">Friends</span>
+                          </div>
+                          <div>
+                            <span class="heading">10</span>
+                            <span class="description">Photos</span>
+                          </div>
+                          <div>
+                            <span class="heading">89</span>
+                            <span class="description">Comments</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="text-center">
+                      <h5 class="h3">{{ match.get_full_name }}</h5>
+                      <div class="h5 font-weight-300">{{ match.email }}</div>
+                      <div class="h5 mt-4">
+                        <i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
+                      </div>
+                      <div>
+                        <i class="ni education_hat mr-2"></i>University of Computer Science
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+  </div>
+{% endblock %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+  <script>
+    TableParams = {}
+    $(document).ready(function () {})
+  </script>
+{% endblock %}

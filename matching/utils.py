@@ -1,10 +1,9 @@
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+from accounts.models import User
 from accounts.models import Skill
 from matching.models import TrainedModel
 import joblib
@@ -44,7 +43,7 @@ def calculate_interest_score(interests1, interests2):
     return len(common_interests)
 
 
-User = get_user_model()
+# User = get_user_model()
 
 
 def make_compatibility_prediction(new_user_skill_list):
@@ -69,15 +68,24 @@ def make_compatibility_prediction(new_user_skill_list):
     for user_id, skill_id in User.skills.through.objects.values_list("id", "skill__id"):
         user_skill_matrix.at[user_id, skill_id] = 1
 
+    # Check if the number of samples in X and y are consistent
+    if len(user_skill_matrix.index) != len(user_profiles_data):
+        raise ValueError("Number of samples in X and y are inconsistent")
+
     # Assuming user_skill_matrix is prepared
     # X: Features (skills), y: Target variable (experience_level)
-    X = user_skill_matrix.drop(columns=["user_id", "experience_level"])
-    y = user_skill_matrix["experience_level"]
+    # X = user_skill_matrix.drop(columns=["user_id", "experience_level"])
+    X = user_skill_matrix
+    y = user_profiles_data["experience_level"]
 
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
+
+    # Check if the number of samples in X_train and y_train are consistent
+    if len(X_train) != len(y_train):
+        raise ValueError("Number of samples in X_train and y_train are inconsistent")
 
     # Check if a trained model exists in the database
     trained_model = TrainedModel.objects.filter(model_name=TRAINED_MODEL_NAME).first()
@@ -107,17 +115,8 @@ def make_compatibility_prediction(new_user_skill_list):
     # Now, you can use the trained model to predict compatibility scores for new users
     # Assuming new_user_skills is a binary array representing the skills of a new user
     new_user_skills = user_skill_matrix.loc[new_user_skill_list].values.reshape(1, -1)
+    compatibility_scores = model.predict(new_user_skills)
 
-    # Make a compatibility prediction
-    compatibility_score = model.predict(new_user_skills)
-    print(f"Predicted Compatibility Score: {compatibility_score}")
-    return compatibility_score
-
-
-@receiver(post_save, sender=User)
-def user_profile_updated(sender, instance, **kwargs):
-    # Assuming you have a new user's skill list
-    new_user_skill_list = [1, 0, 1, 0, ...]  # Replace with actual skills
-
-    # Make compatibility prediction using the utility function
-    compatibility_score = make_compatibility_prediction(new_user_skill_list)
+    # Get a list of user IDs and their compatibility scores
+    users_compatibility = list(zip(user_skill_matrix.index, compatibility_scores))
+    return users_compatibility

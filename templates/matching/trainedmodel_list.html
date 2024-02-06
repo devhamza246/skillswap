@@ -20,9 +20,6 @@
               </ol>
             </nav>
           </div>
-          <div class="col-lg-6 col-5 text-right">
-            <a href="{% url 'matching:trainedmodel_create' %}" class="btn btn-sm btn-neutral">New</a>
-          </div>
         </div>
       </div>
     </div>
@@ -111,13 +108,11 @@
             searchable: false,
             render: (data, type, row) => {
               let detail_url = `{% url 'matching:trainedmodel_detail' pk=0 %}`
-              let update_url = `{% url 'matching:trainedmodel_update' pk=0 %}`
               let delete_url = `{% url 'matching:trainedmodel_delete' pk=0 %}`
               let actions = `<div class="dropdown">
                             <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                               <a class="dropdown-item" href="${detail_url.replace('0', row.id)}">Detail</a>
-                              <a class="dropdown-item" href="${update_url.replace('0', row.id)}">Update</a>
                               <a class="dropdown-item delete-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${delete_url.replace('0', row.id)}">Delete</a>
                             </div>
                           </div>`

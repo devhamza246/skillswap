@@ -16,6 +16,7 @@ from django.urls import reverse_lazy
 
 class MatchListView(LoginRequiredMixin, ListView):
     model = Match
+    template_name = "matching/match_list.html"
 
 
 class MatchDetailView(LoginRequiredMixin, DetailView):

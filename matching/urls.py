@@ -35,16 +35,6 @@ urlpatterns = [
         name="trainedmodel_detail",
     ),
     path(
-        "trainedmodel/create/",
-        TrainedModelCreateView.as_view(),
-        name="trainedmodel_create",
-    ),
-    path(
-        "trainedmodel/update/<int:pk>",
-        TrainedModelUpdateView.as_view(),
-        name="trainedmodel_update",
-    ),
-    path(
         "trainedmodel/delete/<int:pk>",
         TrainedModelDeleteView.as_view(),
         name="trainedmodel_delete",
