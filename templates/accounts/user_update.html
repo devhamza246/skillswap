@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-
+{% load widget_tweaks %}
 {% block title %}
   Profile
 {% endblock %}
@@ -91,7 +91,7 @@
                   <div class="col-lg-4">
                     <div class="form-group">
                       <label class="form-control-label" for="id_skills">Skills</label>
-                      {{ form.skills }}
+                      {{ form.skills|attr:"multiple" }}
                     </div>
                   </div>
                 </div>

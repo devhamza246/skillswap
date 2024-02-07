@@ -52,12 +52,12 @@ class SignUpForm(UserCreationForm):
 class UserProfileForm(forms.ModelForm):
     photo = forms.ImageField(
         label="Profile Photo",
-        required=False,  # Set this to True if the photo is mandatory
+        required=False,
         widget=forms.FileInput(attrs={"class": "form-control"}),
     )
-    skills = forms.MultipleChoiceField(
+    skills = forms.ModelMultipleChoiceField(
+        queryset=Skill.objects.all(),
         widget=forms.SelectMultiple(attrs={"class": "form-control"}),
-        choices=Skill.objects.all().values_list("id", "name"),
     )
 
     class Meta:

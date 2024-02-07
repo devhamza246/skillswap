@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+
 from distutils.util import strtobool
 import os
 from pathlib import Path
@@ -50,6 +51,7 @@ THIRD_PARTY_APPS = [
     "ckeditor",
     "ckeditor_uploader",
     "channels",
+    "widget_tweaks",
 ]
 
 USER_APPS = [

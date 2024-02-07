@@ -1,14 +1,23 @@
 from rest_framework import serializers
-from .models import Match, TrainedModel
+from accounts.models import User
 
 
-class MatchSerializer(serializers.ModelSerializer):
+class MatchUserSerializer(serializers.ModelSerializer):
+    skills = serializers.SerializerMethodField()
+    experience_level = serializers.CharField(source="get_experience_level_display")
+
     class Meta:
-        model = Match
-        fields = "__all__"
+        model = User
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "photo",
+            "email",
+            "skills",
+            "experience_level",
+            "learning_interests",
+        ]
 
-
-class TrainedModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TrainedModel
-        fields = "__all__"
+    def get_skills(self, obj):
+        return ", ".join([skill.name for skill in obj.skills.all()])

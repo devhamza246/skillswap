@@ -27,49 +27,36 @@
             <div class="col-lg-3 order-lg-2">
               <div class="card-profile-image">
                 <a href="#">
-                  {% if user.photo %}
-                    <img src="{{ user.photo.url }}" class="rounded-circle" />
-                  {% else %}
-                    <img src="/static/assets/img/theme/team-1.jpg" class="rounded-circle" />
-                  {% endif %}
+                    {% if object.photo %}
+                      <img src="{{ object.photo.url }}" class="rounded-circle" />
+                    {% else %}
+                      <img src="/static/assets/img/theme/team-1.jpg" class="rounded-circle" />
+                    {% endif %}
                 </a>
               </div>
             </div>
           </div>
           <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
             <div class="d-flex justify-content-between">
-              <a href="#" class="btn btn-sm btn-info mr-4">Connect</a>
               <a href="#" class="btn btn-sm btn-default float-right">Message</a>
             </div>
           </div>
-          <div class="card-body pt-0">
-            <div class="row">
-              <div class="col">
-                <div class="card-profile-stats d-flex justify-content-center">
-                  <div>
-                    <span class="heading">22</span>
-                    <span class="description">Friends</span>
-                  </div>
-                  <div>
-                    <span class="heading">10</span>
-                    <span class="description">Photos</span>
-                  </div>
-                  <div>
-                    <span class="heading">89</span>
-                    <span class="description">Comments</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div class="card-body pt-2">
             <div class="text-center">
               <h5 class="h3">{{ object.get_full_name }}</h5>
               <div class="h5 font-weight-300">{{ object.email }}</div>
-              <div class="h5 mt-4">
-                <i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
+              <div class="h3 mt-4">
+                Skills
               </div>
-              <div>
-                <i class="ni education_hat mr-2"></i>University of Computer Science
+              <div class="h4 font-weight-300">{% for skill in object.skills.all %}{{ skill.name }} | {% endfor %}</div>
+              <div class="h3 mt-1">
+                Experience Level
               </div>
+              <div class="h4 font-weight-300">{{ object.get_experience_level_display }}</div>
+              <div class="h3 mt-1">
+                Learning Interests
+              </div>
+              <div class="h4 font-weight-300">{{object.learning_interests}}</div>
             </div>
           </div>
         </div>
@@ -106,31 +93,6 @@
                     <div class="form-group">
                       <label class="form-control-label" for="input-email">Email address</label>
                       <input type="email" id="input-email" class="form-control" value="{{ object.email }}" disabled />
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-6">
-                    <div class="form-group">
-                      <label class="form-control-label" for="input-skills">Skills</label>
-                      <input type="text"
-                        id="input-skills"
-                        class="form-control"
-                        placeholder="Skills"
-                        value="{% for skill in object.skills.all %}{{ skill.name }} | {% endfor %}"
-                        disabled />
-                    </div>
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="form-group">
-                      <label class="form-control-label" for="input-experience_level">Experience Level</label>
-                      <input type="text" id="input-experience_level" class="form-control" placeholder="Experience Level" value="{{ object.get_experience_level_display }}" disabled />
-                    </div>
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="form-group">
-                      <label class="form-control-label" for="input-learning_interests">Learning Interests</label>
-                      <input type="text" id="input-learning_interests" class="form-control" placeholder="Learning Interests" value="{{ object.learning_interests }}" disabled />
                     </div>
                   </div>
                 </div>
