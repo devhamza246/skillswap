@@ -1,3 +1,5 @@
+from typing import Any
+from django.http import HttpRequest, HttpResponse
 from django.views.generic import (
     ListView,
     DetailView,
@@ -6,6 +8,7 @@ from django.views.generic import (
     DeleteView,
 )
 from messaging.models import Message, Conversation
+from django.db.models import Q
 
 
 class MessageListView(ListView):
@@ -24,11 +27,22 @@ class MessageDetailView(DetailView):
 
 class MessageCreateView(CreateView):
     model = Message
-    fields = ["message"]
+    template_name = "messaging/message_form.html"
+    fields = ["message", "receiver", "sender"]
 
-    def form_valid(self, form):
-        form.instance.sender = self.request.user
-        return super().form_valid(form)
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        conversation = None
+        context = super().get_context_data(**kwargs)
+        receiver = self.kwargs.get("receiver")
+        sender = self.request.user.id
+        existing_conversation = Conversation.objects.filter(
+            participants__in=[sender, receiver]
+        ).distinct()
+        if existing_conversation.exists():
+            conversation = existing_conversation.first()
+        context["conversation"] = conversation
+        context["receiver"] = receiver
+        return context
 
 
 class MessageUpdateView(UpdateView):
@@ -65,6 +79,13 @@ class ConversationCreateView(CreateView):
     def form_valid(self, form):
         form.instance.participants.add(self.request.user)
         return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 class ConversationUpdateView(UpdateView):

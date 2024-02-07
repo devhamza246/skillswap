@@ -11,15 +11,30 @@ from messaging.views import (
     MessageListView,
     MessageUpdateView,
 )
+from .viewsets import MessageViewSet
+from .consumers import ChatConsumer
 
 app_name = "messaging"
+
+websocket_urlpatterns = [
+    path("ws/chat/", ChatConsumer.as_asgi()),
+]
 
 urlpatterns = [
     path("message/list/", MessageListView.as_view(), name="message_list"),
     path("message/detail/<int:pk>", MessageDetailView.as_view(), name="message_detail"),
-    path("message/create/", MessageCreateView.as_view(), name="message_create"),
+    path(
+        "message/create/<int:receiver>",
+        MessageCreateView.as_view(),
+        name="message_create",
+    ),
     path("message/update/<int:pk>", MessageUpdateView.as_view(), name="message_update"),
     path("message/delete/<int:pk>", MessageDeleteView.as_view(), name="message_delete"),
+    path(
+        "message/send/",
+        MessageViewSet.as_view({"post": "send_message"}),
+        name="send_message",
+    ),
     path(
         "conversation/list/", ConversationListView.as_view(), name="conversation_list"
     ),

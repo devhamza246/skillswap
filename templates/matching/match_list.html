@@ -59,12 +59,13 @@
               debugger
               for (var i = 0; i < response.data.length; i++) {
                 debugger
-                var user = response.data[i];
+                var user_data = response.data[i];
                 // Create a new div for the user card
                 var cardDiv = document.createElement("div");
                 cardDiv.className = "col-lg-4";
                 // Create the HTML for the card
-                var photo_url = user.photo ? user.photo : '/static/assets/img/theme/team-1.jpg';
+                var url = `{% url 'messaging:message_create' receiver=0 %}`
+                var photo_url = user_data.photo ? user_data.photo : '/static/assets/img/theme/team-1.jpg';
                 var cardHtml = `
                       <div class="card card-profile">
                         <img src="/static/assets/img/theme/img-1-1000x600.jpg" alt="Image placeholder" class="card-img-top" />
@@ -79,25 +80,25 @@
                         </div>
                         <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
                           <div class="d-flex justify-content-between">
-                            <a href="#" class="btn btn-sm btn-default float-right">Message</a>
+                            <a href="${url.replace('0', user_data.id)}" class="btn btn-sm btn-default float-right">Message</a>
                           </div>
                         </div>
                         <div class="card-body pt-2">
                           <div class="text-center">
-                            <h5 class="h3">${ user.first_name } ${ user.last_name }</h5>
-                            <div class="h5 font-weight-300">${ user.email }</div>
+                            <h5 class="h3">${ user_data.first_name } ${ user_data.last_name }</h5>
+                            <div class="h5 font-weight-300">${ user_data.email }</div>
                             <div class="h3 mt-4">
                               Skills
                             </div>
-                            <div class="h4 font-weight-300">${user.skills}</div>
+                            <div class="h4 font-weight-300">${user_data.skills}</div>
                             <div class="h3 mt-1">
                               Experience Level
                             </div>
-                            <div class="h4 font-weight-300">${user.experience_level}</div>
+                            <div class="h4 font-weight-300">${user_data.experience_level}</div>
                             <div class="h3 mt-1">
                               Learning Interests
                             </div>
-                            <div class="h4 font-weight-300">${user.learning_interests}</div>
+                            <div class="h4 font-weight-300">${user_data.learning_interests}</div>
                           </div>
                         </div>
                       </div>
