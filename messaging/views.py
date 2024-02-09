@@ -40,7 +40,10 @@ class MessageCreateView(CreateView):
         ).distinct()
         if existing_conversation.exists():
             conversation = existing_conversation.first()
-        context["conversation"] = conversation
+        else:
+            conversation = Conversation.objects.create(participants=[sender, receiver])
+            conversation.save()
+        context["conversation_id"] = conversation.id
         context["receiver"] = receiver
         return context
 

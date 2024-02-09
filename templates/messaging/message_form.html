@@ -37,11 +37,7 @@
             <div class="pl-lg-4">
               <div class="row">
                 <div class="col-lg-12">
-                  <textarea class="form-control" readonly id="message_textarea" rows="10">
-                    {% for message in conversation %}
-                      {{ message }}
-                    {% endfor %}
-                  </textarea>
+                  <textarea class="form-control" readonly id="message_textarea" rows="10"></textarea>
                 </div>
               </div>
             </div>
@@ -76,8 +72,7 @@
 {% block javascripts %}
   <script>
     $(document).ready(function () {
-      // Example JavaScript code to establish WebSocket connection and send/receive messages
-      const socket = new WebSocket('ws://localhost:8000/ws/chat/1/')
+      const socket = new WebSocket(`ws://localhost:8000/ws/chat/{{conversation_id}}/`)
     
       socket.onopen = () => {
         console.log('WebSocket connection established.')

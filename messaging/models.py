@@ -13,6 +13,11 @@ class Message(models.Model):
         on_delete=models.CASCADE,
         related_name="receiver",
     )
+    conversation = models.ForeignKey(
+        "messaging.Conversation",
+        blank=True,
+        on_delete=models.CASCADE,
+    )
     message = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
 
@@ -24,10 +29,6 @@ class Conversation(models.Model):
     participants = models.ManyToManyField(
         "accounts.User",
         blank=True,
-    )
-    last_message = models.ForeignKey(
-        "messaging.Message",
-        on_delete=models.CASCADE,
     )
     created = models.DateTimeField(auto_now_add=True)
 

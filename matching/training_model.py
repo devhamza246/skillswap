@@ -13,12 +13,10 @@ def calculate_similarity(users):
 
     return cosine_sim
 
-def match_users(user_id, cosine_sim, users, id_to_index):
-    # Get the index corresponding to the user_id
-    user_index = id_to_index[user_id]
+def match_users(user_id, cosine_sim, users):
 
     # Get the pairwise similarity scores of all users with the given user
-    similarity_scores = list(enumerate(cosine_sim[user_index]))
+    similarity_scores = list(enumerate(cosine_sim[user_id]))
 
     # Sort the users based on the similarity scores
     similarity_scores = sorted(similarity_scores, key=lambda x: x[1], reverse=True)

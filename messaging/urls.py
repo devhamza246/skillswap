@@ -12,13 +12,8 @@ from messaging.views import (
     MessageUpdateView,
 )
 from .viewsets import MessageViewSet
-from .consumers import ChatConsumer
 
 app_name = "messaging"
-
-websocket_urlpatterns = [
-    path("ws/chat/", ChatConsumer.as_asgi()),
-]
 
 urlpatterns = [
     path("message/list/", MessageListView.as_view(), name="message_list"),
