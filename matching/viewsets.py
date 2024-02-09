@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from accounts.models import User
 from .serializers import MatchUserSerializer
@@ -14,7 +14,9 @@ class MatchUsersViewSet(viewsets.ModelViewSet):
         return None
 
     def match_users(self, request, *args, **kwargs):
-        users = super().get_queryset()
+        users = super().get_queryset().exclude(id=request.user.id)
+        if len(users) == 0:
+            return Response(["No users found"], status=status.HTTP_404_NOT_FOUND)
         # Create a list of dictionaries, each containing the data of a user
         data = []
         for user in users:
@@ -45,4 +47,4 @@ class MatchUsersViewSet(viewsets.ModelViewSet):
         )
         serializer = MatchUserSerializer(matched_user_objects, many=True)
 
-        return Response({"data": serializer.data}, status=200)
+        return Response({"data": serializer.data}, status=status.HTTP_200_OK)

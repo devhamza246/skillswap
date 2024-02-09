@@ -58,7 +58,6 @@
             success: function (response) {
               debugger
               for (var i = 0; i < response.data.length; i++) {
-                debugger
                 var user_data = response.data[i];
                 // Create a new div for the user card
                 var cardDiv = document.createElement("div");
@@ -110,6 +109,10 @@
                 // Add the card div to the userCards div
                 userCardsDiv.appendChild(cardDiv);
             }
+            },
+            error: function (error) {
+              debugger
+              console.log(error);
             }
           })
         })        
