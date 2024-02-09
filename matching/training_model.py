@@ -1,17 +1,29 @@
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 
+
 def calculate_similarity(users):
     # Combine the skills and learning interests of each user into one string
-    users['combined_features'] = users.apply(lambda row: ' '.join([str(row['skills']), str(row['learning_interests']), str(row['experience_level'])]), axis=1)
+    users["combined_features"] = users.apply(
+        lambda row: " ".join(
+            [
+                str(row["skills"]),
+                str(row["learning_interests"]),
+                str(row["experience_level"]),
+            ]
+        ),
+        axis=1,
+    )
 
+    count_vectorizer = CountVectorizer(min_df=1)  # Adjust min_df as needed
     # Create the CountVectorizer object
-    count_matrix = CountVectorizer().fit_transform(users['combined_features'])
+    count_matrix = count_vectorizer.fit_transform(users["combined_features"])
 
     # Compute the cosine similarity matrix
     cosine_sim = cosine_similarity(count_matrix)
 
     return cosine_sim
+
 
 def match_users(user_id, cosine_sim, users, id_to_index):
     # Get the index corresponding to the user_id
