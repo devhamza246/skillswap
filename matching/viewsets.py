@@ -15,7 +15,7 @@ class MatchUsersViewSet(viewsets.ModelViewSet):
 
     def match_users(self, request, *args, **kwargs):
         users = super().get_queryset().exclude(id=request.user.id)
-        if len(users) == 0:
+        if len(users) < 2:
             return Response(["No users found"], status=status.HTTP_404_NOT_FOUND)
         # Create a list of dictionaries, each containing the data of a user
         data = []
