@@ -72,39 +72,32 @@
 {% block javascripts %}
   <script>
     $(document).ready(function () {
-      const socket = new WebSocket(`ws://localhost:8000/ws/chat/{{conversation_id}}/`)
-    
+      const socket = new WebSocket(`ws://${window.location.host}/ws/chat/{{conversation_id}}/`)
       socket.onopen = () => {
         console.log('WebSocket connection established.')
       }
     
       socket.onmessage = (event) => {
+        const sender = JSON.parse(event.data).sender
+        const receiver = JSON.parse(event.data).receiver
         const message = JSON.parse(event.data).message
-        debugger
         console.log('Received message:', message)
-      }
-    
-      function sendMessage(message) {
-        debugger
-        socket.send(JSON.stringify({ message: message }))
+        console.log('Sender:', sender)
+        console.log('Receiver:', receiver)
       }
     
       $('#message_form').on('submit', function (e) {
         e.preventDefault()
-        $.ajax({
-          type: 'POST',
-          url: "{% url 'messaging:send_message' %}",
-          data: $(this).serialize(),
-          success: function (data) {
-            $('#id_message').val('')
-            var message = data.message
-            // Append the message to the textarea
-            $('#message_textarea').val(function (i, text) {
-              debugger
-              return 'You: ' + message + '\n'
-            })
-          }
-        })
+        sender = this.sender.value
+        receiver = this.receiver.value
+        message = this.message.value
+        socket.send(
+          JSON.stringify({
+            sender: sender,
+            receiver: receiver,
+            message: message
+          })
+        )
       })
     })
   </script>

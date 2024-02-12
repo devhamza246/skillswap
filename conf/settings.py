@@ -37,6 +37,8 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 DJANGO_APPS = [
     "jazzmin",
+    "channels",
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -50,7 +52,6 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "ckeditor",
     "ckeditor_uploader",
-    "channels",
     "widget_tweaks",
 ]
 
@@ -103,7 +104,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "conf.wsgi.application"
+ASGI_APPLICATION = "conf.asgi.application"
 
 # https://django-ckeditor.readthedocs.io/en/latest/
 CKEDITOR_UPLOAD_PATH = "uploads/"
