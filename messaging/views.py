@@ -31,7 +31,6 @@ class MessageCreateView(CreateView):
     fields = ["message", "receiver", "sender"]
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
-        conversation = None
         context = super().get_context_data(**kwargs)
         receiver = self.kwargs.get("receiver")
         sender = self.request.user.id
@@ -39,11 +38,12 @@ class MessageCreateView(CreateView):
             participants__in=[sender, receiver]
         ).distinct()
         if existing_conversation.exists():
-            conversation = existing_conversation.first()
+            conversation_obj = existing_conversation.first()
         else:
-            conversation = Conversation.objects.create(participants=[sender, receiver])
-            conversation.save()
-        context["conversation_id"] = conversation.id
+            conversation_obj = Conversation.objects.create()
+            conversation_obj.participants.set([sender, receiver])
+            conversation_obj.save()
+        context["conversation_id"] = conversation_obj.id
         context["receiver"] = receiver
         return context
 
