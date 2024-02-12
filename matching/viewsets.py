@@ -15,18 +15,21 @@ class MatchUsersViewSet(viewsets.ModelViewSet):
 
     def match_users(self, request, *args, **kwargs):
         users = super().get_queryset()
-        if len(users) < 2:
-            return Response(["No users found"], status=status.HTTP_404_NOT_FOUND)
         # Create a list of dictionaries, each containing the data of a user
         data = []
         for user in users:
-            data.append(
-                {
-                    "id": user.id,
-                    "skills": " ".join([skill.name for skill in user.skills.all()]),
-                    "learning_interests": user.learning_interests,
-                    "experience_level": user.experience_level,
-                }
+            if user.skills and user.learning_interests and user.experience_level:
+                data.append(
+                    {
+                        "id": user.id,
+                        "skills": " ".join([skill.name for skill in user.skills.all()]),
+                        "learning_interests": user.learning_interests,
+                        "experience_level": user.experience_level,
+                    }
+                )
+        if len(data) < 2:
+            return Response(
+                {"error": "No matching users found"}, status=status.HTTP_404_NOT_FOUND
             )
         # Convert the list of dictionaries to a DataFrame
         df = pd.DataFrame(data)
@@ -35,7 +38,9 @@ class MatchUsersViewSet(viewsets.ModelViewSet):
         # Get the IDs of the matched users
         matched_user_ids = matched_users["id"].tolist()
         # Get the User objects corresponding to these IDs
-        matched_user_objects = users.filter(id__in=matched_user_ids).exclude(id=request.user.id)
+        matched_user_objects = users.filter(id__in=matched_user_ids).exclude(
+            id=request.user.id
+        )
         # Sort the User objects based on the order of matched_user_ids
         matched_user_objects = sorted(
             matched_user_objects, key=lambda user: matched_user_ids.index(user.id)

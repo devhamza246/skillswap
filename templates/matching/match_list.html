@@ -112,11 +112,10 @@
             }
             },
             error: function (error) {
-              $('.alert-warning').html(
+              /*$('.alert-warning').html(
                 `<span class="alert-inner--icon"><i class="fa fa-exclamation-triangle"></i></span>
-                <span class="alert-inner--text"><strong>Error!</strong> ${error.responseJSON}</span>`
-              ).toast('show');
-              console.log(error);
+                <span class="alert-inner--text"><strong>Error!</strong> ${error.responseJSON.error}</span>`
+              ).toast('show');*/
             }
           })
         })        
