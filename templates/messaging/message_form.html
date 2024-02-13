@@ -75,15 +75,30 @@
       const socket = new WebSocket(`ws://${window.location.host}/ws/chat/{{conversation_id}}/`)
       socket.onopen = () => {
         console.log('WebSocket connection established.')
+        // Send a message to request conversation history
+        socket.send(JSON.stringify({ type: 'fetch_history' }));
       }
     
       socket.onmessage = (event) => {
-        const sender = JSON.parse(event.data).sender
-        const receiver = JSON.parse(event.data).receiver
-        const message = JSON.parse(event.data).message
-        console.log('Received message:', message)
-        console.log('Sender:', sender)
-        console.log('Receiver:', receiver)
+        const data = JSON.parse(event.data);
+        // Handle different types of messages received from the server
+        if (data.type === 'history') {
+            const conversationHistory = data.history;
+            // Process and display conversation history
+            console.log('Conversation history:', conversationHistory);
+        } else if (data.type === 'chat_message') {
+            // Handle regular chat messages
+            console.log('Received message:', data.message);
+            if(data.sender_id == {{ user.id }}){
+              username = "You"
+            }
+            else{
+              username = data.sender_name
+              document.querySelector('#message_textarea').value += (username + ': ' + data.message + '\n')
+              document.querySelector("#id_message").value = ''
+            }
+        }
+        
       }
     
       $('#message_form').on('submit', function (e) {
