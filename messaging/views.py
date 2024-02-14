@@ -34,17 +34,32 @@ class MessageCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         receiver = self.kwargs.get("receiver")
         sender = self.request.user.id
+        messages = []
         existing_conversation = Conversation.objects.filter(
             participants__in=[sender, receiver]
         ).distinct()
         if existing_conversation.exists():
             conversation_obj = existing_conversation.first()
+            messages = Message.objects.filter(
+                conversation=conversation_obj,
+            )
+            formatted_messages = []
+            if messages.exists():
+                messages = messages.order_by("created")
+                for message in messages:
+                    if message.sender.id == sender:
+                        message.sender_name = "You"
+                    else:
+                        message.sender_name = message.sender.get_full_name()
+                    formatted_message = f"{message.sender_name}: {message.message}"
+                    formatted_messages.append(formatted_message)
         else:
             conversation_obj = Conversation.objects.create()
             conversation_obj.participants.set([sender, receiver])
             conversation_obj.save()
         context["conversation_id"] = conversation_obj.id
         context["receiver"] = receiver
+        context["messages"] = formatted_messages
         return context
 
 
