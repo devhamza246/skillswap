@@ -82,7 +82,9 @@ class ConversationListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ConversationListView, self).get_context_data(**kwargs)
-        context["conversations"] = Conversation.objects.all()
+        context["conversations"] = Conversation.objects.filter(
+            participants=self.request.user
+        )
         return context
 
 
