@@ -1,7 +1,15 @@
 from django.db import models
 
 
-class Availability(models.Model):
+class BaseModel(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+        ordering = ["-created"]
+
+
+class Availability(BaseModel):
     class DayOfWeek(models.IntegerChoices):
         MONDAY = 1
         TUESDAY = 2
@@ -25,7 +33,7 @@ class Availability(models.Model):
         return f"{self.user.get_full_name()} - {self.day_of_week} {self.start_time}-{self.end_time}"
 
 
-class MeetingProposal(models.Model):
+class MeetingProposal(BaseModel):
     class Status(models.IntegerChoices):
         PENDING = 1
         ACCEPTED = 2

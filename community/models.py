@@ -1,20 +1,27 @@
 from django.db import models
 
 
+class BaseModel(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+        ordering = ["-created"]
+
+
 # Create your models here.
-class ForumPost(models.Model):
+class ForumPost(BaseModel):
     author = models.ForeignKey(
         "accounts.User",
         on_delete=models.CASCADE,
     )
     content = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.content
 
 
-class CommunityEvent(models.Model):
+class CommunityEvent(BaseModel):
     organizer = models.ForeignKey(
         "accounts.User",
         on_delete=models.CASCADE,

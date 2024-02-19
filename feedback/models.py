@@ -1,8 +1,16 @@
 from django.db import models
 
 
+class BaseModel(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+        ordering = ["-created"]
+
+
 # Create your models here.
-class Review(models.Model):
+class Review(BaseModel):
     reviewer = models.ForeignKey(
         "accounts.User",
         on_delete=models.CASCADE,
@@ -15,7 +23,6 @@ class Review(models.Model):
     )
     rating = models.IntegerField()
     feedback_content = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.feedback_content

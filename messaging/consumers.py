@@ -42,6 +42,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "receiver_id": receiver,
                 "receiver_name": receiver_obj.get_full_name(),
                 "message": message,
+                "created": message_obj.created.isoformat(),
             },
         )
 
@@ -51,6 +52,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         receiver_id = event["receiver_id"]
         receiver_name = event["receiver_name"]
         message = event["message"]
+        created = event["created"]
         # Send message to WebSocket
         await self.send(
             text_data=json.dumps(
@@ -60,6 +62,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "receiver_id": receiver_id,
                     "receiver_name": receiver_name,
                     "message": message,
+                    "created": created,
                 }
             )
         )

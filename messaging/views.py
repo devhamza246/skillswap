@@ -1,5 +1,4 @@
 from typing import Any
-from django.http import HttpRequest, HttpResponse
 from django.views.generic import (
     ListView,
     DetailView,
@@ -7,8 +6,10 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from accounts.models import User
 from messaging.models import Message, Conversation
-from django.db.models import Q
+
+from messaging.serializers import MessageSerializer
 
 
 class MessageListView(ListView):
@@ -34,32 +35,27 @@ class MessageCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         receiver = self.kwargs.get("receiver")
         sender = self.request.user.id
+        user_obj = User.objects.get(id=receiver)
         messages = []
         existing_conversation = Conversation.objects.filter(
             participants__in=[sender, receiver]
         ).distinct()
         if existing_conversation.exists():
             conversation_obj = existing_conversation.first()
-            messages = Message.objects.filter(
+            messages_obj = Message.objects.filter(
                 conversation=conversation_obj,
             )
-            formatted_messages = []
-            if messages.exists():
-                messages = messages.order_by("created")
-                for message in messages:
-                    if message.sender.id == sender:
-                        message.sender_name = "You"
-                    else:
-                        message.sender_name = message.sender.get_full_name()
-                    formatted_message = f"{message.sender_name}: {message.message}"
-                    formatted_messages.append(formatted_message)
+            if messages_obj.exists():
+                messages_obj = messages_obj.order_by("created")
+                messages_serializer = MessageSerializer(messages_obj, many=True)
+                messages = messages_serializer.data
         else:
             conversation_obj = Conversation.objects.create()
             conversation_obj.participants.set([sender, receiver])
             conversation_obj.save()
         context["conversation_id"] = conversation_obj.id
-        context["receiver"] = receiver
-        context["messages"] = formatted_messages
+        context["receiver"] = user_obj
+        context["messages"] = messages
         return context
 
 

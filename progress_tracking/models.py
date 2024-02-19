@@ -1,7 +1,15 @@
 from django.db import models
 
 
-class Goal(models.Model):
+class BaseModel(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+        ordering = ["-created"]
+
+
+class Goal(BaseModel):
     class Status(models.IntegerChoices):
         NOT_STARTED = 1
         IN_PROGRESS = 2
@@ -19,13 +27,12 @@ class Goal(models.Model):
         return self.description
 
 
-class ProgressUpdate(models.Model):
+class ProgressUpdate(BaseModel):
     goal = models.ForeignKey(
         "progress_tracking.Goal",
         on_delete=models.CASCADE,
     )
     content = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.content

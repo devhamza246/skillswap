@@ -1,5 +1,4 @@
 {% extends 'layouts/base.html' %}
-
 {% block title %}
   Messages
 {% endblock %}
@@ -22,107 +21,59 @@
     </div>
   </div>
   <!-- Page content -->
-  <!--     
-    <div class="container-fluid mt-5">
-    <div class="row">
-      <div class="col-xl-12 order-xl-1">
+
+  <div class="container-fluid mt--6">
         <div class="card">
-          <div class="card-header">
-            <div class="row align-items-center">
-              <div class="col-8">
-                <h3 class="mb-0">Messages</h3>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="pl-lg-4">
-              <div class="row">
-                <div class="col-lg-12">
-                  <textarea class="form-control" rows="10" readonly id="message_textarea"></textarea>
-                </div>
-              </div>
-            </div>
-            <form id="message_form" class="mt-4">
-              {% csrf_token %}
-              <div class="pl-lg-4">
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="form-group">
-                      <input type="text" class="form-control" id="id_message" placeholder="Message" name="message" required />
-                      <input type="hidden" name="sender" value="{{ user.id }}" />
-                      <input type="hidden" name="receiver" value="{{ receiver }}" />
-                    </div>
+          <div class="row overflow-hidden p-2">
+            <!-- Users box-->
+            <div class="col-5">
+              <div class="bg-white">        
+                <div class="messages-box">
+                  <div class="list-group rounded-0">
+                    <a class="list-group-item list-group-item-action active text-white rounded-0">
+                      <div class="media"><img src="{% if receiver.photo  %} {{ receiver.photo }} {% else %} /static/assets/img/theme/team-1.jpg {% endif %}" alt="user" width="50" class="rounded-circle">
+                        <div class="media-body ml-4">
+                          <div class="d-flex align-items-center justify-content-between mb-1">
+                            <h3 class="text-white">{{ receiver.get_full_name }}</h3>
+                          </div>
+                        </div>
+                      </div>
+                    </a>       
                   </div>
                 </div>
               </div>
-              <hr class="my-4" />
-              <div class="col-lg-4">
-                <button type="submit" class="btn btn-primary"><span>Send</span></button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-     -->
-  <div class="container-fluid py-2">
-    <div class="row rounded-lg overflow-hidden shadow">
-      <!-- Users box -->
-      <div class="col-5 px-0">
-        <div class="bg-white">
-          <div class="messages-box">
-            <div class="list-group rounded-0">
-              <a class="list-group-item list-group-item-action active text-white rounded-0">
-                <div class="media">
-                  <img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" alt="user" width="50" class="rounded-circle" />
-                  <div class="media-body ml-4">
-                    <div class="d-flex align-items-center justify-content-between mb-1">
-                      <h6 class="mb-0">Jason Doe</h6><small class="small font-weight-bold">25 Dec</small>
+            </div>
+            <!-- Chat Box-->
+            <div class="col-7">
+              <div class="px-4 py-5 chat-box overflow-auto bg-white" style="height: 512px;">
+                {% for message in messages %}
+                    <div class="media w-50 {% if message.sender == user.id %}ml-auto{% endif %} mb-3">
+                        <div class="media-body ml-3">
+                            <div class="bg-{% if message.sender == user.id %}primary{% else %}light{% endif %} rounded py-2 px-3 mb-2">
+                                <p class="text-small mb-0 text-{% if message.sender == user.id %}white{% else %}muted{% endif %}">{{ message.message }}</p>
+                            </div>
+                            <p class="small text-muted">{{ message.created }}</p>
+                        </div>
                     </div>
-                    <p class="font-italic mb-0 text-small">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
+                {% endfor %}
+                      
+              </div>
+        
+              <!-- Typing area -->
+              <form id="message_form" action="#" class="bg-light">
+                <div class="input-group">
+                  <input type="text" id="id_message" name="message" placeholder="Type a message" aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light">
+                  <input type="hidden" id="id_sender" name="sender" value="{{ user.id }}">
+                  <input type="hidden" id="id_receiver" name="receiver" value="{{ receiver.id }}">
+                  <div class="input-group-append">
+                    <button id="button-addon2" type="submit" class="btn btn-link"> <i class="fa fa-paper-plane"></i></button>
                   </div>
                 </div>
-              </a>
+              </form>
+
             </div>
           </div>
         </div>
-      </div>
-      <!-- Chat Box -->
-      <div class="col-7 px-0">
-        <div class="px-4 py-5 chat-box bg-white">
-          <!-- Sender Message -->
-          <div class="media w-50 mb-3">
-            <img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" alt="user" width="50" class="rounded-circle" />
-            <div class="media-body ml-3">
-              <div class="bg-light rounded py-2 px-3 mb-2">
-                <p class="text-small mb-0 text-muted">Test which is a new approach all solutions</p>
-              </div>
-              <p class="small text-muted">12:00 PM | Aug 13</p>
-            </div>
-          </div>
-
-          <!-- Reciever Message -->
-          <div class="media w-50 ml-auto mb-3">
-            <div class="media-body">
-              <div class="bg-primary rounded py-2 px-3 mb-2">
-                <p class="text-small mb-0 text-white">Test which is a new approach to have all solutions</p>
-              </div>
-              <p class="small text-muted">12:00 PM | Aug 13</p>
-            </div>
-          </div>
-
-
-        <!-- Typing area -->
-        <form action="#" class="bg-light">
-          <div class="input-group">
-            <input type="text" placeholder="Type a message" aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light" />
-            <div class="input-group-append">
-              <button id="button-addon2" type="submit" class="btn btn-link"><i class="fa fa-paper-plane"></i></button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
     {% include 'includes/footer.html' %}
   </div>
 {% endblock %}
@@ -131,15 +82,8 @@
 {% block javascripts %}
   <script>
     $(document).ready(function () {
-      message_textarea = document.querySelector('#message_textarea')
-      var messages = {{ messages | safe }};
-      if (messages.length > 0) {
-        var messagesContent = messages.map(function(message) {
-          return message
-        }).join('\n');
-        message_textarea.value = messagesContent;
-      }
-    
+      let user_id = {{ user.id }}
+   
       const socket = new WebSocket(`ws://${window.location.host}/ws/chat/{{conversation_id}}/`)
 
       socket.onopen = () => {
@@ -148,14 +92,17 @@
     
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        // Handle different types of messages received from the server
-        if(data.sender_id == {{ user.id }}){
-          username = "You"
-        }
-        else{
-          username = data.sender_name
-        }
-        message_textarea.value += (username + ': ' + data.message + '\n')
+        const messageHTML = `
+            <div class="media w-50 ${data.sender_id == user_id ? 'ml-auto' : ''} mb-3">
+                <div class="media-body ml-3">
+                    <div class="bg-${data.sender_id == user_id ? 'primary' : 'light'} rounded py-2 px-3 mb-2">
+                        <p class="text-small mb-0 text-${data.sender_id == user_id ? 'white' : 'muted'}">${data.message}</p>
+                    </div>
+                    <p class="small text-muted">${data.created}</p>
+                </div>
+            </div>
+        `;
+        document.querySelector(".chat-box").innerHTML += messageHTML;
         document.querySelector("#id_message").value = ''
         
       }

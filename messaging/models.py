@@ -1,8 +1,16 @@
 from django.db import models
 
 
+class BaseModel(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+        ordering = ["-created"]
+
+
 # Create your models here.
-class Message(models.Model):
+class Message(BaseModel):
     sender = models.ForeignKey(
         "accounts.User",
         on_delete=models.CASCADE,
@@ -19,18 +27,16 @@ class Message(models.Model):
         on_delete=models.CASCADE,
     )
     message = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.message
 
 
-class Conversation(models.Model):
+class Conversation(BaseModel):
     participants = models.ManyToManyField(
         "accounts.User",
         blank=True,
     )
-    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.last_message
