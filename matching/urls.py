@@ -13,7 +13,7 @@ urlpatterns = [
     path("match/list/", MatchListView.as_view(), name="match_list"),
     path(
         "match/match_users/",
-        MatchUsersViewSet.as_view({"get": "match_users"}),
+        MatchUsersViewSet.as_view({"get": "get_matching_users"}),
         name="match_users",
     ),
 ]
