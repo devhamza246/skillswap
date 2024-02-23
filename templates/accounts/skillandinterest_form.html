@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 
 {% block title %}
-  Skills
+SkillAndInterest
 {% endblock %}
 {% block content %}
   <div class="header bg-primary pb-6">
@@ -14,15 +14,15 @@
                 Edit
               {% else %}
                 Add
-              {% endif %}Skill
+              {% endif %}SkillAndInterest
             </h6>
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
               <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                 <li class="breadcrumb-item">
                   <a href="/"><i class="fas fa-home"></i></a>
                 </li>
-                <li class="breadcrumb-item"><a href="{% url 'accounts:skill_list' %}">Skills</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{% if object %}Edit{% else %}Add{% endif %} Skill</li>
+                <li class="breadcrumb-item"><a href="{% url 'accounts:skillandinterest_list' %}">SkillAndInterest</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{% if object %}Edit{% else %}Add{% endif %} SkillAndInterest</li>
               </ol>
             </nav>
           </div>
@@ -38,7 +38,7 @@
           <div class="card-header">
             <div class="row align-items-center">
               <div class="col-8">
-                <h3 class="mb-0">{% if object %}Edit{% else %}Add{% endif %} Skill</h3>
+                <h3 class="mb-0">{% if object %}Edit{% else %}Add{% endif %} SkillAndInterest</h3>
               </div>
             </div>
           </div>

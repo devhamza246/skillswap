@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
-from accounts.models import Skill
+from accounts.models import Skill, SkillAndInterest
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 
@@ -49,6 +49,16 @@ class SignUpForm(UserCreationForm):
         fields = ("first_name", "last_name", "email", "password1", "password2")
 
 
+class AddInterestForm(forms.ModelForm):
+    learning_interest = forms.CheckboxSelectMultiple(
+        widget=forms.CheckboxSelectMultiple(attrs={"class": "form-control"}),
+    )
+
+    class Meta:
+        model = User
+        fields = "learning_interest"
+
+
 class UserProfileForm(forms.ModelForm):
     photo = forms.ImageField(
         label="Profile Photo",
@@ -91,9 +101,9 @@ class UserProfileForm(forms.ModelForm):
         }
 
 
-class SkillsForm(forms.ModelForm):
+class SkillAndInterestForm(forms.ModelForm):
     class Meta:
-        model = Skill
+        model = SkillAndInterest
         fields = [
             "name",
             "category",

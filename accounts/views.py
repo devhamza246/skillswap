@@ -5,9 +5,15 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from accounts.models import Skill, User
-from .forms import LoginForm, SignUpForm, SkillsForm, UserProfileForm
-from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
+from accounts.models import SkillAndInterest, User
+from .forms import LoginForm, SignUpForm, SkillAndInterestForm, UserProfileForm
+from django.views.generic import (
+    ListView,
+    CreateView,
+    UpdateView,
+    DetailView,
+    DeleteView,
+)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
@@ -41,14 +47,14 @@ def register_user(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get("username")
+            username = form.cleaned_data.get("email")
             raw_password = form.cleaned_data.get("password1")
             user = authenticate(username=username, password=raw_password)
-
             msg = 'User created - please <a href="/login">login</a>.'
             success = True
-
-            # return redirect("/login/")
+            if user is not None:
+                login(request, user)
+                return redirect("/user/update/" + str(user.id))
 
         else:
             msg = "Form is not valid"
@@ -61,6 +67,26 @@ def register_user(request):
         {"form": form, "msg": msg, "success": success},
     )
 
+
+def add_interest_view(request):
+    form = LoginForm(request.POST or None)
+
+    msg = None
+
+    if request.method == "POST":
+        if form.is_valid():
+            username = form.cleaned_data.get("email")
+            password = form.cleaned_data.get("password")
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect("/")
+            else:
+                msg = "Invalid credentials"
+        else:
+            msg = "Error validating the form"
+
+    return render(request, "accounts/login.html", {"form": form, "msg": msg})
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
@@ -75,36 +101,36 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = "Profile updated"
 
 
-class SkillsListView(LoginRequiredMixin, ListView):
-    model = Skill
-    template_name = "accounts/skills_list.html"
+class SkillAndInterestListView(LoginRequiredMixin, ListView):
+    model = SkillAndInterest
+    template_name = "accounts/skillandinterest_list.html"
 
 
-class SkillsDetailView(LoginRequiredMixin, DetailView):
-    model = Skill
-    template_name = "accounts/skills_detail.html"
+class SkillAndInterestDetailView(LoginRequiredMixin, DetailView):
+    model = SkillAndInterest
+    template_name = "accounts/skillandinterest_detail.html"
 
 
-class SkillsCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-    model = Skill
-    template_name = "accounts/skills_form.html"
-    form_class = SkillsForm
-    success_url = reverse_lazy("accounts:skill_list")
-    success_message = "Skill created"
+class SkillAndInterestCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = SkillAndInterest
+    template_name = "accounts/skillandinterest_form.html"
+    form_class = SkillAndInterest
+    success_url = reverse_lazy("accounts:skillandinterest_list")
+    success_message = "SkillAndInterest created"
 
 
-class SkillsUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = Skill
-    template_name = "accounts/skills_form.html"
-    form_class = SkillsForm
-    success_url = reverse_lazy("accounts:skill_list")
-    success_message = "Skill updated"
+class SkillAndInterestUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = SkillAndInterest
+    template_name = "accounts/skillandinterest_form.html"
+    form_class = SkillAndInterestForm
+    success_url = reverse_lazy("accounts:skillandinterest_list")
+    success_message = "SkillAndInterest updated"
 
 
-class SkillsDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
-    model = Skill
-    success_url = reverse_lazy("accounts:skill_list")
-    success_message = "Skill deleted"
+class SkillAndInterestDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = SkillAndInterest
+    success_url = reverse_lazy("accounts:skillandinterest_list")
+    success_message = "SkillAndInterest deleted"
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()

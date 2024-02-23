@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from accounts.models import Skill
+from accounts.models import SkillAndInterest
 
 UserModel = get_user_model()
 
@@ -19,7 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-class SkillSerializer(serializers.ModelSerializer):
+class SkillAndInterestSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Skill
+        model = SkillAndInterest
         fields = "__all__"
