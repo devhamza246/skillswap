@@ -1,12 +1,16 @@
-from typing import Any
-from django.forms.forms import BaseForm
-from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from accounts.models import SkillAndInterest, User
-from .forms import LoginForm, SignUpForm, SkillAndInterestForm, UserProfileForm
+from .forms import (
+    LoginForm,
+    SignUpForm,
+    SkillAndInterestForm,
+    UserInterestForm,
+    UserProfileForm,
+    UserSkillForm,
+)
 from django.views.generic import (
     ListView,
     CreateView,
@@ -54,7 +58,7 @@ def register_user(request):
             success = True
             if user is not None:
                 login(request, user)
-                return redirect("/user/update/" + str(user.id))
+                return redirect("accounts:add_userinterest", pk=user.pk)
 
         else:
             msg = "Form is not valid"
@@ -68,25 +72,45 @@ def register_user(request):
     )
 
 
-def add_interest_view(request):
-    form = LoginForm(request.POST or None)
+def add_interest_view(request, pk):
+    form = UserInterestForm(request.POST or None)
 
     msg = None
 
     if request.method == "POST":
         if form.is_valid():
-            username = form.cleaned_data.get("email")
-            password = form.cleaned_data.get("password")
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect("/")
-            else:
-                msg = "Invalid credentials"
+            learning_interests = form.cleaned_data.get("learning_interests")
+            user = User.objects.get(id=pk)
+            user.learning_interests.set(learning_interests)
+            user.save()
+            msg = "Profile updated"
+            return redirect("accounts:add_userskills", pk=pk)
         else:
             msg = "Error validating the form"
 
-    return render(request, "accounts/login.html", {"form": form, "msg": msg})
+    return render(
+        request, "accounts/userinterest_form.html", {"form": form, "msg": msg}
+    )
+
+
+def add_skills_view(request, pk):
+    form = UserSkillForm(request.POST or None)
+
+    msg = None
+
+    if request.method == "POST":
+        if form.is_valid():
+            skills = form.cleaned_data.get("skills")
+            user = User.objects.get(id=pk)
+            user.skills.set(skills)
+            user.save()
+            msg = "Profile updated"
+            return redirect("dashboards:home")
+        else:
+            msg = "Error validating the form"
+
+    return render(request, "accounts/userskills_form.html", {"form": form, "msg": msg})
+
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
@@ -114,7 +138,7 @@ class SkillAndInterestDetailView(LoginRequiredMixin, DetailView):
 class SkillAndInterestCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = SkillAndInterest
     template_name = "accounts/skillandinterest_form.html"
-    form_class = SkillAndInterest
+    form_class = SkillAndInterestForm
     success_url = reverse_lazy("accounts:skillandinterest_list")
     success_message = "SkillAndInterest created"
 

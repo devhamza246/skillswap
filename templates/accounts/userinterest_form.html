@@ -14,21 +14,12 @@
         <div class="col-lg-6 col-md-8">
         
           <div class="card bg-secondary shadow border-0">
-            <div class="card-header bg-transparent pb-5">
+            <div class="card-header bg-transparent pb-2">
               <div class="text-muted text-center mt-2 mb-4">
-                Your Interest
+                Add Your Interest
               </div>
             </div>
             <div class="card-body px-lg-5 py-lg-5">
-              <div class="text-center text-muted mb-4">
-
-                {% if msg %}
-                  <small>{{ msg | safe }}</small>
-                {% else %}
-                  Add your interest
-                {% endif %}  
-              
-              </div>
 
               {% if not success %}
 
@@ -41,7 +32,7 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
                       </div>
-                      {{ form.first_name }}
+                      {{ form.learning_interests }}
                     </div>
                   </div>
 

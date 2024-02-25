@@ -116,13 +116,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     zip_code = models.CharField(max_length=50, blank=True, null=True)
     conversations = models.ManyToManyField(Conversation, blank=True)
     skills = models.ManyToManyField(
-        "accounts.SkillAndInterest", blank=True, default=list
+        "accounts.SkillAndInterest", blank=True, default=list, related_name="skills"
     )
     experience_level = models.IntegerField(
         choices=Levels.choices, default=Levels.ENTRY_LEVEL
     )
     learning_interests = models.ManyToManyField(
-        "accounts.SkillAndInterest", blank=True, default=list
+        "accounts.SkillAndInterest",
+        blank=True,
+        default=list,
+        related_name="learning_interests",
     )
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
