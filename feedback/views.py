@@ -1,5 +1,3 @@
-from typing import Any
-from django.http import HttpRequest, HttpResponse
 from django.views.generic import (
     ListView,
     CreateView,
@@ -36,7 +34,3 @@ class ReviewDetailView(LoginRequiredMixin, DetailView):
 class ReviewUpdateView(LoginRequiredMixin, UpdateView):
     model = Review
     fields = ["rating", "feedback_content"]
-
-
-class ReviewDeleteView(LoginRequiredMixin, DeleteView):
-    model = Review

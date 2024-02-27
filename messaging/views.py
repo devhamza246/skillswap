@@ -8,11 +8,12 @@ from django.views.generic import (
 )
 from accounts.models import User
 from messaging.models import Message, Conversation
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from messaging.serializers import MessageSerializer
 
 
-class MessageListView(ListView):
+class MessageListView(LoginRequiredMixin, ListView):
     model = Message
     template_name = "messaging/message_list.html"
 
@@ -22,11 +23,11 @@ class MessageListView(ListView):
         return context
 
 
-class MessageDetailView(DetailView):
+class MessageDetailView(LoginRequiredMixin, DetailView):
     model = Message
 
 
-class MessageCreateView(CreateView):
+class MessageCreateView(LoginRequiredMixin, CreateView):
     model = Message
     template_name = "messaging/message_form.html"
     fields = ["message", "receiver", "sender"]
@@ -59,7 +60,7 @@ class MessageCreateView(CreateView):
         return context
 
 
-class MessageUpdateView(UpdateView):
+class MessageUpdateView(LoginRequiredMixin, UpdateView):
     model = Message
     fields = ["message"]
 
@@ -68,11 +69,11 @@ class MessageUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class MessageDeleteView(DeleteView):
+class MessageDeleteView(LoginRequiredMixin, DeleteView):
     model = Message
 
 
-class ConversationListView(ListView):
+class ConversationListView(LoginRequiredMixin, ListView):
     model = Conversation
     template_name = "messaging/conversation_list.html"
 
@@ -84,11 +85,11 @@ class ConversationListView(ListView):
         return context
 
 
-class ConversationDetailView(DetailView):
+class ConversationDetailView(LoginRequiredMixin, DetailView):
     model = Conversation
 
 
-class ConversationCreateView(CreateView):
+class ConversationCreateView(LoginRequiredMixin, CreateView):
     model = Conversation
     fields = ["participants"]
 
@@ -104,7 +105,7 @@ class ConversationCreateView(CreateView):
             return self.form_invalid(form)
 
 
-class ConversationUpdateView(UpdateView):
+class ConversationUpdateView(LoginRequiredMixin, UpdateView):
     model = Conversation
     fields = ["participants"]
 
@@ -113,5 +114,5 @@ class ConversationUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class ConversationDeleteView(DeleteView):
+class ConversationDeleteView(LoginRequiredMixin, DeleteView):
     model = Conversation
