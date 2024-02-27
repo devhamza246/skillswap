@@ -56,7 +56,7 @@
               <div class="h3 mt-1">
                 Learning Interests
               </div>
-              <div class="h4 font-weight-300">{{object.learning_interests}}</div>
+              <div class="h4 font-weight-300">{% for learning_interest in object.learning_interests.all %}{{ learning_interest.name }} | {% endfor %}</div>
             </div>
           </div>
         </div>

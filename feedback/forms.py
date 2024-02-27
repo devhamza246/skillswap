@@ -5,4 +5,4 @@ from .models import Review
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ["reviewed_user", "rating", "feedback_content"]
+        fields = ["reviewer", "reviewed_user", "rating", "feedback_content"]

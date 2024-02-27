@@ -1,0 +1,158 @@
+{% extends 'layouts/base.html' %}
+{% block title %}
+  Profile Detail
+{% endblock %}
+{% block content %}
+  <div class="header pb-6 d-flex align-items-center">
+    <!-- Mask -->
+    <span class="mask bg-gradient-default opacity-8"></span>
+    <!-- Header container -->
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt--5">
+    <div class="row">
+      <div class="col-xl order-xl">
+        <div class="card card-profile">
+          <img src="/static/assets/img/theme/img-1-1000x600.jpg" alt="Image placeholder" class="card-img-top" />
+          <div class="row justify-content-center">
+            <div class="col-lg-3 order-lg-2">
+              <div class="card-profile-image">
+                <a href="#">
+                  {% if object.photo %}
+                    <img src="{{ object.photo.url }}" class="rounded-circle" />
+                  {% else %}
+                    <img src="/static/assets/img/theme/team-1.jpg" class="rounded-circle" />
+                  {% endif %}
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+            <div class="d-flex justify-content-between">
+              <a href="{% url 'messaging:message_create' receiver=object.id %}" class="btn btn-sm btn-default float-right">Message</a>
+              <a href="{% url 'feedback:review_create' reviewed_user=object.id %}" class="btn btn-sm btn-default float-right">Review</a>
+            </div>
+          </div>
+          <div class="card-body pt-2">
+            <div class="text-center">
+              <h5 class="h3">{{ object.get_full_name }}</h5>
+              <div class="h5 font-weight-300">{{ object.email }}</div>
+              <div class="h3 mt-4">Skills</div>
+              <div class="h4 font-weight-300">
+                {% for skill in object.skills.all %}
+                  {{ skill.name }} |
+                {% endfor %}
+              </div>
+              <div class="h3 mt-1">Experience Level</div>
+              <div class="h4 font-weight-300">{{ object.get_experience_level_display }}</div>
+              <div class="h3 mt-1">Learning Interests</div>
+              <div class="h4 font-weight-300">
+                {% for learning_interest in object.learning_interests.all %}
+                  {{ learning_interest.name }} |
+                {% endfor %}
+              </div>
+              <div class="mt-5 col-6 mx-auto">
+                <a href="#" class="btn btn-default btn-block">Schedule</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Reviews Section -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <div class="row justify-content-center">
+              <h2>Reviews</h2>
+            </div>
+            <h3 class="card-title">
+              Average Rating:{% if average_rating == 1 %}
+                <i class="fa fa-star text-warning"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              {% elif average_rating == 2 %}
+                <i class="fa fa-star text-warning"></i>
+                <i class="fa fa-star text-warning"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              {% elif average_rating == 3 %}
+                <i class="fa fa-star text-warning"></i>
+                <i class="fa fa-star text-warning"></i>
+                <i class="fa fa-star text-warning"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              {% elif average_rating == 4 %}
+                <i class="fa fa-star text-warning"></i>
+                <i class="fa fa-star text-warning"></i>
+                <i class="fa fa-star text-warning"></i>
+                <i class="fa fa-star text-warning"></i>
+                <i class="fa fa-star"></i>
+              {% elif average_rating == 5 %}
+                <i class="fa fa-star text-warning"></i>
+                <i class="fa fa-star text-warning"></i>
+                <i class="fa fa-star text-warning"></i>
+                <i class="fa fa-star text-warning"></i>
+                <i class="fa fa-star text-warning"></i>
+              {% endif %}
+            </h3>
+          </div>
+          <div class="card-body">
+            <ul>
+              {% for review in reviews %}
+                <li>
+                  <strong>Rating:</strong>
+                  {% if review.rating == 1 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                  {% elif review.rating == 2 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                  {% elif review.rating == 3 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                  {% elif review.rating == 4 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star"></i>
+                  {% elif review.rating == 5 %}
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                    <i class="fa fa-star text-warning"></i>
+                  {% endif %}
+                  <br />
+                  <strong>Reviewer:</strong> {{ review.reviewer.get_full_name }} <br />
+                  <strong>Feedback:</strong> {{ review.feedback_content }} <br />
+                  <!-- Add more review details here as needed -->
+                </li>
+                {% empty %}
+                <li>No reviews available.</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <!-- End Reviews Section -->
+      </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+  </div>
+{% endblock %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'layouts/base.html' %}
+{% load widget_tweaks %}
+{% block title %}
+  Review
+{% endblock %}
+{% block content %}
+  <div class="header pb-6 d-flex align-items-center">
+    <!-- Mask -->
+    <span class="mask bg-gradient-default opacity-8"></span>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt--5">
+    <div class="row">
+      <div class="col-xl-12 order-xl-1">
+        <div class="card">
+          <div class="card-header">
+            <div class="row align-items-center">
+              <div class="col-8">
+                <h3 class="mb-0">Give Review</h3>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <form action="" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="reviewed_user" value="{{ reviewed_user }}" />
+              <input type="hidden" name="reviewer" value="{{ user.id }}" />
+              <div class="pl-lg-4">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="rating">Rating</label>
+                      <div class="star-rating">
+                        <input type="hidden" name="rating" id="rating" value="0" />
+                        <span class="star" data-rating="1"><i class="fa fa-star"></i></span>
+                        <span class="star" data-rating="2"><i class="fa fa-star"></i></span>
+                        <span class="star" data-rating="3"><i class="fa fa-star"></i></span>
+                        <span class="star" data-rating="4"><i class="fa fa-star"></i></span>
+                        <span class="star" data-rating="5"><i class="fa fa-star"></i></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <textarea class="form-control" rows="4" name="feedback_content"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <hr class="my-4" />
+                <div class="col-lg-4">
+                  <button type="submit" class="btn btn-primary"><span>Submit</span></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+  </div>
+{% endblock %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+  <script>
+    // JavaScript
+    document.addEventListener('DOMContentLoaded', function () {
+      const stars = document.querySelectorAll('.star')
+    
+      stars.forEach(function (star) {
+        star.addEventListener('click', function () {
+          const rating = this.dataset.rating
+          document.getElementById('rating').value = rating // Set the value of the hidden input
+          debugger
+          stars.forEach(function (s) {
+            if (s.dataset.rating <= rating) {
+              s.style.color = 'orange' // Fill stars up to the selected rating
+            } else {
+              s.style.color = '' // Empty stars after the selected rating
+            }
+          })
+        })
+      })
+    })
+  </script>
+{% endblock %}

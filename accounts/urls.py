@@ -1,22 +1,26 @@
 from django.urls import path
 from .views import (
-    SkillsListView,
-    SkillsDetailView,
-    SkillsCreateView,
-    SkillsUpdateView,
-    SkillsDeleteView,
+    SkillAndInterestListView,
+    SkillAndInterestDetailView,
+    SkillAndInterestCreateView,
+    SkillAndInterestUpdateView,
+    SkillAndInterestDeleteView,
     UserDetailView,
+    UserProfileView,
     UserUpdateView,
+    add_contact_details_view,
+    add_interest_view,
+    add_skills_view,
     login_view,
     register_user,
 )
-from .viewsets import SkillViewSet, UserViewSet
+from .viewsets import SkillAndInterestViewSet, UserViewSet
 from rest_framework import routers
 from django.contrib.auth.views import LogoutView
 
 router = routers.DefaultRouter()
 router.register("users", UserViewSet)
-router.register("skills", SkillViewSet)
+router.register("skillandinterest", SkillAndInterestViewSet)
 
 app_name = "accounts"
 
@@ -25,10 +29,46 @@ urlpatterns = [
     path("register/", register_user, name="register"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("user/detail/<int:pk>", UserDetailView.as_view(), name="user_detail"),
+    path("user/profile/<int:pk>", UserProfileView.as_view(), name="user_profile"),
     path("user/update/<int:pk>", UserUpdateView.as_view(), name="user_update"),
-    path("skill/list/", SkillsListView.as_view(), name="skill_list"),
-    path("skill/detail/<int:pk>", SkillsDetailView.as_view(), name="skill_detail"),
-    path("skill/create/", SkillsCreateView.as_view(), name="skill_create"),
-    path("skill/update/<int:pk>", SkillsUpdateView.as_view(), name="skill_update"),
-    path("skill/delete/<int:pk>", SkillsDeleteView.as_view(), name="skill_delete"),
+    path(
+        "user/add/interest/<int:pk>",
+        add_interest_view,
+        name="add_userinterest",
+    ),
+    path(
+        "user/add/skills/<int:pk>",
+        add_skills_view,
+        name="add_userskills",
+    ),
+    path(
+        "user/add/contact_details/<int:pk>",
+        add_contact_details_view,
+        name="add_contact_details",
+    ),
+    path(
+        "skillandinterest/list/",
+        SkillAndInterestListView.as_view(),
+        name="skillandinterest_list",
+    ),
+    path(
+        "skillandinterest/detail/<int:pk>",
+        SkillAndInterestDetailView.as_view(),
+        name="skillandinterest_detail",
+    ),
+    path(
+        "skillandinterest/create/",
+        SkillAndInterestCreateView.as_view(),
+        name="skillandinterest_create",
+    ),
+    path(
+        "skillandinterest/update/<int:pk>",
+        SkillAndInterestUpdateView.as_view(),
+        name="skillandinterest_update",
+    ),
+    path(
+        "skillandinterest/delete/<int:pk>",
+        SkillAndInterestDeleteView.as_view(),
+        name="skillandinterest_delete",
+    ),
 ]

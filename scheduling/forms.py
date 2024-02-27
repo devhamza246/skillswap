@@ -11,4 +11,4 @@ class AvailabilityForm(forms.ModelForm):
 class MeetingProposalForm(forms.ModelForm):
     class Meta:
         model = MeetingProposal
-        fields = ["proposee", "proposed_time"]
+        fields = "__all__"

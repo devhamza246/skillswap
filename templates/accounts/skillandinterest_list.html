@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 
 {% block title %}
-  Skills List
+SkillAndInterest List
 {% endblock %}
 
 {% block content %}
@@ -10,18 +10,18 @@
       <div class="header-body">
         <div class="row align-items-center py-4">
           <div class="col-lg-6 col-7">
-            <h6 class="h2 text-white d-inline-block mb-0">Skills</h6>
+            <h6 class="h2 text-white d-inline-block mb-0">SkillAndInterest</h6>
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
               <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                 <li class="breadcrumb-item">
                   <a href="/"><i class="fas fa-home"></i></a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">Skills</li>
+                <li class="breadcrumb-item active" aria-current="page">SkillAndInterest</li>
               </ol>
             </nav>
           </div>
           <div class="col-lg-6 col-5 text-right">
-            <a href="{% url 'accounts:skill_create' %}" class="btn btn-sm btn-neutral">New</a>
+            <a href="{% url 'accounts:skillandinterest_create' %}" class="btn btn-sm btn-neutral">New</a>
           </div>
         </div>
       </div>
@@ -35,7 +35,7 @@
         <div class="card">
           <!-- Card header -->
           <div class="card-header border-0">
-            <h3 class="mb-0">Skills List</h3>
+            <h3 class="mb-0">SkillAndInterest List</h3>
           </div>
           <!-- Table -->
           <div class="table-responsive">
@@ -99,7 +99,7 @@
           }
         },
         ajax: {
-          url: '/api/skills/?format=datatables',
+          url: '/api/skillandinterest/?format=datatables',
           data: function (d) {
             return $.extend(d, TableParams)
           }
@@ -110,9 +110,9 @@
             sortable: false,
             searchable: false,
             render: (data, type, row) => {
-              let detail_url = `{% url 'accounts:skill_detail' pk=0 %}`
-              let update_url = `{% url 'accounts:skill_update' pk=0 %}`
-              let delete_url = `{% url 'accounts:skill_delete' pk=0 %}`
+              let detail_url = `{% url 'accounts:skillandinterest_detail' pk=0 %}`
+              let update_url = `{% url 'accounts:skillandinterest_update' pk=0 %}`
+              let delete_url = `{% url 'accounts:skillandinterest_delete' pk=0 %}`
               let actions = `<div class="dropdown">
                             <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">

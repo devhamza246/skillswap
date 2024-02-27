@@ -1,8 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
-from accounts.models import Skill
-from django_countries.fields import CountryField
+from accounts.models import SkillAndInterest
 from django_countries.widgets import CountrySelectWidget
 
 User = get_user_model()
@@ -49,15 +48,40 @@ class SignUpForm(UserCreationForm):
         fields = ("first_name", "last_name", "email", "password1", "password2")
 
 
+class UserInterestForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ["learning_interests"]
+        widgets = {
+            "learning_interests": forms.CheckboxSelectMultiple(
+                attrs={"class": "custom-checkbox"},
+                choices=SkillAndInterest.objects.all().values_list("id", "name"),
+            )
+        }
+
+
+class UserSkillForm(forms.ModelForm):
+    skills = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple(attrs={"class": "custom-checkbox"}),
+        choices=SkillAndInterest.objects.all().values_list("id", "name"),
+    )
+    experience_level = forms.IntegerField(
+        widget=forms.Select(
+            choices=User.Levels.choices, attrs={"class": "form-control"}
+        )
+    )
+
+    class Meta:
+        model = User
+        fields = ["skills", "experience_level"]
+
+
 class UserProfileForm(forms.ModelForm):
     photo = forms.ImageField(
         label="Profile Photo",
         required=False,
         widget=forms.FileInput(attrs={"class": "form-control"}),
-    )
-    skills = forms.ModelMultipleChoiceField(
-        queryset=Skill.objects.all(),
-        widget=forms.SelectMultiple(attrs={"class": "form-control"}),
     )
 
     class Meta:
@@ -86,21 +110,45 @@ class UserProfileForm(forms.ModelForm):
                 attrs={"class": "form-control"},
                 layout="{widget}",
             ),
+            "skills": forms.CheckboxSelectMultiple(
+                attrs={"class": "custom-checkbox"},
+                choices=SkillAndInterest.objects.all().values_list("id", "name"),
+            ),
+            "learning_interests": forms.CheckboxSelectMultiple(
+                attrs={"class": "custom-checkbox"},
+                choices=SkillAndInterest.objects.all().values_list("id", "name"),
+            ),
             "experience_level": forms.Select(attrs={"class": "form-control"}),
-            "learning_interests": forms.Textarea(attrs={"class": "form-control"}),
         }
 
 
-class SkillsForm(forms.ModelForm):
+class UserContactDetailsForm(forms.ModelForm):
+
     class Meta:
-        model = Skill
+        model = User
+        fields = [
+            "address",
+            "city",
+            "country",
+        ]
+        widgets = {
+            "address": forms.TextInput(attrs={"class": "form-control"}),
+            "city": forms.TextInput(attrs={"class": "form-control"}),
+            "country": CountrySelectWidget(
+                attrs={"class": "form-control"},
+                layout="{widget}",
+            ),
+        }
+
+
+class SkillAndInterestForm(forms.ModelForm):
+    class Meta:
+        model = SkillAndInterest
         fields = [
             "name",
             "category",
-            "description",
         ]
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control"}),
             "category": forms.TextInput(attrs={"class": "form-control"}),
-            "description": forms.Textarea(attrs={"class": "form-control"}),
         }

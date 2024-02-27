@@ -1,6 +1,6 @@
-from .models import Skill, User
+from .models import SkillAndInterest, User
 from rest_framework import viewsets
-from .serializers import SkillSerializer, UserSerializer
+from .serializers import SkillAndInterestSerializer, UserSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -8,6 +8,6 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
 
-class SkillViewSet(viewsets.ModelViewSet):
-    queryset = Skill.objects.all()
-    serializer_class = SkillSerializer
+class SkillAndInterestViewSet(viewsets.ModelViewSet):
+    queryset = SkillAndInterest.objects.all()
+    serializer_class = SkillAndInterestSerializer

@@ -58,7 +58,6 @@ THIRD_PARTY_APPS = [
 USER_APPS = [
     "accounts",
     "dashboards",
-    "ai_integration",
     "community",
     "feedback",
     "matching",

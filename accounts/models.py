@@ -65,10 +65,9 @@ phone_regex = RegexValidator(
 )
 
 
-class Skill(BaseModel):
+class SkillAndInterest(BaseModel):
     name = models.CharField(max_length=50)
     category = models.CharField(max_length=100, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -115,11 +114,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     zip_code = models.CharField(max_length=50, blank=True, null=True)
     conversations = models.ManyToManyField(Conversation, blank=True)
-    skills = models.ManyToManyField("accounts.Skill", blank=True, default=list)
+    skills = models.ManyToManyField(
+        "accounts.SkillAndInterest", blank=True, default=list, related_name="skills"
+    )
     experience_level = models.IntegerField(
         choices=Levels.choices, default=Levels.ENTRY_LEVEL
     )
-    learning_interests = models.TextField(blank=True)
+    learning_interests = models.ManyToManyField(
+        "accounts.SkillAndInterest",
+        blank=True,
+        default=list,
+        related_name="learning_interests",
+    )
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(_("date joined"), auto_now_add=True)

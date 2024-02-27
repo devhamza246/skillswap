@@ -1,13 +1,26 @@
-from typing import Any
-from django.forms.forms import BaseForm
-from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from accounts.models import Skill, User
-from .forms import LoginForm, SignUpForm, SkillsForm, UserProfileForm
-from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
+from accounts.models import SkillAndInterest, User
+from feedback.models import Review
+from django.db.models import Avg
+from .forms import (
+    LoginForm,
+    SignUpForm,
+    SkillAndInterestForm,
+    UserContactDetailsForm,
+    UserInterestForm,
+    UserProfileForm,
+    UserSkillForm,
+)
+from django.views.generic import (
+    ListView,
+    CreateView,
+    UpdateView,
+    DetailView,
+    DeleteView,
+)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
@@ -41,14 +54,14 @@ def register_user(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get("username")
+            username = form.cleaned_data.get("email")
             raw_password = form.cleaned_data.get("password1")
             user = authenticate(username=username, password=raw_password)
-
             msg = 'User created - please <a href="/login">login</a>.'
             success = True
-
-            # return redirect("/login/")
+            if user is not None:
+                login(request, user)
+                return redirect("accounts:add_userinterest", pk=user.pk)
 
         else:
             msg = "Form is not valid"
@@ -62,9 +75,88 @@ def register_user(request):
     )
 
 
+def add_interest_view(request, pk):
+    form = UserInterestForm(request.POST or None)
+
+    msg = None
+
+    if request.method == "POST":
+        if form.is_valid():
+            learning_interests = form.cleaned_data.get("learning_interests")
+            user = User.objects.get(id=pk)
+            user.learning_interests.set(learning_interests)
+            user.save()
+            msg = "Profile updated"
+            return redirect("accounts:add_userskills", pk=pk)
+        else:
+            msg = "Error validating the form"
+
+    return render(
+        request, "accounts/userinterest_form.html", {"form": form, "msg": msg}
+    )
+
+
+def add_skills_view(request, pk):
+    form = UserSkillForm(request.POST or None)
+
+    msg = None
+
+    if request.method == "POST":
+        if form.is_valid():
+            skills = form.cleaned_data.get("skills")
+            user = User.objects.get(id=pk)
+            user.skills.set(skills)
+            user.save()
+            msg = "Profile updated"
+            return redirect("accounts:add_contact_details", pk=pk)
+        else:
+            msg = "Error validating the form"
+
+    return render(request, "accounts/userskills_form.html", {"form": form, "msg": msg})
+
+
+def add_contact_details_view(request, pk):
+    form = UserContactDetailsForm(request.POST or None)
+
+    msg = None
+
+    if request.method == "POST":
+        if form.is_valid():
+            address = form.cleaned_data.get("address")
+            city = form.cleaned_data.get("city")
+            country = form.cleaned_data.get("country")
+            user = User.objects.get(id=pk)
+            user.address = address
+            user.city = city
+            user.country = country
+            user.save()
+            msg = "Profile updated"
+            return redirect("dashboards:home")
+        else:
+            msg = "Error validating the form"
+
+    return render(
+        request, "accounts/usercontactdetails_form.html", {"form": form, "msg": msg}
+    )
+
+
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     template_name = "accounts/user_detail.html"
+
+
+class UserProfileView(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = "accounts/user_profile.html"
+    form_class = UserProfileForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_reviews = Review.objects.filter(reviewed_user=context["object"])
+        average_rating = user_reviews.aggregate(Avg("rating"))["rating__avg"]
+        context["average_rating"] = int(average_rating)
+        context["reviews"] = user_reviews
+        return context
 
 
 class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -75,36 +167,36 @@ class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = "Profile updated"
 
 
-class SkillsListView(LoginRequiredMixin, ListView):
-    model = Skill
-    template_name = "accounts/skills_list.html"
+class SkillAndInterestListView(LoginRequiredMixin, ListView):
+    model = SkillAndInterest
+    template_name = "accounts/skillandinterest_list.html"
 
 
-class SkillsDetailView(LoginRequiredMixin, DetailView):
-    model = Skill
-    template_name = "accounts/skills_detail.html"
+class SkillAndInterestDetailView(LoginRequiredMixin, DetailView):
+    model = SkillAndInterest
+    template_name = "accounts/skillandinterest_detail.html"
 
 
-class SkillsCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-    model = Skill
-    template_name = "accounts/skills_form.html"
-    form_class = SkillsForm
-    success_url = reverse_lazy("accounts:skill_list")
-    success_message = "Skill created"
+class SkillAndInterestCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = SkillAndInterest
+    template_name = "accounts/skillandinterest_form.html"
+    form_class = SkillAndInterestForm
+    success_url = reverse_lazy("accounts:skillandinterest_list")
+    success_message = "SkillAndInterest created"
 
 
-class SkillsUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = Skill
-    template_name = "accounts/skills_form.html"
-    form_class = SkillsForm
-    success_url = reverse_lazy("accounts:skill_list")
-    success_message = "Skill updated"
+class SkillAndInterestUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = SkillAndInterest
+    template_name = "accounts/skillandinterest_form.html"
+    form_class = SkillAndInterestForm
+    success_url = reverse_lazy("accounts:skillandinterest_list")
+    success_message = "SkillAndInterest updated"
 
 
-class SkillsDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
-    model = Skill
-    success_url = reverse_lazy("accounts:skill_list")
-    success_message = "Skill deleted"
+class SkillAndInterestDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = SkillAndInterest
+    success_url = reverse_lazy("accounts:skillandinterest_list")
+    success_message = "SkillAndInterest deleted"
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
