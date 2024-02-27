@@ -66,7 +66,7 @@ SkillAndInterest List
                                     </p>
                                     <div class="hstack gap-2 justify-content-center remove">
                                         <button class="btn btn-link btn-ghost-success fw-medium text-decoration-none"
-                                                data-bs-dismiss="modal">
+                                                data-dismiss="modal">
                                             <i class="ri-close-line me-1 align-middle"></i> Close
                                         </button>
                                         <a class="btn btn-danger" id="delete-record">Yes, Delete It</a>
@@ -114,11 +114,11 @@ SkillAndInterest List
               let update_url = `{% url 'accounts:skillandinterest_update' pk=0 %}`
               let delete_url = `{% url 'accounts:skillandinterest_delete' pk=0 %}`
               let actions = `<div class="dropdown">
-                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
+                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                               <a class="dropdown-item" href="${detail_url.replace('0', row.id)}">Detail</a>
                               <a class="dropdown-item" href="${update_url.replace('0', row.id)}">Update</a>
-                              <a class="dropdown-item delete-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${delete_url.replace('0', row.id)}">Delete</a>
+                              <a class="dropdown-item delete-btn" data-toggle="modal" href="#deleteOrder" data-url="${delete_url.replace('0', row.id)}">Delete</a>
                             </div>
                           </div>`
               return actions

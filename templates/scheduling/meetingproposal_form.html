@@ -30,18 +30,18 @@
                   <div class="col-lg-6">
                       <label class="form-control-label" for="proposed_time">Date</label>
                       <div class="form-group">
-                        <div class="input-group">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
-                          </div>
-                          <input class="flatpickr datetimepicker form-control" id="proposed_time" type="text" placeholder="Datetimepicker">
+                        <div class="input-group input-group-alternative">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                            </div>
+                            <input class="form-control datepicker" placeholder="Select date" type="text" value="06/20/2020">
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
                 <hr class="my-4" />
-                <div class="col-lg-4">
+                <div class="col-lg-4 pt-9">
                   <button type="submit" class="btn btn-primary"><span>Request Meeting</span></button>
                 </div>
               </div>
@@ -57,20 +57,6 @@
 
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
-  <script>
-    $(document).ready(function () {
-      <!-- Datepicker -->
-      flatpickr('.flatpickr', {});
-
-      <!-- Datepicker - range -->
-      flatpickr('.range', {
-        mode: "range"
-      });
-      <!-- DateTimePicker -->
-      flatpickr('.datetimepicker', {
-        enableTime: true,
-        dateFormat: "Y-m-d H:i",
-      });
-    })
-  </script>
+<script>
+</script>
 {% endblock %}

@@ -154,7 +154,11 @@ class UserProfileView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         user_reviews = Review.objects.filter(reviewed_user=context["object"])
         average_rating = user_reviews.aggregate(Avg("rating"))["rating__avg"]
-        context["average_rating"] = int(average_rating)
+        if average_rating is None:
+            average_rating = 0
+        else:
+            average_rating = round(average_rating, 1)
+        context["average_rating"] = average_rating
         context["reviews"] = user_reviews
         return context
 

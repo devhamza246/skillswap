@@ -46,7 +46,7 @@ urlpatterns = [
         name="meetingproposal_list",
     ),
     path(
-        "meetingproposal/create/",
+        "meetingproposal/create/<int:proposee>",
         MeetingProposalCreateView.as_view(),
         name="meetingproposal_create",
     ),

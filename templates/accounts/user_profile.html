@@ -52,7 +52,7 @@
                 {% endfor %}
               </div>
               <div class="mt-5 col-6 mx-auto">
-                <a href="#" class="btn btn-default btn-block">Schedule</a>
+                <a href="{% url 'scheduling:meetingproposal_create' proposee=object.id %}" class="btn btn-default btn-block">Schedule</a>
               </div>
             </div>
           </div>
