@@ -3,10 +3,13 @@ from django.contrib.auth import authenticate, login
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from accounts.models import SkillAndInterest, User
+from feedback.models import Review
+from django.db.models import Avg
 from .forms import (
     LoginForm,
     SignUpForm,
     SkillAndInterestForm,
+    UserContactDetailsForm,
     UserInterestForm,
     UserProfileForm,
     UserSkillForm,
@@ -105,16 +108,55 @@ def add_skills_view(request, pk):
             user.skills.set(skills)
             user.save()
             msg = "Profile updated"
-            return redirect("dashboards:home")
+            return redirect("accounts:add_contact_details", pk=pk)
         else:
             msg = "Error validating the form"
 
     return render(request, "accounts/userskills_form.html", {"form": form, "msg": msg})
 
 
+def add_contact_details_view(request, pk):
+    form = UserContactDetailsForm(request.POST or None)
+
+    msg = None
+
+    if request.method == "POST":
+        if form.is_valid():
+            address = form.cleaned_data.get("address")
+            city = form.cleaned_data.get("city")
+            country = form.cleaned_data.get("country")
+            user = User.objects.get(id=pk)
+            user.address = address
+            user.city = city
+            user.country = country
+            user.save()
+            msg = "Profile updated"
+            return redirect("dashboards:home")
+        else:
+            msg = "Error validating the form"
+
+    return render(
+        request, "accounts/usercontactdetails_form.html", {"form": form, "msg": msg}
+    )
+
+
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     template_name = "accounts/user_detail.html"
+
+
+class UserProfileView(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = "accounts/user_profile.html"
+    form_class = UserProfileForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_reviews = Review.objects.filter(reviewed_user=context["object"])
+        average_rating = user_reviews.aggregate(Avg("rating"))["rating__avg"]
+        context["average_rating"] = int(average_rating)
+        context["reviews"] = user_reviews
+        return context
 
 
 class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):

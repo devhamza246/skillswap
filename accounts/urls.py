@@ -6,7 +6,9 @@ from .views import (
     SkillAndInterestUpdateView,
     SkillAndInterestDeleteView,
     UserDetailView,
+    UserProfileView,
     UserUpdateView,
+    add_contact_details_view,
     add_interest_view,
     add_skills_view,
     login_view,
@@ -27,6 +29,7 @@ urlpatterns = [
     path("register/", register_user, name="register"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("user/detail/<int:pk>", UserDetailView.as_view(), name="user_detail"),
+    path("user/profile/<int:pk>", UserProfileView.as_view(), name="user_profile"),
     path("user/update/<int:pk>", UserUpdateView.as_view(), name="user_update"),
     path(
         "user/add/interest/<int:pk>",
@@ -37,6 +40,11 @@ urlpatterns = [
         "user/add/skills/<int:pk>",
         add_skills_view,
         name="add_userskills",
+    ),
+    path(
+        "user/add/contact_details/<int:pk>",
+        add_contact_details_view,
+        name="add_contact_details",
     ),
     path(
         "skillandinterest/list/",

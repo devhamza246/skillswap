@@ -1,3 +1,5 @@
+from typing import Any
+from django.http import HttpRequest, HttpResponse
 from django.views.generic import (
     ListView,
     CreateView,
@@ -6,28 +8,35 @@ from django.views.generic import (
     DeleteView,
 )
 from feedback.forms import ReviewForm
-
+from django.contrib.messages.views import SuccessMessageMixin
 from feedback.models import Review
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class ReviewListView(ListView):
+class ReviewListView(LoginRequiredMixin, ListView):
     model = Review
 
 
-class ReviewCreateView(CreateView):
+class ReviewCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Review
     form_class = ReviewForm
-    fields = ["rating", "feedback_content"]
+    success_url = "dashboards:home"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        reviewed_user = self.kwargs.get("reviewed_user")
+        context["reviewed_user"] = reviewed_user
+        return context
 
 
-class ReviewDetailView(DetailView):
+class ReviewDetailView(LoginRequiredMixin, DetailView):
     model = Review
 
 
-class ReviewUpdateView(UpdateView):
+class ReviewUpdateView(LoginRequiredMixin, UpdateView):
     model = Review
     fields = ["rating", "feedback_content"]
 
 
-class ReviewDeleteView(DeleteView):
+class ReviewDeleteView(LoginRequiredMixin, DeleteView):
     model = Review

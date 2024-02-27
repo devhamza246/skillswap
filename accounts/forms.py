@@ -83,14 +83,6 @@ class UserProfileForm(forms.ModelForm):
         required=False,
         widget=forms.FileInput(attrs={"class": "form-control"}),
     )
-    skills = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple(attrs={"class": "custom-checkbox"}),
-        choices=SkillAndInterest.objects.all().values_list("id", "name"),
-    )
-    learning_interests = forms.MultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple(attrs={"class": "custom-checkbox"}),
-        choices=SkillAndInterest.objects.all().values_list("id", "name"),
-    )
 
     class Meta:
         model = User
@@ -118,7 +110,34 @@ class UserProfileForm(forms.ModelForm):
                 attrs={"class": "form-control"},
                 layout="{widget}",
             ),
+            "skills": forms.CheckboxSelectMultiple(
+                attrs={"class": "custom-checkbox"},
+                choices=SkillAndInterest.objects.all().values_list("id", "name"),
+            ),
+            "learning_interests": forms.CheckboxSelectMultiple(
+                attrs={"class": "custom-checkbox"},
+                choices=SkillAndInterest.objects.all().values_list("id", "name"),
+            ),
             "experience_level": forms.Select(attrs={"class": "form-control"}),
+        }
+
+
+class UserContactDetailsForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = [
+            "address",
+            "city",
+            "country",
+        ]
+        widgets = {
+            "address": forms.TextInput(attrs={"class": "form-control"}),
+            "city": forms.TextInput(attrs={"class": "form-control"}),
+            "country": CountrySelectWidget(
+                attrs={"class": "form-control"},
+                layout="{widget}",
+            ),
         }
 
 
@@ -128,10 +147,8 @@ class SkillAndInterestForm(forms.ModelForm):
         fields = [
             "name",
             "category",
-            "description",
         ]
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control"}),
             "category": forms.TextInput(attrs={"class": "form-control"}),
-            "description": forms.Textarea(attrs={"class": "form-control"}),
         }

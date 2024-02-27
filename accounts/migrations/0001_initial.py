@@ -51,7 +51,6 @@ class Migration(migrations.Migration):
                 ('modified', models.DateTimeField(auto_now=True)),
                 ('name', models.CharField(max_length=50)),
                 ('category', models.CharField(blank=True, max_length=100, null=True)),
-                ('description', models.TextField(blank=True, null=True)),
             ],
             options={
                 'ordering': ['-created'],

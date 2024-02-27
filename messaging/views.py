@@ -37,9 +37,9 @@ class MessageCreateView(CreateView):
         sender = self.request.user.id
         user_obj = User.objects.get(id=receiver)
         messages = []
-        existing_conversation = Conversation.objects.filter(
-            participants__in=[sender, receiver]
-        ).distinct()
+        existing_conversation = Conversation.objects.filter(participants=sender).filter(
+            participants=user_obj
+        )
         if existing_conversation.exists():
             conversation_obj = existing_conversation.first()
             messages_obj = Message.objects.filter(
