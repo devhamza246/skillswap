@@ -9,6 +9,7 @@ from feedback.forms import ReviewForm
 from django.contrib.messages.views import SuccessMessageMixin
 from feedback.models import Review
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 
 
 class ReviewListView(LoginRequiredMixin, ListView):
@@ -18,7 +19,7 @@ class ReviewListView(LoginRequiredMixin, ListView):
 class ReviewCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Review
     form_class = ReviewForm
-    success_url = "dashboards:home"
+    success_url = reverse_lazy("dashboards:home")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

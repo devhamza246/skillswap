@@ -9,6 +9,7 @@ from scheduling.forms import AvailabilityForm, MeetingProposalForm
 from scheduling.models import Availability, MeetingProposal
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 
 
 class AvailabilityListView(LoginRequiredMixin, ListView):
@@ -42,16 +43,12 @@ class MeetingProposalCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateV
     model = MeetingProposal
     form_class = MeetingProposalForm
     template_name = "scheduling/meetingproposal_form.html"
-    success_url = "scheduling:meetingproposal_list"
+    success_url = reverse_lazy("scheduling:meetingproposal_list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["proposee"] = self.kwargs["proposee"]
         return context
-
-    def post(self, request, *args, **kwargs):
-        print(request.POST)
-        return super().post(request, *args, **kwargs)
 
 
 class MeetingProposalDetailView(LoginRequiredMixin, DetailView):

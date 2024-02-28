@@ -1,4 +1,5 @@
 from django.urls import path
+from rest_framework import routers
 from .views import (
     AvailabilityListView,
     AvailabilityCreateView,
@@ -11,6 +12,11 @@ from .views import (
     MeetingProposalUpdateView,
     MeetingProposalDeleteView,
 )
+from .viewsets import AvailabilityViewSet, MeetingProposalViewSet
+
+router = routers.DefaultRouter()
+router.register("availability", AvailabilityViewSet)
+router.register("meetingproposal", MeetingProposalViewSet)
 
 app_name = "scheduling"
 

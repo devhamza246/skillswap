@@ -23,10 +23,12 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from accounts.urls import router as accounts_router
 from matching.urls import router as matching_router
+from scheduling.urls import router as scheduling_router
 
 router = routers.DefaultRouter()
 router.registry.extend(accounts_router.registry)
 router.registry.extend(matching_router.registry)
+router.registry.extend(scheduling_router.registry)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
