@@ -131,8 +131,8 @@
             {% comment %} <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> {% endcomment %}
             <div class="media align-items-center">
               <span class="avatar avatar-sm rounded-circle">
-                {% if user.photo %}
-                  <img src="{{ user.photo.url }}" alt="Profile Photo">
+                {% if request.user.photo %}
+                  <img src="{{ request.user.photo.url }}" alt="Profile Photo">
                 {% else %}
                   <img src="/static/assets/img/theme/team-1.jpg" alt="Default Photo">
                 {% endif %}

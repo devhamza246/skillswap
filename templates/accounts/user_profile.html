@@ -144,6 +144,7 @@
                   <strong>Feedback:</strong> {{ review.feedback_content }} <br />
                   <!-- Add more review details here as needed -->
                 </li>
+                <hr />
                 {% empty %}
                 <li>No reviews available.</li>
               {% endfor %}
@@ -262,6 +263,26 @@
           $("#meetingModal").modal("hide");
           form[0].reset();
           showAlert.showAlert("success", "Meeting request sent successfully");
+        }
+
+      })
+    })
+
+    $("#feedback-form").on("submit", function (event) {
+      event.preventDefault();
+      form = $(this);
+      $.ajax({
+        type: "POST",
+        url: "/api/review/",
+        data: form.serialize(),
+        headers: {
+          "csrf_token": "{{ csrf_token }}"
+        },
+        success: function (data) {
+          debugger
+          $("#feedbackModal").modal("hide");
+          form[0].reset();
+          showAlert.showAlert("success", "Feedback submitted successfully");
         }
 
       })
