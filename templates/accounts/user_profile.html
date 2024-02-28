@@ -29,8 +29,11 @@
           </div>
           <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
             <div class="d-flex justify-content-between">
-              <a href="{% url 'messaging:message_create' receiver=object.id %}" class="btn btn-sm btn-default float-right">Message</a>
-              <a href="{% url 'feedback:review_create' reviewed_user=object.id %}" class="btn btn-sm btn-default float-right">Review</a>
+              <a href="{% url 'messaging:message_create' receiver=object.id %}" class="btn btn-sm btn-default float-left">Message</a>
+              <!--<a href="{% url 'feedback:review_create' reviewed_user=object.id %}" class="btn btn-sm btn-default float-right">Review</a>-->
+              <button type="button" class="btn btn-sm btn-default float-right" data-toggle="modal" data-target="#feedbackModal">
+                Review
+              </button>
             </div>
           </div>
           <div class="card-body pt-2">
@@ -52,7 +55,10 @@
                 {% endfor %}
               </div>
               <div class="mt-5 col-6 mx-auto">
-                <a href="{% url 'scheduling:meetingproposal_create' proposee=object.id %}" class="btn btn-default btn-block">Schedule</a>
+                <!--<a href="{% url 'scheduling:meetingproposal_create' proposee=object.id %}" class="btn btn-default btn-block">Schedule</a>-->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#meetingModal">
+                  Schedule a Meeting
+                </button>
               </div>
             </div>
           </div>
@@ -145,6 +151,90 @@
           </div>
         </div>
         <!-- End Reviews Section -->
+        <!-- Schedule Meeting Modal -->
+        <div class="modal fade" id="meetingModal" role="dialog" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Schedule Meeting</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+              <form id="schedule-meeting-form" action="" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="proposer" value="{{ request.user.id }}" />
+                <input type="hidden" name="proposee" value="{{ object.id }}" />
+                <div>
+                  <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6">
+                        <label class="form-control-label" for="proposed_time">Date</label>
+                        <div class="form-group">
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                            </div>
+                            <input class="flatpickr datetimepicker form-control" name="proposed_time" id="proposed_time" type="text" placeholder="Select Date and Time">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer justify-content-center">
+                    <button type="submit" class="btn btn-primary"><span>Request Meeting</span></button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Schedule Meeting Modal End -->
+        <!-- Feedback Modal -->
+        <div class="modal fade" id="feedbackModal" role="dialog" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Feedback</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form id="feedback-form" action="" method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="reviewed_user" value="{{ object.id }}" />
+                  <input type="hidden" name="reviewer" value="{{ request.user.id }}" />
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="form-group d-flex justify-content-center">
+                        <textarea class="form-control" rows="4" name="feedback_content" placeholder="Enter your feedback here..."></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="form-group d-flex justify-content-center">
+                        <div class="star-rating">
+                          <input type="hidden" name="rating" id="rating" value="0" />
+                          <span class="star" data-rating="1"><i class="fa fa-star"></i></span>
+                          <span class="star" data-rating="2"><i class="fa fa-star"></i></span>
+                          <span class="star" data-rating="3"><i class="fa fa-star"></i></span>
+                          <span class="star" data-rating="4"><i class="fa fa-star"></i></span>
+                          <span class="star" data-rating="5"><i class="fa fa-star"></i></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer justify-content-center">
+                    <button type="submit" class="btn btn-primary"><span>Submit</span></button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Schedule Meeting Modal End -->
       </div>
     </div>
 
@@ -154,5 +244,43 @@
 
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
+<script>
+  $(document).ready(function () {
+    
+    $("#schedule-meeting-form").on("submit", function (event) {
+      event.preventDefault();
+      form = $(this);
+      $.ajax({
+        type: "POST",
+        url: "/api/meetingproposal/",
+        data: form.serialize(),
+        headers: {
+          "csrf_token": "{{ csrf_token }}"
+        },
+        success: function (data) {
+          debugger
+          $("#meetingModal").modal("hide");
+          form[0].reset();
+          showAlert.showAlert("success", "Meeting request sent successfully");
+        }
 
+      })
+    })
+
+    const stars = document.querySelectorAll('.star')
+    stars.forEach(function (star) {
+      star.addEventListener('click', function () {
+        const rating = this.dataset.rating
+        document.getElementById('rating').value = rating // Set the value of the hidden input
+        stars.forEach(function (s) {
+          if (s.dataset.rating <= rating) {
+            s.style.color = 'orange' // Fill stars up to the selected rating
+          } else {
+            s.style.color = '' // Empty stars after the selected rating
+          }
+        })
+      })
+    })
+  })
+</script>
 {% endblock %}

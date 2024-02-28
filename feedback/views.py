@@ -18,14 +18,6 @@ class ReviewListView(LoginRequiredMixin, ListView):
 
 class ReviewCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Review
-    form_class = ReviewForm
-    success_url = reverse_lazy("dashboards:home")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        reviewed_user = self.kwargs.get("reviewed_user")
-        context["reviewed_user"] = reviewed_user
-        return context
 
 
 class ReviewDetailView(LoginRequiredMixin, DetailView):

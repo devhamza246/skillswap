@@ -41,14 +41,6 @@ class MeetingProposalListView(LoginRequiredMixin, ListView):
 
 class MeetingProposalCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = MeetingProposal
-    form_class = MeetingProposalForm
-    template_name = "scheduling/meetingproposal_form.html"
-    success_url = reverse_lazy("scheduling:meetingproposal_list")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["proposee"] = self.kwargs["proposee"]
-        return context
 
 
 class MeetingProposalDetailView(LoginRequiredMixin, DetailView):

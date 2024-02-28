@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from accounts.serializers import UserDropDownSerializer
 from .models import Availability, MeetingProposal
 
 
@@ -12,3 +14,8 @@ class MeetingProposalSerializer(serializers.ModelSerializer):
     class Meta:
         model = MeetingProposal
         fields = "__all__"
+
+
+class MeetingProposalListSerializer(MeetingProposalSerializer):
+    proposee = UserDropDownSerializer()
+    proposer = UserDropDownSerializer()

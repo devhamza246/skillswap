@@ -19,6 +19,13 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class UserDropDownSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source="get_full_name")
+    class Meta:
+        model = UserModel
+        fields = ["id", "name"]
+
+
 class SkillAndInterestSerializer(serializers.ModelSerializer):
     class Meta:
         model = SkillAndInterest
