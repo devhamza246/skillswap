@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 
 {% block title %}
-Forum Post Detail
+Community Event Detail
 {% endblock %}
 {% block content %}
 <div class="header bg-primary pb-6">
@@ -10,15 +10,15 @@ Forum Post Detail
       <div class="row align-items-center py-4">
         <div class="col-lg-6 col-7">
           <h6 class="h2 text-white d-inline-block mb-0">
-            Forum Post Detail
+            Community Event Detail
           </h6>
           <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
             <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
               <li class="breadcrumb-item">
                 <a href="/"><i class="fas fa-home"></i></a>
               </li>
-              <li class="breadcrumb-item"><a href="{% url 'community:forumpost_list' %}">Forum Post</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Forum Post Detail</li>
+              <li class="breadcrumb-item"><a href="{% url 'community:communityevent_list' %}">Community Event</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Community Event Detail</li>
             </ol>
           </nav>
         </div>
@@ -44,7 +44,7 @@ Forum Post Detail
                 <div class="col-lg-4">
                   <label class="form-control-label">Name:</label>
                 </div>
-                <div class="col-lg-4">{{ forumpost.name }}</div>
+                <div class="col-lg-4">{{ communityevent.name }}</div>
               </div>
             </div>
           </div>

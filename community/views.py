@@ -16,7 +16,6 @@ class ForumPostListView(ListView):
 class ForumPostCreateView(CreateView):
     model = ForumPost
     form_class = ForumPostForm
-    fields = ["content"]
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -29,7 +28,7 @@ class ForumPostDetailView(DetailView):
 
 class ForumPostUpdateView(UpdateView):
     model = ForumPost
-    fields = ["content"]
+    form_class = ForumPostForm
 
 
 class ForumPostDeleteView(DeleteView):
@@ -43,7 +42,6 @@ class CommunityEventListView(ListView):
 class CommunityEventCreateView(CreateView):
     model = CommunityEvent
     form_class = CommunityEventForm
-    fields = ["title", "description", "date"]
 
     def form_valid(self, form):
         form.instance.organizer = self.request.user
@@ -56,7 +54,7 @@ class CommunityEventDetailView(DetailView):
 
 class CommunityEventUpdateView(UpdateView):
     model = CommunityEvent
-    fields = ["title", "description", "date"]
+    form_class = CommunityEventForm
 
 
 class CommunityEventDeleteView(DeleteView):

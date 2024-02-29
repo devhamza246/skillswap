@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 
 {% block title %}
-  Forum Post
+  Community Event
 {% endblock %}
 {% block content %}
   <div class="header bg-primary pb-6">
@@ -14,7 +14,7 @@
                 Edit
               {% else %}
                 Add
-              {% endif %}Forum Post
+              {% endif %}Community Event
             </h6>
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
               <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
@@ -22,14 +22,14 @@
                   <a href="/"><i class="fas fa-home"></i></a>
                 </li>
                 <li class="breadcrumb-item">
-                  <a href="{% url 'community:forumpost_list' %}">Forum Post</a>
+                  <a href="{% url 'community:communityevent_list' %}">Community Event</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
                   {% if object %}
                     Edit
                   {% else %}
                     Add
-                  {% endif %}Forum Post
+                  {% endif %}Community Event
                 </li>
               </ol>
             </nav>
@@ -51,7 +51,7 @@
                     Edit
                   {% else %}
                     Add
-                  {% endif %}Forum Post
+                  {% endif %}Community Event
                 </h3>
               </div>
             </div>

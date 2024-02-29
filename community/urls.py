@@ -11,6 +11,12 @@ from community.views import (
     ForumPostListView,
     ForumPostUpdateView,
 )
+from .viewsets import CommunityEventViewSet, ForumPostViewSet
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register("communityevent", CommunityEventViewSet)
+router.register("forumpost", ForumPostViewSet)
 
 app_name = "community"
 
