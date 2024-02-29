@@ -43,7 +43,8 @@ Forum Post List
               <thead class="thead-light">
                 <tr>
                   <th scope="col" class="sort" data-data="id" data-sort="id">ID</th>
-                  <th scope="col" class="sort" data-data="name" data-sort="name">Name</th>
+                  <th scope="col" class="sort" data-data="title" data-sort="title">Title</th>
+                  <th scope="col" class="sort" data-data="author" data-sort="author">Author</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
@@ -77,6 +78,10 @@ Forum Post List
           }
         },
         columnDefs: [
+          {
+            targets: 0,
+            visible: false
+          },
           {
             targets: -1,
             sortable: false,

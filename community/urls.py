@@ -11,12 +11,19 @@ from community.views import (
     ForumPostListView,
     ForumPostUpdateView,
 )
-from .viewsets import CommunityEventViewSet, ForumPostViewSet
+from .viewsets import (
+    CommunityEventViewSet,
+    ForumPostViewSet,
+    CommentViewSet,
+    EventParticipantViewSet,
+)
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register("communityevent", CommunityEventViewSet)
 router.register("forumpost", ForumPostViewSet)
+router.register("comment", CommentViewSet)
+router.register("eventparticipant", EventParticipantViewSet)
 
 app_name = "community"
 

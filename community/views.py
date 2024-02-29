@@ -1,3 +1,4 @@
+from django.http import HttpRequest, HttpResponse
 from django.views.generic import (
     ListView,
     CreateView,
@@ -7,55 +8,56 @@ from django.views.generic import (
 )
 from community.forms import CommunityEventForm, ForumPostForm
 from community.models import CommunityEvent, ForumPost
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 
 
-class ForumPostListView(ListView):
+class ForumPostListView(LoginRequiredMixin, ListView):
     model = ForumPost
 
 
-class ForumPostCreateView(CreateView):
+class ForumPostCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = ForumPost
     form_class = ForumPostForm
+    success_url = reverse_lazy("community:forumpost_list")
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
 
-class ForumPostDetailView(DetailView):
+class ForumPostDetailView(LoginRequiredMixin, DetailView):
     model = ForumPost
 
 
-class ForumPostUpdateView(UpdateView):
+class ForumPostUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = ForumPost
     form_class = ForumPostForm
 
 
-class ForumPostDeleteView(DeleteView):
+class ForumPostDeleteView(LoginRequiredMixin, DeleteView):
     model = ForumPost
 
 
-class CommunityEventListView(ListView):
+class CommunityEventListView(LoginRequiredMixin, ListView):
     model = CommunityEvent
 
 
-class CommunityEventCreateView(CreateView):
+class CommunityEventCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = CommunityEvent
     form_class = CommunityEventForm
-
-    def form_valid(self, form):
-        form.instance.organizer = self.request.user
-        return super().form_valid(form)
+    success_url = reverse_lazy("community:communityevent_list")
 
 
-class CommunityEventDetailView(DetailView):
+class CommunityEventDetailView(LoginRequiredMixin, DetailView):
     model = CommunityEvent
 
 
-class CommunityEventUpdateView(UpdateView):
+class CommunityEventUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = CommunityEvent
     form_class = CommunityEventForm
 
 
-class CommunityEventDeleteView(DeleteView):
+class CommunityEventDeleteView(LoginRequiredMixin, DeleteView):
     model = CommunityEvent

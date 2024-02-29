@@ -1,31 +1,31 @@
 {% extends 'layouts/base.html' %}
 
 {% block title %}
-Forum Post Detail
+  Forum Post Detail
 {% endblock %}
 {% block content %}
-<div class="header bg-primary pb-6">
-  <div class="container-fluid">
-    <div class="header-body">
-      <div class="row align-items-center py-4">
-        <div class="col-lg-6 col-7">
-          <h6 class="h2 text-white d-inline-block mb-0">
-            Forum Post Detail
-          </h6>
-          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
-            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-              <li class="breadcrumb-item">
-                <a href="/"><i class="fas fa-home"></i></a>
-              </li>
-              <li class="breadcrumb-item"><a href="{% url 'community:forumpost_list' %}">Forum Post</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Forum Post Detail</li>
-            </ol>
-          </nav>
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Forum Post Detail</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item">
+                  <a href="/"><i class="fas fa-home"></i></a>
+                </li>
+                <li class="breadcrumb-item">
+                  <a href="{% url 'community:forumpost_list' %}">Forum Post</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Forum Post Detail</li>
+              </ol>
+            </nav>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
   <!-- Page content -->
   <div class="container-fluid mt--5">
     <div class="row">
@@ -42,11 +42,67 @@ Forum Post Detail
             <div class="pl-lg-4">
               <div class="row">
                 <div class="col-lg-4">
-                  <label class="form-control-label">Name:</label>
+                  <label class="form-control-label">Aurther:</label>
                 </div>
-                <div class="col-lg-4">{{ forumpost.name }}</div>
+                <div class="col-lg-4">{{ forumpost.aurther }}</div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                  <label class="form-control-label">Title:</label>
+                </div>
+                <div class="col-lg-4">{{ forumpost.title }}</div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                  <label class="form-control-label">Content:</label>
+                </div>
+                <div class="col-lg-4">{{ forumpost.content }}</div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr class="my-4" />
+    <!-- Add Comment Section -->
+    <div class="row mt-4">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="mb-0">Add Comment</h3>
+          </div>
+          <div class="card-body">
+            <!-- Comment Form -->
+            <form id="comment-form" action="" method="post">
+              {% csrf_token %}
+              <!-- Add form fields for comment content, etc. -->
+              <input type="hidden" name="forumpost" value="{{ forumpost.id }}">
+              <input type="hidden" name="user" value="{{ request.user.id }}">
+              <textarea name="content" class="form-control" rows="3" placeholder="Write your comment here"></textarea>
+              <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- List of Comments Section -->
+    <div class="row mt-4">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="mb-0">Comments</h3>
+          </div>
+          <div class="card-body">
+            <!-- List of Comments -->
+            {% for comment in forumpost.comments.all %}
+              <div class="mb-3">
+                <strong>{{ comment.author }}</strong> - {{ comment.created }}
+                <p>{{ comment.content }}</p>
+              </div>
+              {% empty %}
+              <p>No comments yet.</p>
+            {% endfor %}
           </div>
         </div>
       </div>
@@ -58,5 +114,25 @@ Forum Post Detail
 
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
-
+<script>
+  $(document).ready(function() {
+    $('#comment-form').on('submit', function(e) {
+      e.preventDefault();
+      form = $(this);
+      $.ajax({
+        url: `/api/comment/`,
+        type: 'POST',
+        data: form.serialize(),
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+          debugger
+          form[0].reset();
+          form.find('textarea').val('');
+        }
+      })
+    })
+  })
+</script>
 {% endblock %}
