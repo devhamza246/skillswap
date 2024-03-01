@@ -16,6 +16,12 @@
             </a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="{% url 'messaging:conversation_list' %}">
+              <i class="fa fa-comments text-default"></i>
+              <span class="nav-link-text">Conversations</span>
+            </a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="{% url 'scheduling:meetingproposal_list' %}">
               <i class="fa fa-users text-default"></i>
               <span class="nav-link-text">Meetings</span>
@@ -23,7 +29,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'community:forumpost_list' %}">
-              <i class="fa fa-comments text-default"></i>
+              <i class="fa fa-commenting text-default"></i>
               <span class="nav-link-text">Forums</span>
             </a>
           </li>

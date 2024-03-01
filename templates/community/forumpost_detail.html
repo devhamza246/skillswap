@@ -42,9 +42,9 @@
             <div class="pl-lg-4">
               <div class="row">
                 <div class="col-lg-4">
-                  <label class="form-control-label">Aurther:</label>
+                  <label class="form-control-label">Author:</label>
                 </div>
-                <div class="col-lg-4">{{ forumpost.aurther }}</div>
+                <div class="col-lg-4">{{ forumpost.author.get_full_name }}</div>
               </div>
               <div class="row">
                 <div class="col-lg-4">
@@ -76,8 +76,8 @@
             <form id="comment-form" action="" method="post">
               {% csrf_token %}
               <!-- Add form fields for comment content, etc. -->
-              <input type="hidden" name="forumpost" value="{{ forumpost.id }}">
-              <input type="hidden" name="user" value="{{ request.user.id }}">
+              <input type="hidden" name="post" value="{{ forumpost.id }}" />
+              <input type="hidden" name="user" value="{{ request.user.id }}" />
               <textarea name="content" class="form-control" rows="3" placeholder="Write your comment here"></textarea>
               <button type="submit" class="btn btn-primary mt-3">Submit</button>
             </form>
@@ -93,12 +93,13 @@
           <div class="card-header">
             <h3 class="mb-0">Comments</h3>
           </div>
-          <div class="card-body">
+          <div class="card-body" id="comments-body">
             <!-- List of Comments -->
             {% for comment in forumpost.comments.all %}
               <div class="mb-3">
-                <strong>{{ comment.author }}</strong> - {{ comment.created }}
+                <strong>{{ comment.user.get_full_name }}</strong> - {{ comment.created }}
                 <p>{{ comment.content }}</p>
+                <hr class="my-4" />
               </div>
               {% empty %}
               <p>No comments yet.</p>
@@ -114,25 +115,24 @@
 
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
-<script>
-  $(document).ready(function() {
-    $('#comment-form').on('submit', function(e) {
-      e.preventDefault();
-      form = $(this);
-      $.ajax({
-        url: `/api/comment/`,
-        type: 'POST',
-        data: form.serialize(),
-        headers: {
-          'X-CSRFToken': '{{ csrf_token }}'
-        },
-        success: function(response) {
-          debugger
-          form[0].reset();
-          form.find('textarea').val('');
-        }
+  <script>
+    $(document).ready(function () {
+    
+      $('#comment-form').on('submit', function (e) {
+        e.preventDefault()
+        form = $(this)
+        $.ajax({
+          url: `/api/comment/`,
+          type: 'POST',
+          data: form.serialize(),
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          success: function (response) {
+            window.location.reload()
+          }
+        })
       })
     })
-  })
-</script>
+  </script>
 {% endblock %}

@@ -22,19 +22,6 @@ class ForumPost(BaseModel):
         return self.content
 
 
-class CommunityEvent(BaseModel):
-    organizer = models.ForeignKey(
-        "accounts.User",
-        on_delete=models.CASCADE,
-    )
-    title = models.CharField(max_length=100)
-    description = models.TextField()
-    date = models.DateField()
-
-    def __str__(self):
-        return self.title
-
-
 class Comment(BaseModel):
     post = models.ForeignKey(
         ForumPost, on_delete=models.CASCADE, related_name="comments"
@@ -47,6 +34,19 @@ class Comment(BaseModel):
 
     def __str__(self):
         return self.content
+
+
+class CommunityEvent(BaseModel):
+    organizer = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.CASCADE,
+    )
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    date = models.DateTimeField()
+
+    def __str__(self):
+        return self.title
 
 
 class EventParticipant(BaseModel):

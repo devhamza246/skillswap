@@ -28,14 +28,8 @@
                   {% csrf_token %}
             
                   <div class="form-group">
-                    <div class="input-group input-group-alternative mb-3">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
-                      </div>
                       {{ form.skills }}
-                    </div>  
-                    
-                  </div>
+                  </div>  
                   <div class="form-group">
                     <label class="form-control-label" for="id_experience_level">Experience Level</label>
                     {{ form.experience_level }}

@@ -262,7 +262,10 @@
           debugger
           $("#meetingModal").modal("hide");
           form[0].reset();
-          showAlert.showAlert("success", "Meeting request sent successfully");
+          Toast.fire({
+            title: "Meeting request sent successfully!",
+            icon: "success"
+          });
         }
 
       })
@@ -279,10 +282,14 @@
           "csrf_token": "{{ csrf_token }}"
         },
         success: function (data) {
-          debugger
           $("#feedbackModal").modal("hide");
-          form[0].reset();
-          showAlert.showAlert("success", "Feedback submitted successfully");
+          Toast.fire({
+            title: "Feedback submitted successfully!",
+            icon: "success"
+          });
+        },
+        complete: function () {
+          window.location.reload()
         }
 
       })

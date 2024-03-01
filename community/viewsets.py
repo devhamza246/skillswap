@@ -5,17 +5,31 @@ from .serializers import (
     ForumPostSerializer,
     CommentSerializer,
     EventParticipantSerializer,
+    ForumPostListSerializer,
+    CommunityEventListSerializer,
 )
 
 
 class CommunityEventViewSet(viewsets.ModelViewSet):
     queryset = CommunityEvent.objects.all()
+    serializer_action_class = {"list": CommunityEventListSerializer}
     serializer_class = CommunityEventSerializer
+
+    def get_serializer_class(self):
+        if self.action in self.serializer_action_class:
+            return self.serializer_action_class[self.action]
+        return super().get_serializer_class()
 
 
 class ForumPostViewSet(viewsets.ModelViewSet):
     queryset = ForumPost.objects.all()
+    serializer_action_class = {"list": ForumPostListSerializer}
     serializer_class = ForumPostSerializer
+
+    def get_serializer_class(self):
+        if self.action in self.serializer_action_class:
+            return self.serializer_action_class[self.action]
+        return super().get_serializer_class()
 
 
 class CommentViewSet(viewsets.ModelViewSet):

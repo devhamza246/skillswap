@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 
 {% block title %}
-Forum Post List
+Conversation List
 {% endblock %}
 
 {% block content %}
@@ -10,18 +10,15 @@ Forum Post List
       <div class="header-body">
         <div class="row align-items-center py-4">
           <div class="col-lg-6 col-7">
-            <h6 class="h2 text-white d-inline-block mb-0">Forum Post</h6>
+            <h6 class="h2 text-white d-inline-block mb-0">Conversation</h6>
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
               <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                 <li class="breadcrumb-item">
                   <a href="/"><i class="fas fa-home"></i></a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">Forum Post</li>
+                <li class="breadcrumb-item active" aria-current="page">Conversation</li>
               </ol>
             </nav>
-          </div>
-          <div class="col-lg-6 col-5 text-right">
-            <a href="{% url 'community:forumpost_create' %}" class="btn btn-sm btn-neutral">New</a>
           </div>
         </div>
       </div>
@@ -35,7 +32,7 @@ Forum Post List
         <div class="card">
           <!-- Card header -->
           <div class="card-header border-0">
-            <h3 class="mb-0">Forum Post List</h3>
+            <h3 class="mb-0">Conversation List</h3>
           </div>
           <!-- Table -->
           <div class="table-responsive">
@@ -43,9 +40,7 @@ Forum Post List
               <thead class="thead-light">
                 <tr>
                   <th scope="col" class="sort" data-data="id" data-sort="id">ID</th>
-                  <th scope="col" class="sort" data-data="title" data-sort="title">Title</th>
-                  <th scope="col" class="sort" data-data="author" data-sort="author">Author</th>
-                  <th scope="col" class="sort" data-data="created" data-sort="created">Created</th>
+                  <th scope="col" class="sort" data-data="modified" data-sort="modified">Modified</th>
                 </tr>
               </thead>
               <tbody class="list"></tbody>
@@ -65,7 +60,7 @@ Forum Post List
     TableParams = {}
     $(document).ready(function () {
       table = $('#datatable').DataTable({
-        order: [[3, 'desc']],
+        order: [[1, 'desc']],
         "language": {
           "paginate": {
               "previous": "<i class='fas fa-angle-left'></i>",
@@ -73,7 +68,7 @@ Forum Post List
           }
         },
         ajax: {
-          url: '/api/forumpost/?format=datatables',
+          url: '/api/conversation/?format=datatables',
           data: function (d) {
             return $.extend(d, TableParams)
           }
@@ -84,22 +79,17 @@ Forum Post List
             visible: false
           },
           {
-            targets: 3,
-            render: function (data) {
-              return moment(data).format("dddd, MMMM Do YYYY, h:mm:ss a");
-            }
+            targets: 1,
+            visible: false
           }
         ]
       })
       $('#datatable tbody').on('click', 'tr', function() {
         // Get data of the clicked row
         var rowData = table.row(this).data();
-        url = `{% url 'community:forumpost_detail' pk=0 %}`
+        url = `{% url 'messaging:message_create' receiver=0 %}`
         // Example: Open a modal with row details
         window.location.href = url.replace('0', rowData.id)
-        
-        // Example: Navigate to a new page with row details
-        // window.location.href = '/details?id=' + rowData[0]; // Assuming the first column contains the ID
     });
     })
   </script>

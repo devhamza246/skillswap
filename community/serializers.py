@@ -8,10 +8,18 @@ class CommunityEventSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class CommunityEventListSerializer(CommunityEventSerializer):
+    organizer = serializers.CharField(source="organizer.get_full_name")
+
+
 class ForumPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = ForumPost
         fields = "__all__"
+
+
+class ForumPostListSerializer(ForumPostSerializer):
+    author = serializers.CharField(source="author.get_full_name")
 
 
 class CommentSerializer(serializers.ModelSerializer):

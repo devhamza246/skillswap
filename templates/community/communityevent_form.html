@@ -62,8 +62,25 @@
               <div class="pl-lg-4">
                 <div class="row">
                   <div class="col-lg-4">
-                    <label class="form-control-label" for="id_name">Name</label>
-                    <div class="form-group">{{ form.name }}</div>
+                    <label class="form-control-label" for="title">Title</label>
+                    <div class="form-group">{{ form.title }}</div>
+                  </div>
+                  <div class="col-lg-4">
+                    <label class="form-control-label" for="date">Date</label>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                        </div>
+                        <input class="flatpickr datetimepicker form-control" name="date" type="text" placeholder="Select Date and Time" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="description">Description</label>
+                    <div class="form-group">{{ form.description }}</div>
                   </div>
                 </div>
               </div>

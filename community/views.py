@@ -19,6 +19,7 @@ class ForumPostListView(LoginRequiredMixin, ListView):
 
 class ForumPostCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = ForumPost
+    template_name = "community/forumpost_form.html"
     form_class = ForumPostForm
     success_url = reverse_lazy("community:forumpost_list")
 
@@ -46,8 +47,13 @@ class CommunityEventListView(LoginRequiredMixin, ListView):
 
 class CommunityEventCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = CommunityEvent
+    template_name = "community/communityevent_form.html"
     form_class = CommunityEventForm
     success_url = reverse_lazy("community:communityevent_list")
+
+    def form_valid(self, form):
+        form.instance.organizer = self.request.user
+        return super().form_valid(form)
 
 
 class CommunityEventDetailView(LoginRequiredMixin, DetailView):

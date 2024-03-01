@@ -9,7 +9,8 @@ from django.views.generic import (
 from accounts.models import User
 from messaging.models import Message, Conversation
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.shortcuts import get_object_or_404
+from django.db.models import Count
 from messaging.serializers import MessageSerializer
 
 
@@ -34,28 +35,36 @@ class MessageCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        receiver = self.kwargs.get("receiver")
         sender = self.request.user.id
-        user_obj = User.objects.get(id=receiver)
-        messages = []
-        existing_conversation = Conversation.objects.filter(participants=sender).filter(
-            participants=user_obj
-        )
-        if existing_conversation.exists():
-            conversation_obj = existing_conversation.first()
-            messages_obj = Message.objects.filter(
-                conversation=conversation_obj,
+        receiver_id = self.kwargs.get("receiver")
+        conversation_id = self.kwargs.get("conversation")
+
+        if receiver_id:
+            receiver = get_object_or_404(User, id=receiver_id)
+            existing_conversations = (
+                Conversation.objects.filter(participants__in=[sender, receiver_id])
+                .annotate(num_participants=Count("participants"))
+                .filter(num_participants=2)
             )
-            if messages_obj.exists():
-                messages_obj = messages_obj.order_by("created")
-                messages_serializer = MessageSerializer(messages_obj, many=True)
-                messages = messages_serializer.data
-        else:
-            conversation_obj = Conversation.objects.create()
-            conversation_obj.participants.set([sender, receiver])
-            conversation_obj.save()
+
+            if existing_conversations.exists():
+                conversation_obj = existing_conversations.first()
+            else:
+                conversation_obj = Conversation.objects.create()
+                conversation_obj.participants.add(sender, receiver_id)
+
+        elif conversation_id:
+            conversation_obj = get_object_or_404(Conversation, id=conversation_id)
+            receiver = conversation_obj.participants.exclude(id=sender).first()
+
+        messages_obj = Message.objects.filter(conversation=conversation_obj)
+        if messages_obj.exists():
+            messages_obj = messages_obj.order_by("created")
+            messages_serializer = MessageSerializer(messages_obj, many=True)
+            messages = messages_serializer.data
+
         context["conversation_id"] = conversation_obj.id
-        context["receiver"] = user_obj
+        context["receiver"] = receiver
         context["messages"] = messages
         return context
 
@@ -77,13 +86,6 @@ class ConversationListView(LoginRequiredMixin, ListView):
     model = Conversation
     template_name = "messaging/conversation_list.html"
 
-    def get_context_data(self, **kwargs):
-        context = super(ConversationListView, self).get_context_data(**kwargs)
-        context["conversations"] = Conversation.objects.filter(
-            participants=self.request.user
-        )
-        return context
-
 
 class ConversationDetailView(LoginRequiredMixin, DetailView):
     model = Conversation
@@ -96,13 +98,6 @@ class ConversationCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.participants.add(self.request.user)
         return super().form_valid(form)
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
 
 
 class ConversationUpdateView(LoginRequiredMixin, UpdateView):

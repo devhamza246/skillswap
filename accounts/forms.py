@@ -55,7 +55,7 @@ class UserInterestForm(forms.ModelForm):
         fields = ["learning_interests"]
         widgets = {
             "learning_interests": forms.CheckboxSelectMultiple(
-                attrs={"class": "custom-checkbox"},
+                attrs={"class": "form-control custom-checkbox"},
                 choices=SkillAndInterest.objects.all().values_list("id", "name"),
             )
         }

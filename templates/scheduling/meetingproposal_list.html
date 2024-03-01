@@ -56,10 +56,10 @@
               <thead class="thead-light">
                 <tr>
                   <th scope="col" class="sort" data-data="id" data-sort="id">ID</th>
-                  <th scope="col" class="sort" data-data="status" data-sort="status">Status</th>
                   <th scope="col" class="sort" data-data="proposer.name" data-sort="proposer.name">Proposer</th>
                   <th scope="col" class="sort" data-data="proposee.name" data-sort="proposee.name">Proposee</th>
                   <th scope="col" class="sort" data-data="proposed_time" data-sort="proposed_time">Date and Time</th>
+                  <th scope="col" class="sort" data-data="status" data-sort="status">Status</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
@@ -129,22 +129,6 @@
           {
             targets: 1,
             render: function (data, type, row) {
-              var divHtml = '';
-              if (data == 1) {
-                  divHtml = '<div class="d-flex justify-content-center"><div class="badge bg-warning text-white p-3">Pending</div></div>';
-              } else if (data == 2) {
-                  divHtml = '<div class="d-flex justify-content-center"><div class="badge bg-success text-white p-3">Approved</div></div>';
-              } else if (data == 3) {
-                  divHtml = '<div class="d-flex justify-content-center"><div class="badge bg-danger text-white p-3">Declined</div></div>';
-              } else {
-                  divHtml = '<div class="d-flex justify-content-center"><div class="badge bg-secondary text-white p-3">Unknown</div></div>';
-              }
-              return divHtml;
-            }
-          },
-          {
-            targets: 2,
-            render: function (data, type, row) {
               if (row.proposer.id == {{ user.id }}) {
                 return "You"
               }
@@ -152,7 +136,7 @@
             }
           },
           {
-            targets: 3,
+            targets: 2,
             render: function (data, type, row) {
               if (row.proposee.id == {{ user.id }}) {
                 return "You"
@@ -161,9 +145,23 @@
             }
           },
           {
-            targets: 4,
+            targets: 3,
             render: function (data, type, row) {
               return moment(data).format("dddd, MMMM Do YYYY, h:mm:ss a");
+            }
+          },
+          {
+            targets: 4,
+            render: function (data, type, row) {
+              var divHtml = '';
+              if (data == 1) {
+                  divHtml = '<span class="badge badge-dot mr-4"><i class="bg-warning"></i> <span class="status">Pending</span>';
+              } else if (data == 2) {
+                  divHtml = '<span class="badge badge-dot mr-4"><i class="bg-success"></i> <span class="status">Approved</span></span>';
+              } else if (data == 3) {
+                  divHtml = '<span class="badge badge-dot mr-4"><i class="bg-danger"></i> <span class="status">Declined</span></span>';
+              }
+              return divHtml;
             }
           },
           {
@@ -206,8 +204,11 @@
             headers: {'X-CSRFToken': '{{ csrf_token }}'},
             data: {status: '2'},
             success: function(response) {
+              Toast.fire({
+                title: "Meeting accepted successfully!",
+                icon: "success"
+              });
               table.ajax.reload()
-              showAlert.showAlert('success', 'Meeting Accepted!');
             },
         });
     });
@@ -222,7 +223,10 @@
           data: {status: '3'},
           success: function(response) {
             table.ajax.reload()
-            showAlert.showAlert('success', 'Meeting Declined!');
+            Toast.fire({
+              title: "Meeting declined successfully!",
+              icon: "success"
+            });
           },
         });
     });

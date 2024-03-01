@@ -4035,7 +4035,7 @@ input[type="button"].btn-block {
 
 .alert {
   position: fixed;
-  top: 100px; /* Adjust this value to match the height of your top navigation bar */
+  top: 20px; /* Adjust this value to match the height of your top navigation bar */
   right: 5px;
   left: 800px; /* Adjust this value to match the width of your side navigation bar */
   z-index: 1000; /* Ensure it's above other content */

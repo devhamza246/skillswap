@@ -91,19 +91,19 @@
                       {{ form.learning_interests }}
                     </div>
                   </div>
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <label class="form-control-label" for="id_skills">Skills</label>
+                      {{ form.skills|attr:'multiple' }}
+                    </div>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col-lg-4">
                     <div class="form-group">
-                      <label class="form-control-label" for="id_skills">Skills</label>
-                      {{ form.skills|attr:"multiple" }}
+                      <label class="form-control-label" for="id_experience_level">Experience Level</label>
+                      {{ form.experience_level }}
                     </div>
-                  </div>
-                </div>
-                <div class="col-lg-4">
-                  <div class="form-group">
-                    <label class="form-control-label" for="id_experience_level">Experience Level</label>
-                    {{ form.experience_level }}
                   </div>
                 </div>
               </div>

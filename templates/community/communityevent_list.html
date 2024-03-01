@@ -43,8 +43,9 @@ Community Event List
               <thead class="thead-light">
                 <tr>
                   <th scope="col" class="sort" data-data="id" data-sort="id">ID</th>
-                  <th scope="col" class="sort" data-data="name" data-sort="name">Name</th>
-                  <th scope="col">Action</th>
+                  <th scope="col" class="sort" data-data="title" data-sort="title">Title</th>
+                  <th scope="col" class="sort" data-data="organizer" data-sort="organizer">Organizer</th>
+                  <th scope="col" class="sort" data-data="date" data-sort="date">Date</th>
                 </tr>
               </thead>
               <tbody class="list"></tbody>
@@ -64,6 +65,7 @@ Community Event List
     TableParams = {}
     $(document).ready(function () {
       table = $('#datatable').DataTable({
+        order: [[3, 'desc']],
         "language": {
           "paginate": {
               "previous": "<i class='fas fa-angle-left'></i>",
@@ -78,23 +80,23 @@ Community Event List
         },
         columnDefs: [
           {
-            targets: -1,
-            sortable: false,
-            searchable: false,
-            render: (data, type, row) => {
-              let detail_url = `{% url 'community:communityevent_detail' pk=0 %}`
-              let update_url = `{% url 'community:communityevent_update' pk=0 %}`
-              let actions = `<div class="dropdown">
-                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
-                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                              <a class="dropdown-item" href="${detail_url.replace('0', row.id)}">Detail</a>
-                              <a class="dropdown-item" href="${update_url.replace('0', row.id)}">Update</a>
-                            </div>
-                          </div>`
-              return actions
+            targets : 0,
+            visible : false
+
+          },
+          {
+            targets: 3,
+            render: function (data) {
+              return moment(data).format("dddd, MMMM Do YYYY, h:mm:ss a");
             }
           }
         ]
+      })
+      $('#datatable tbody').on('click', 'tr', function() {
+        // Get data of the clicked row
+        var rowData = table.row(this).data();
+        url = `{% url 'community:communityevent_detail' pk=0 %}`
+        window.location.href = url.replace('0', rowData.id)
       })
     })
   </script>

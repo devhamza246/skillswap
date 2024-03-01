@@ -3,13 +3,14 @@ from .models import ForumPost, CommunityEvent
 
 
 class ForumPostForm(forms.ModelForm):
+
     class Meta:
         model = ForumPost
         fields = [
             "title",
             "content",
         ]
-        widget = {
+        widgets = {
             "title": forms.TextInput(attrs={"class": "form-control"}),
             "content": forms.Textarea(attrs={"class": "form-control"}),
         }
@@ -18,8 +19,8 @@ class ForumPostForm(forms.ModelForm):
 class CommunityEventForm(forms.ModelForm):
     class Meta:
         model = CommunityEvent
-        fields = ["organizer", "title", "description", "date"]
-        widget = {
+        fields = ["title", "description", "date"]
+        widgets = {
             "title": forms.TextInput(attrs={"class": "form-control"}),
             "description": forms.Textarea(attrs={"class": "form-control"}),
         }

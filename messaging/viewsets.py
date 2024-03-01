@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .models import Conversation, Message
-from .serializers import MessageSerializer
+from .serializers import MessageSerializer, ConversationSerializer
 
 
 class MessageViewSet(viewsets.ModelViewSet):
@@ -36,3 +36,8 @@ class MessageViewSet(viewsets.ModelViewSet):
         conversation.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ConversationViewSet(viewsets.ModelViewSet):
+    queryset = Conversation.objects.all()
+    serializer_class = ConversationSerializer

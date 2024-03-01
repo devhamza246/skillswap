@@ -11,7 +11,12 @@ from messaging.views import (
     MessageListView,
     MessageUpdateView,
 )
-from .viewsets import MessageViewSet
+from .viewsets import MessageViewSet, ConversationViewSet
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register("message", MessageViewSet)
+router.register("conversation", ConversationViewSet)
 
 app_name = "messaging"
 
