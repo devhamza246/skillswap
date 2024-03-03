@@ -1,0 +1,141 @@
+{% extends 'layouts/base.html' %}
+{% block title %}
+  Messages
+{% endblock %}
+{% block content %}
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item">
+                  <a href="/"><i class="fas fa-home"></i></a>
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+
+  <div class="container-fluid mt--6">
+        <div class="card">
+          <div class="row overflow-hidden p-2">
+            <!-- Users box-->
+            <div class="col-5">
+              <div class="bg-white">        
+                <div class="messages-box">
+                  <div class="list-group rounded-0">
+                    <a class="list-group-item list-group-item-action active text-white rounded-0">
+                      <div class="media"><img src="{% if receiver.photo  %} {{ receiver.photo.url }} {% else %} /static/assets/img/theme/team-1.jpg {% endif %}" alt="user" width="50" class="rounded-circle">
+                        <div class="media-body ml-4">
+                          <div class="d-flex align-items-center justify-content-between mb-1">
+                            <h3 class="text-white">{{ receiver.get_full_name }}</h3>
+                          </div>
+                        </div>
+                      </div>
+                    </a>       
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Chat Box-->
+            <div class="col-7">
+              <div class="px-4 py-5 chat-box overflow-auto bg-white" style="height: 512px;">
+                {% for message in messages %}
+                    <div class="media w-50 {% if message.sender == request.user.id %}ml-auto{% endif %} mb-3">
+                        <div class="media-body ml-3">
+                            <div class="bg-{% if message.sender == request.user.id %}primary{% else %}light{% endif %} rounded py-2 px-3 mb-2">
+                                <p class="text-small mb-0 text-{% if message.sender == request.user.id %}white{% else %}muted{% endif %}">{{ message.message }}</p>
+                            </div>
+                            <p class="small text-muted">{{ message.created }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+                      
+              </div>
+        
+              <!-- Typing area -->
+              <form id="message_form" action="#" class="bg-light">
+                <div class="input-group">
+                  <input type="text" id="id_message" name="message" placeholder="Type a message" aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light">
+                  <input type="hidden" id="id_sender" name="sender" value="{{ user.id }}">
+                  <input type="hidden" id="id_receiver" name="receiver" value="{{ receiver.id }}">
+                  <div class="input-group-append">
+                    <button id="button-addon2" type="submit" class="btn btn-link"> <i class="fa fa-paper-plane"></i></button>
+                  </div>
+                </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+    {% include 'includes/footer.html' %}
+  </div>
+{% endblock %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+  <script>
+    $(document).ready(function () {
+      let user_id = {{ request.user.id }}
+      const socket = new WebSocket(`ws://${window.location.host}/ws/chat/{{object.id}}/`)
+
+      socket.onopen = () => {
+        console.log('WebSocket connection established.')
+      }
+    
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        debugger
+        const messageHTML = `
+            <div class="media w-50 ${data.sender_id == user_id ? 'ml-auto' : ''} mb-3">
+                <div class="media-body ml-3">
+                    <div class="bg-${data.sender_id == user_id ? 'primary' : 'light'} rounded py-2 px-3 mb-2">
+                        <p class="text-small mb-0 text-${data.sender_id == user_id ? 'white' : 'muted'}">${data.message}</p>
+                    </div>
+                    <p class="small text-muted">${data.created}</p>
+                </div>
+            </div>
+        `;
+        document.querySelector(".chat-box").innerHTML += messageHTML;
+        
+        
+      }
+    
+      $('#message_form').on('submit', function (e) {
+        e.preventDefault()
+        sender = this.sender.value
+        receiver = this.receiver.value
+        message = this.message.value
+        socket.send(
+          JSON.stringify({
+            sender: sender,
+            receiver: receiver,
+            message: message
+          })
+        )
+        $.ajax({
+          type: "POST",
+          url: "{% url 'messaging:send_message' %}",
+          data: {
+            'sender': sender,
+            'receiver': receiver,
+            'message': message,
+            'conversation': {{ object.id }}
+          },
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          success: function (data) {
+            document.querySelector("#id_message").value = ''
+          }
+        })
+      })
+    })
+  </script>
+{% endblock %}

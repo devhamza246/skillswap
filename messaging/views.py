@@ -1,4 +1,6 @@
 from typing import Any
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
     DetailView,
@@ -38,7 +40,7 @@ class MessageCreateView(LoginRequiredMixin, CreateView):
         sender = self.request.user.id
         receiver_id = self.kwargs.get("receiver")
         conversation_id = self.kwargs.get("conversation")
-
+        messages = []
         if receiver_id:
             receiver = get_object_or_404(User, id=receiver_id)
             existing_conversations = (
@@ -89,15 +91,26 @@ class ConversationListView(LoginRequiredMixin, ListView):
 
 class ConversationDetailView(LoginRequiredMixin, DetailView):
     model = Conversation
+    template_name = "messaging/conversation_detail.html"
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        conversation = self.get_object()
+        messages = []
+        receiver = conversation.participants.exclude(id=self.request.user.id).first()
+        messages_obj = Message.objects.filter(conversation=conversation)
+        if messages_obj.exists():
+            messages_obj = messages_obj.order_by("created")
+            messages_serializer = MessageSerializer(messages_obj, many=True)
+            messages = messages_serializer.data
+        context["messages"] = messages
+        context["receiver"] = receiver
+        return context
 
 
 class ConversationCreateView(LoginRequiredMixin, CreateView):
     model = Conversation
     fields = ["participants"]
-
-    def form_valid(self, form):
-        form.instance.participants.add(self.request.user)
-        return super().form_valid(form)
 
 
 class ConversationUpdateView(LoginRequiredMixin, UpdateView):

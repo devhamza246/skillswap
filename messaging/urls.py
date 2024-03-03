@@ -44,7 +44,7 @@ urlpatterns = [
         name="conversation_detail",
     ),
     path(
-        "conversation/create/",
+        "conversation/create/<int:receiver>",
         ConversationCreateView.as_view(),
         name="conversation_create",
     ),

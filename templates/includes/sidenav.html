@@ -9,12 +9,14 @@
       <div class="collapse navbar-collapse" id="sidenav-collapse-main">
         <!-- Nav items -->
         <ul class="navbar-nav">
+          {% if request.user.is_superuser %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'accounts:skillandinterest_list' %}">
               <i class="ni ni-bulb-61 text-default"></i>
               <span class="nav-link-text">Skills And Interests</span>
             </a>
           </li>
+          {% endif %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'messaging:conversation_list' %}">
               <i class="fa fa-comments text-default"></i>

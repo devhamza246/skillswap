@@ -26,6 +26,7 @@ from matching.urls import router as matching_router
 from scheduling.urls import router as scheduling_router
 from feedback.urls import router as feedback_router
 from community.urls import router as community_router
+from messaging.urls import router as messaging_router
 
 router = routers.DefaultRouter()
 router.registry.extend(accounts_router.registry)
@@ -33,6 +34,7 @@ router.registry.extend(matching_router.registry)
 router.registry.extend(scheduling_router.registry)
 router.registry.extend(feedback_router.registry)
 router.registry.extend(community_router.registry)
+router.registry.extend(messaging_router.registry)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

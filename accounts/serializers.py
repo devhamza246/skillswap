@@ -23,7 +23,7 @@ class UserDropDownSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source="get_full_name")
     class Meta:
         model = UserModel
-        fields = ["id", "name"]
+        fields = ["id", "photo", "name"]
 
 
 class SkillAndInterestSerializer(serializers.ModelSerializer):

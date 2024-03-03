@@ -29,7 +29,7 @@
           </div>
           <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
             <div class="d-flex justify-content-between">
-              <a href="{% url 'messaging:message_create' receiver=object.id %}" class="btn btn-sm btn-default float-left">Message</a>
+              <button type="button" id="btn-message" class="btn btn-sm btn-default float-left">Message</button>
               <!--<a href="{% url 'feedback:review_create' reviewed_user=object.id %}" class="btn btn-sm btn-default float-right">Review</a>-->
               <button type="button" class="btn btn-sm btn-default float-right" data-toggle="modal" data-target="#feedbackModal">
                 Review
@@ -43,7 +43,8 @@
               <div class="h3 mt-4">Skills</div>
               <div class="h4 font-weight-300">
                 {% for skill in object.skills.all %}
-                  {{ skill.name }} |
+                  {{ skill.name }}
+                  {% if not forloop.last %}|{% endif %}
                 {% endfor %}
               </div>
               <div class="h3 mt-1">Experience Level</div>
@@ -51,7 +52,8 @@
               <div class="h3 mt-1">Learning Interests</div>
               <div class="h4 font-weight-300">
                 {% for learning_interest in object.learning_interests.all %}
-                  {{ learning_interest.name }} |
+                  {{ learning_interest.name }}
+                  {% if not forloop.last %}|{% endif %}
                 {% endfor %}
               </div>
               <div class="mt-5 col-6 mx-auto">
@@ -256,7 +258,7 @@
         url: "/api/meetingproposal/",
         data: form.serialize(),
         headers: {
-          "csrf_token": "{{ csrf_token }}"
+          'X-CSRFToken': '{{ csrf_token }}'
         },
         success: function (data) {
           debugger
@@ -279,7 +281,7 @@
         url: "/api/review/",
         data: form.serialize(),
         headers: {
-          "csrf_token": "{{ csrf_token }}"
+          'X-CSRFToken': '{{ csrf_token }}'
         },
         success: function (data) {
           $("#feedbackModal").modal("hide");
@@ -307,6 +309,23 @@
             s.style.color = '' // Empty stars after the selected rating
           }
         })
+      })
+    })
+
+    $("#btn-message").on("click", function () {
+      $.ajax({
+        type: "POST",
+        url: "/api/conversation/",
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        data: {
+          "receiver": "{{ object.id }}",
+        },
+        success: function (data) {
+          url = "{% url 'messaging:conversation_detail' pk=0 %}"
+          window.location.href = url.replace('0', data.id)
+        }
       })
     })
   })
