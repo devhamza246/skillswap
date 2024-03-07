@@ -169,25 +169,50 @@
                 {% csrf_token %}
                 <input type="hidden" name="proposer" value="{{ request.user.id }}" />
                 <input type="hidden" name="proposee" value="{{ object.id }}" />
-                <div>
-                  <div class="row d-flex justify-content-center">
-                    <div class="col-lg-6">
-                        <label class="form-control-label" for="proposed_time">Date</label>
-                        <div class="form-group">
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
-                            </div>
-                            <input class="flatpickr datetimepicker form-control" name="proposed_time" id="proposed_time" type="text" placeholder="Select Date and Time">
+                <div class="row d-flex justify-content-center">
+                  <div class="col-lg-6">
+                      <label class="form-control-label" for="proposed_time">Date</label>
+                      <div class="form-group">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
                           </div>
+                          <input class="flatpickr datetimepicker form-control" name="proposed_time" id="proposed_time" type="text" placeholder="Select Date and Time">
                         </div>
                       </div>
                     </div>
+                </div>
+                <div class="row d-flex justify-content-center">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="meeting_type" value="1" id="radio_button_online" checked>
+                          <label class="form-check-label" for="radio_button_online">
+                            Online
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="meeting_type" value="2" id="radio_button_in_person">
+                          <label class="form-check-label" for="radio_button_in_person">
+                            In-Person
+                          </label>
+                        </div>
+                    </div>
                   </div>
+                </div>
+                <div class="row d-flex justify-content-center">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="proposed_location">Location</label>
+                      <div class="input-group">
+                        <input class="form-control" name="proposed_location" id="proposed_location" type="text" placeholder="Enter location" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                   <div class="modal-footer justify-content-center">
                     <button type="submit" class="btn btn-primary"><span>Request Meeting</span></button>
                   </div>
-                </div>
               </form>
             </div>
           </div>
@@ -249,7 +274,21 @@
 {% block javascripts %}
 <script>
   $(document).ready(function () {
-    
+    const radioButtons = document.querySelectorAll('input[name="flexRadioDefault"]');
+    const proposed_location_field = document.getElementById('proposed_location');
+    // Add event listener to each radio button
+    radioButtons.forEach((radioButton) => {
+        radioButton.addEventListener('change', function() {
+            // Check if the "In-Person" radio button is selected
+            if (this.value === '2') {
+                // If "In-Person" is selected, enable the input field
+                proposed_location_field.disabled = false;
+            } else {
+                // If "Online" is selected or if none is selected, disable the input field
+                proposed_location_field.disabled = true;
+            }
+        });
+    });
     $("#schedule-meeting-form").on("submit", function (event) {
       event.preventDefault();
       form = $(this);
