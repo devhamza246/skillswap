@@ -29,7 +29,7 @@
           </div>
           <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
             <div class="d-flex justify-content-between">
-              <a href="{% url 'messaging:message_create' receiver=object.id %}" class="btn btn-sm btn-default float-left">Message</a>
+              <button type="button" id="btn-message" class="btn btn-sm btn-default float-left">Message</button>
               <!--<a href="{% url 'feedback:review_create' reviewed_user=object.id %}" class="btn btn-sm btn-default float-right">Review</a>-->
               <button type="button" class="btn btn-sm btn-default float-right" data-toggle="modal" data-target="#feedbackModal">
                 Review
@@ -43,7 +43,8 @@
               <div class="h3 mt-4">Skills</div>
               <div class="h4 font-weight-300">
                 {% for skill in object.skills.all %}
-                  {{ skill.name }} |
+                  {{ skill.name }}
+                  {% if not forloop.last %}|{% endif %}
                 {% endfor %}
               </div>
               <div class="h3 mt-1">Experience Level</div>
@@ -51,7 +52,8 @@
               <div class="h3 mt-1">Learning Interests</div>
               <div class="h4 font-weight-300">
                 {% for learning_interest in object.learning_interests.all %}
-                  {{ learning_interest.name }} |
+                  {{ learning_interest.name }}
+                  {% if not forloop.last %}|{% endif %}
                 {% endfor %}
               </div>
               <div class="mt-5 col-6 mx-auto">
@@ -167,25 +169,50 @@
                 {% csrf_token %}
                 <input type="hidden" name="proposer" value="{{ request.user.id }}" />
                 <input type="hidden" name="proposee" value="{{ object.id }}" />
-                <div>
-                  <div class="row d-flex justify-content-center">
-                    <div class="col-lg-6">
-                        <label class="form-control-label" for="proposed_time">Date</label>
-                        <div class="form-group">
-                          <div class="input-group">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
-                            </div>
-                            <input class="flatpickr datetimepicker form-control" name="proposed_time" id="proposed_time" type="text" placeholder="Select Date and Time">
+                <div class="row d-flex justify-content-center">
+                  <div class="col-lg-6">
+                      <label class="form-control-label" for="proposed_time">Date</label>
+                      <div class="form-group">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
                           </div>
+                          <input class="flatpickr datetimepicker form-control" name="proposed_time" id="proposed_time" type="text" placeholder="Select Date and Time">
                         </div>
                       </div>
                     </div>
+                </div>
+                <div class="row d-flex justify-content-center">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="meeting_type" value="1" id="radio_button_online" checked>
+                          <label class="form-check-label" for="radio_button_online">
+                            Online
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="meeting_type" value="2" id="radio_button_in_person">
+                          <label class="form-check-label" for="radio_button_in_person">
+                            In-Person
+                          </label>
+                        </div>
+                    </div>
                   </div>
+                </div>
+                <div class="row d-flex justify-content-center">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="proposed_location">Location</label>
+                      <div class="input-group">
+                        <input class="form-control" name="proposed_location" id="proposed_location" type="text" placeholder="Enter location" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                   <div class="modal-footer justify-content-center">
                     <button type="submit" class="btn btn-primary"><span>Request Meeting</span></button>
                   </div>
-                </div>
               </form>
             </div>
           </div>
@@ -247,7 +274,21 @@
 {% block javascripts %}
 <script>
   $(document).ready(function () {
-    
+    const meetingTypeRadioButtons = document.querySelectorAll('input[name="meeting_type"]');
+    const proposed_location_field = document.getElementById('proposed_location');
+    // Add event listener to each radio button
+    meetingTypeRadioButtons.forEach((radioButton) => {
+        radioButton.addEventListener('change', function() {
+            // Check if the "In-Person" radio button is selected
+            if (this.value === '2') {
+                // If "In-Person" is selected, enable the input field
+                proposed_location_field.disabled = false;
+            } else {
+                // If "Online" is selected or if none is selected, disable the input field
+                proposed_location_field.disabled = true;
+            }
+        });
+    });
     $("#schedule-meeting-form").on("submit", function (event) {
       event.preventDefault();
       form = $(this);
@@ -256,13 +297,16 @@
         url: "/api/meetingproposal/",
         data: form.serialize(),
         headers: {
-          "csrf_token": "{{ csrf_token }}"
+          'X-CSRFToken': '{{ csrf_token }}'
         },
         success: function (data) {
           debugger
           $("#meetingModal").modal("hide");
           form[0].reset();
-          showAlert.showAlert("success", "Meeting request sent successfully");
+          Toast.fire({
+            title: "Meeting request sent successfully!",
+            icon: "success"
+          });
         }
 
       })
@@ -276,13 +320,17 @@
         url: "/api/review/",
         data: form.serialize(),
         headers: {
-          "csrf_token": "{{ csrf_token }}"
+          'X-CSRFToken': '{{ csrf_token }}'
         },
         success: function (data) {
-          debugger
           $("#feedbackModal").modal("hide");
-          form[0].reset();
-          showAlert.showAlert("success", "Feedback submitted successfully");
+          Toast.fire({
+            title: "Feedback submitted successfully!",
+            icon: "success"
+          });
+        },
+        complete: function () {
+          window.location.reload()
         }
 
       })
@@ -300,6 +348,23 @@
             s.style.color = '' // Empty stars after the selected rating
           }
         })
+      })
+    })
+
+    $("#btn-message").on("click", function () {
+      $.ajax({
+        type: "POST",
+        url: "/api/conversation/",
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        data: {
+          "receiver": "{{ object.id }}",
+        },
+        success: function (data) {
+          url = "{% url 'messaging:conversation_detail' pk=0 %}"
+          window.location.href = url.replace('0', data.id)
+        }
       })
     })
   })

@@ -47,10 +47,10 @@
             <div class="col-7">
               <div class="px-4 py-5 chat-box overflow-auto bg-white" style="height: 512px;">
                 {% for message in messages %}
-                    <div class="media w-50 {% if message.sender == user.id %}ml-auto{% endif %} mb-3">
+                    <div class="media w-50 {% if message.sender == request.user.id %}ml-auto{% endif %} mb-3">
                         <div class="media-body ml-3">
-                            <div class="bg-{% if message.sender == user.id %}primary{% else %}light{% endif %} rounded py-2 px-3 mb-2">
-                                <p class="text-small mb-0 text-{% if message.sender == user.id %}white{% else %}muted{% endif %}">{{ message.message }}</p>
+                            <div class="bg-{% if message.sender == request.user.id %}primary{% else %}light{% endif %} rounded py-2 px-3 mb-2">
+                                <p class="text-small mb-0 text-{% if message.sender == request.user.id %}white{% else %}muted{% endif %}">{{ message.message }}</p>
                             </div>
                             <p class="small text-muted">{{ message.created }}</p>
                         </div>
@@ -82,9 +82,8 @@
 {% block javascripts %}
   <script>
     $(document).ready(function () {
-      let user_id = {{ user.id }}
-   
-      const socket = new WebSocket(`ws://${window.location.host}/ws/chat/{{conversation_id}}/`)
+      let user_id = {{ request.user.id }}
+      const socket = new WebSocket(`ws://${window.location.host}/ws/chat/{{object.id}}/`)
 
       socket.onopen = () => {
         console.log('WebSocket connection established.')
@@ -92,6 +91,7 @@
     
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        debugger
         const messageHTML = `
             <div class="media w-50 ${data.sender_id == user_id ? 'ml-auto' : ''} mb-3">
                 <div class="media-body ml-3">
@@ -103,7 +103,7 @@
             </div>
         `;
         document.querySelector(".chat-box").innerHTML += messageHTML;
-        document.querySelector("#id_message").value = ''
+        
         
       }
     
@@ -119,6 +119,7 @@
             message: message
           })
         )
+        document.querySelector("#id_message").value = ''
       })
     })
   </script>

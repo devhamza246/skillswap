@@ -1,0 +1,111 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+  Community Event Detail
+{% endblock %}
+{% block content %}
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Community Event Detail</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item">
+                  <a href="/"><i class="fas fa-home"></i></a>
+                </li>
+                <li class="breadcrumb-item">
+                  <a href="{% url 'community:communityevent_list' %}">Community Event</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Community Event Detail</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt--5">
+    <div class="row">
+      <div class="col-xl-12 order-xl-1">
+        <div class="card">
+          <div class="card-header">
+            <div class="row align-items-center">
+              <div class="col-8">
+                <h3 class="mb-0">Detail</h3>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-4">
+                  <label class="form-control-label">Organizer:</label>
+                </div>
+                <div class="col-lg-4">{{ communityevent.organizer }}</div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                  <label class="form-control-label">Title:</label>
+                </div>
+                <div class="col-lg-4">{{ communityevent.title }}</div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                  <label class="form-control-label">Date:</label>
+                </div>
+                <div class="col-lg-4">{{ communityevent.date }}</div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                  <label class="form-control-label">Description:</label>
+                </div>
+                <div class="col-lg-4">{{ communityevent.description }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer d-flex justify-content-center">
+            <button type="button" id="join-btn" class="btn btn-primary" data-toggle="modal">Join Event</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include 'includes/footer.html' %}
+  </div>
+{% endblock %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+  <script>
+    $(document).ready(function () {
+      $('#join-btn').on('click', function () {
+        $.ajax({
+          type: 'POST',
+          url: '/api/eventparticipant/',
+          data: {
+            user: '{{ request.user.id }}',
+            event: '{{ communityevent.id }}'
+          },
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          success: function (data) {
+            Toast.fire({
+              title: 'You have joined the event successfully!',
+              icon: 'success'
+            })
+          },
+          error: function (data) {
+            Toast.fire({
+              title: 'You have already joined the event!',
+              icon: 'error'
+            })
+          }
+        })
+      })
+    })
+  </script>
+{% endblock %}

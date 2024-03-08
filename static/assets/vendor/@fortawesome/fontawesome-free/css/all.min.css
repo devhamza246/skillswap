@@ -1402,6 +1402,14 @@
     content: "\f653"
 }
 
+.fa-commenting:before {
+    content: "\f27a"
+}
+
+.fa-commenting-o:before {
+    content: "\f27b"
+}
+
 .fa-compact-disc:before {
     content: "\f51f"
 }

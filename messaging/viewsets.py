@@ -1,7 +1,15 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .models import Conversation, Message
-from .serializers import MessageSerializer
+from .serializers import (
+    ConversationListSerializer,
+    MessageSerializer,
+    ConversationSerializer,
+)
+from django.db.models import Count
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class MessageViewSet(viewsets.ModelViewSet):
@@ -36,3 +44,31 @@ class MessageViewSet(viewsets.ModelViewSet):
         conversation.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ConversationViewSet(viewsets.ModelViewSet):
+    queryset = Conversation.objects.all()
+    serializer_action_class = {"list": ConversationListSerializer}
+    serializer_class = ConversationSerializer
+
+    def get_serializer_class(self):
+        if self.action in self.serializer_action_class:
+            return self.serializer_action_class[self.action]
+        return super().get_serializer_class()
+
+    def get_queryset(self):
+        return self.queryset.filter(participants__in=[self.request.user])
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        current_user = request.user.id
+        second_user = User.objects.get(id=data["receiver"]).id
+        existing_conversation = Conversation.objects.filter(
+            participants__id=current_user
+        ).filter(participants__id=second_user)
+        if existing_conversation.exists():
+            conversation = existing_conversation.first()
+        else:
+            conversation = Conversation.objects.create()
+            conversation.participants.add(request.user.id, data["receiver"])
+        return Response(ConversationSerializer(conversation).data)

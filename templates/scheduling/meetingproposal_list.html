@@ -38,7 +38,7 @@
           <div class="card-body">
             <form>
               <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-4">
                   <div class="form-group">
                     <label class="form-control-label">Meeting Type</label>
                     <select class="form-control" id="meeting_type">
@@ -56,10 +56,13 @@
               <thead class="thead-light">
                 <tr>
                   <th scope="col" class="sort" data-data="id" data-sort="id">ID</th>
-                  <th scope="col" class="sort" data-data="status" data-sort="status">Status</th>
                   <th scope="col" class="sort" data-data="proposer.name" data-sort="proposer.name">Proposer</th>
                   <th scope="col" class="sort" data-data="proposee.name" data-sort="proposee.name">Proposee</th>
                   <th scope="col" class="sort" data-data="proposed_time" data-sort="proposed_time">Date and Time</th>
+                  <th scope="col" class="sort" data-data="meeting_type" data-sort="meeting_type">Meeting Type</th>
+                  <th scope="col" class="sort" data-data="proposed_location" data-sort="proposed_location">Location</th>
+                  <th scope="col" class="sort" data-data="meeting_link" data-sort="meeting_link">Meeting Link</th>
+                  <th scope="col" class="sort" data-data="status" data-sort="status">Status</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
@@ -129,22 +132,6 @@
           {
             targets: 1,
             render: function (data, type, row) {
-              var divHtml = '';
-              if (data == 1) {
-                  divHtml = '<div class="d-flex justify-content-center"><div class="badge bg-warning text-white p-3">Pending</div></div>';
-              } else if (data == 2) {
-                  divHtml = '<div class="d-flex justify-content-center"><div class="badge bg-success text-white p-3">Approved</div></div>';
-              } else if (data == 3) {
-                  divHtml = '<div class="d-flex justify-content-center"><div class="badge bg-danger text-white p-3">Declined</div></div>';
-              } else {
-                  divHtml = '<div class="d-flex justify-content-center"><div class="badge bg-secondary text-white p-3">Unknown</div></div>';
-              }
-              return divHtml;
-            }
-          },
-          {
-            targets: 2,
-            render: function (data, type, row) {
               if (row.proposer.id == {{ user.id }}) {
                 return "You"
               }
@@ -152,7 +139,7 @@
             }
           },
           {
-            targets: 3,
+            targets: 2,
             render: function (data, type, row) {
               if (row.proposee.id == {{ user.id }}) {
                 return "You"
@@ -161,9 +148,57 @@
             }
           },
           {
-            targets: 4,
+            targets: 3,
             render: function (data, type, row) {
-              return moment(data).format("dddd, MMMM Do YYYY, h:mm:ss a");
+              return moment(data).tz("UTC").format("dddd, MMMM Do YYYY, h:mm:ss a");
+            }
+          },
+          {
+            targets: 5,
+            defaultContent: '-',
+          },
+          {
+            targets: 6,
+            render: function (data, type, row) {
+              if (row.meeting_type == "Online" && row.meeting_link) {
+                  var proposedTime = moment(row.proposed_time);
+                  console.log('proposedTime:', proposedTime);
+                  var meetingDuration = 60 * 60 * 1000; // 60 minutes in milliseconds
+                  var endTime = moment(proposedTime).add(meetingDuration, 'milliseconds');
+    
+                  console.log('endTime:', endTime);
+    
+                  var now = moment();
+                  console.log('now:', now);
+    
+                  // Check if the end time of the meeting is greater than the current time
+                  if (endTime.isAfter(now)) {
+                    // Meeting has not yet ended, show the meeting link
+                    return '<a href="' + row.meeting_link + '">Join Meeting</a>';
+                  } 
+                  else {
+                    // Meeting has ended, do not show the meeting link
+                    return '-';
+                  }
+              }
+              else {
+                // Meeting has ended, do not show the meeting link
+                return '-';
+              }
+            }
+          },
+          {
+            targets: 7,
+            render: function (data, type, row) {
+              var divHtml = '';
+              if (data == 1) {
+                  divHtml = '<span class="badge badge-dot mr-4"><i class="bg-warning"></i> <span class="status">Pending</span>';
+              } else if (data == 2) {
+                  divHtml = '<span class="badge badge-dot mr-4"><i class="bg-success"></i> <span class="status">Approved</span></span>';
+              } else if (data == 3) {
+                  divHtml = '<span class="badge badge-dot mr-4"><i class="bg-danger"></i> <span class="status">Declined</span></span>';
+              }
+              return divHtml;
             }
           },
           {
@@ -206,8 +241,11 @@
             headers: {'X-CSRFToken': '{{ csrf_token }}'},
             data: {status: '2'},
             success: function(response) {
+              Toast.fire({
+                title: "Meeting accepted successfully!",
+                icon: "success"
+              });
               table.ajax.reload()
-              showAlert.showAlert('success', 'Meeting Accepted!');
             },
         });
     });
@@ -222,7 +260,10 @@
           data: {status: '3'},
           success: function(response) {
             table.ajax.reload()
-            showAlert.showAlert('success', 'Meeting Declined!');
+            Toast.fire({
+              title: "Meeting declined successfully!",
+              icon: "success"
+            });
           },
         });
     });

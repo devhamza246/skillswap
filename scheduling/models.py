@@ -39,6 +39,10 @@ class MeetingProposal(BaseModel):
         ACCEPTED = 2
         DECLINED = 3
 
+    class Type(models.IntegerChoices):
+        ONLINE = 1
+        IN_PERSON = 2
+
     proposer = models.ForeignKey(
         "accounts.User",
         on_delete=models.CASCADE,
@@ -50,7 +54,17 @@ class MeetingProposal(BaseModel):
         related_name="proposee",
     )
     proposed_time = models.DateTimeField()
+    meeting_type = models.IntegerField(choices=Type.choices, default=Type.IN_PERSON)
+    meeting_link = models.URLField(blank=True, null=True)
+    meeting_location = models.TextField(blank=True, null=True)
     status = models.IntegerField(choices=Status.choices, default=Status.PENDING)
 
     def __str__(self):
         return f"{self.proposer.get_full_name()} proposed a meeting to {self.proposee.get_full_name()} at {self.proposed_time}"
+
+
+class ZoomAccessToken(BaseModel):
+    access_token = models.TextField()
+
+    def __str__(self):
+        return self.access_token

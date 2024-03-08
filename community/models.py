@@ -15,6 +15,21 @@ class ForumPost(BaseModel):
         "accounts.User",
         on_delete=models.CASCADE,
     )
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+
+    def __str__(self):
+        return self.content
+
+
+class Comment(BaseModel):
+    post = models.ForeignKey(
+        ForumPost, on_delete=models.CASCADE, related_name="comments"
+    )
+    user = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.CASCADE,
+    )
     content = models.TextField()
 
     def __str__(self):
@@ -28,7 +43,24 @@ class CommunityEvent(BaseModel):
     )
     title = models.CharField(max_length=100)
     description = models.TextField()
-    date = models.DateField()
+    date = models.DateTimeField()
 
     def __str__(self):
         return self.title
+
+
+class EventParticipant(BaseModel):
+    user = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.CASCADE,
+    )
+    event = models.ForeignKey(
+        CommunityEvent,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        unique_together = ("user", "event")  # Ensure a user can join an event only once
+
+    def __str__(self):
+        return f"{self.user.get_fill_name} joined {self.event.title}"

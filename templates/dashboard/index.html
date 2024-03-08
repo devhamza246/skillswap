@@ -62,7 +62,7 @@
           var cardDiv = document.createElement("div");
           cardDiv.className = "col-lg-4";
           // Create the HTML for the card
-          var url = `{% url 'messaging:message_create' receiver=0 %}`
+          var url = `{% url 'messaging:conversation_create' receiver=0 %}`
           var user_profile = `{% url 'accounts:user_profile' pk=0 %}`
           var photo_url = user_data.photo ? user_data.photo : '/static/assets/img/theme/team-1.jpg';
           var cardHtml = `
@@ -78,11 +78,8 @@
                     </div>
                   </div>
                   <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-                    <div class="d-flex justify-content-between">
-                      <a href="${url.replace('0', user_data.id)}" class="btn btn-sm btn-default float-right">Message</a>
-                    </div>
                   </div>
-                  <div class="card-body pt-2">
+                  <div class="card-body pt-5">
                     <div class="text-center">
                       <h5 class="h3">${ user_data.first_name } ${ user_data.last_name }</h5>
                       <div class="h5 font-weight-300">${ user_data.email }</div>
