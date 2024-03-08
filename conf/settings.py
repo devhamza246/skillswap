@@ -166,6 +166,9 @@ MEDIA_ROOT = Path.joinpath(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+ZOOM_ACCOUNT_ID = os.environ.get("ZOOM_ACCOUNT_ID")
+ZOOM_CLIENT_ID = os.environ.get("ZOOM_CLIENT_ID")
+ZOOM_SECRET_KEY = os.environ.get("ZOOM_SECRET_KEY")
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [

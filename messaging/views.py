@@ -32,43 +32,6 @@ class MessageDetailView(LoginRequiredMixin, DetailView):
 
 class MessageCreateView(LoginRequiredMixin, CreateView):
     model = Message
-    template_name = "messaging/message_form.html"
-    fields = ["message", "receiver", "sender"]
-
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        sender = self.request.user.id
-        receiver_id = self.kwargs.get("receiver")
-        conversation_id = self.kwargs.get("conversation")
-        messages = []
-        if receiver_id:
-            receiver = get_object_or_404(User, id=receiver_id)
-            existing_conversations = (
-                Conversation.objects.filter(participants__in=[sender, receiver_id])
-                .annotate(num_participants=Count("participants"))
-                .filter(num_participants=2)
-            )
-
-            if existing_conversations.exists():
-                conversation_obj = existing_conversations.first()
-            else:
-                conversation_obj = Conversation.objects.create()
-                conversation_obj.participants.add(sender, receiver_id)
-
-        elif conversation_id:
-            conversation_obj = get_object_or_404(Conversation, id=conversation_id)
-            receiver = conversation_obj.participants.exclude(id=sender).first()
-
-        messages_obj = Message.objects.filter(conversation=conversation_obj)
-        if messages_obj.exists():
-            messages_obj = messages_obj.order_by("created")
-            messages_serializer = MessageSerializer(messages_obj, many=True)
-            messages = messages_serializer.data
-
-        context["conversation_id"] = conversation_obj.id
-        context["receiver"] = receiver
-        context["messages"] = messages
-        return context
 
 
 class MessageUpdateView(LoginRequiredMixin, UpdateView):
@@ -87,6 +50,32 @@ class MessageDeleteView(LoginRequiredMixin, DeleteView):
 class ConversationListView(LoginRequiredMixin, ListView):
     model = Conversation
     template_name = "messaging/conversation_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        # Retrieve all conversations involving the current user
+        conversations = Conversation.objects.filter(participants=user)
+
+        # Collect data for other participants in each conversation
+        conversations_data = []
+        for conversation in conversations:
+            participants_data = []
+            for participant in conversation.participants.exclude(id=user.id):
+                participant_data = {
+                    "name": participant.get_full_name(),
+                    "photo": participant.photo.url if participant.photo else None,
+                }
+                participants_data.append(participant_data)
+            conversations_data.append(
+                {
+                    "conversation": conversation,
+                    "participants": participants_data,
+                }
+            )
+        # Add conversations data to the context
+        context["conversations"] = conversations_data
+        return context
 
 
 class ConversationDetailView(LoginRequiredMixin, DetailView):

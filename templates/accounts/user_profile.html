@@ -274,10 +274,10 @@
 {% block javascripts %}
 <script>
   $(document).ready(function () {
-    const radioButtons = document.querySelectorAll('input[name="flexRadioDefault"]');
+    const meetingTypeRadioButtons = document.querySelectorAll('input[name="meeting_type"]');
     const proposed_location_field = document.getElementById('proposed_location');
     // Add event listener to each radio button
-    radioButtons.forEach((radioButton) => {
+    meetingTypeRadioButtons.forEach((radioButton) => {
         radioButton.addEventListener('change', function() {
             // Check if the "In-Person" radio button is selected
             if (this.value === '2') {

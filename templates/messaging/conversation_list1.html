@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 
 {% block title %}
-Community Event List
+Conversation List
 {% endblock %}
 
 {% block content %}
@@ -10,18 +10,15 @@ Community Event List
       <div class="header-body">
         <div class="row align-items-center py-4">
           <div class="col-lg-6 col-7">
-            <h6 class="h2 text-white d-inline-block mb-0">Community Event</h6>
+            <h6 class="h2 text-white d-inline-block mb-0">Conversation</h6>
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
               <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                 <li class="breadcrumb-item">
                   <a href="/"><i class="fas fa-home"></i></a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">Community Event</li>
+                <li class="breadcrumb-item active" aria-current="page">Conversation</li>
               </ol>
             </nav>
-          </div>
-          <div class="col-lg-6 col-5 text-right">
-            <a href="{% url 'community:communityevent_create' %}" class="btn btn-sm btn-neutral">New</a>
           </div>
         </div>
       </div>
@@ -35,7 +32,7 @@ Community Event List
         <div class="card">
           <!-- Card header -->
           <div class="card-header border-0">
-            <h3 class="mb-0">Community Event List</h3>
+            <h3 class="mb-0">Conversation List</h3>
           </div>
           <!-- Table -->
           <div class="table-responsive">
@@ -43,9 +40,8 @@ Community Event List
               <thead class="thead-light">
                 <tr>
                   <th scope="col" class="sort" data-data="id" data-sort="id">ID</th>
-                  <th scope="col" class="sort" data-data="title" data-sort="title">Title</th>
-                  <th scope="col" class="sort" data-data="organizer" data-sort="organizer">Organizer</th>
-                  <th scope="col" class="sort" data-data="date" data-sort="date">Date</th>
+                  <th scope="col" class="sort" data-data="user" data-sort="user">User</th>
+                  <th scope="col" class="sort" data-data="updated" data-sort="updated">Updated</th>
                 </tr>
               </thead>
               <tbody class="list"></tbody>
@@ -65,7 +61,7 @@ Community Event List
     TableParams = {}
     $(document).ready(function () {
       table = $('#datatable').DataTable({
-        order: [[3, 'desc']],
+        order: [[2, 'desc']],
         "language": {
           "paginate": {
               "previous": "<i class='fas fa-angle-left'></i>",
@@ -73,31 +69,41 @@ Community Event List
           }
         },
         ajax: {
-          url: '/api/communityevent/?format=datatables',
+          url: '/api/conversation/?format=datatables',
           data: function (d) {
             return $.extend(d, TableParams)
           }
         },
         columnDefs: [
           {
-            targets : 0,
-            visible : false
-
+            targets: 0,
+            visible: false
           },
           {
-            targets: 3,
-            render: function (data) {
-              return moment(data).tz("UTC").format("dddd, MMMM Do YYYY, h:mm:ss a");
+            targets: 1,
+            render: function (data, type, row) {
+              user = row.user[0]
+              if(user.profile == null){
+                user.profile = '/static/assets/img/theme/team-1.jpg'
+              }
+              return `<div class="d-flex align-items-center"><a href="#" class="avatar avatar-sm rounded-circle" data-toggle="tooltip" data-original-title="${user.name}">
+                <img alt="Image placeholder" src="${user.profile}">
+              </a><span class="name mb-0 pl-2 text-sm"> ${user.name}</span></div>
+              `
             }
-          }
+          },
+          {
+            targets: 2,
+            visible: false
+          },
         ]
       })
       $('#datatable tbody').on('click', 'tr', function() {
         // Get data of the clicked row
         var rowData = table.row(this).data();
-        url = `{% url 'community:communityevent_detail' pk=0 %}`
+        url = `{% url 'messaging:conversation_detail' pk=0 %}`
         window.location.href = url.replace('0', rowData.id)
-      })
+    });
     })
   </script>
 {% endblock %}

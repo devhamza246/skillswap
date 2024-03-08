@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 
 {% block title %}
-Conversation List
+  Conversation List
 {% endblock %}
 
 {% block content %}
@@ -30,22 +30,37 @@ Conversation List
     <div class="row">
       <div class="col">
         <div class="card">
-          <!-- Card header -->
-          <div class="card-header border-0">
-            <h3 class="mb-0">Conversation List</h3>
-          </div>
-          <!-- Table -->
-          <div class="table-responsive">
-            <table id="datatable" class="table align-items-center table-flush">
-              <thead class="thead-light">
-                <tr>
-                  <th scope="col" class="sort" data-data="id" data-sort="id">ID</th>
-                  <th scope="col" class="sort" data-data="user" data-sort="user">User</th>
-                  <th scope="col" class="sort" data-data="updated" data-sort="updated">Updated</th>
-                </tr>
-              </thead>
-              <tbody class="list"></tbody>
-            </table>
+          <div class="row overflow-hidden p-2">
+            <!-- Users box -->
+            <div class="col-lg-12">
+              <div class="bg-white">
+                <div class="messages-box">
+                  <div class="list-group rounded-0">
+                    {% for conversation_data in conversations %}
+                      {% for participant in conversation_data.participants %}
+                        <a href="{% url 'messaging:conversation_detail' pk=conversation_data.conversation.id %}" class="list-group-item list-group-item-action text-white rounded-0">
+                          <div class="media">
+                            <img src="{% if participant.photo %}
+                                {{ participant.photo }}
+                              {% else %}
+                                /static/assets/img/theme/team-1.jpg
+                              {% endif %}"
+                              alt="user"
+                              width="50"
+                              class="rounded-circle" />
+                            <div class="media-body ml-4">
+                              <div class="d-flex align-items-center justify-content-between mb-1">
+                                <h3 class="text-default">{{ participant.name }}</h3>
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      {% endfor %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -57,54 +72,5 @@ Conversation List
 
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
-  <script>
-    TableParams = {}
-    $(document).ready(function () {
-      table = $('#datatable').DataTable({
-        order: [[2, 'desc']],
-        "language": {
-          "paginate": {
-              "previous": "<i class='fas fa-angle-left'></i>",
-              "next": "<i class='fas fa-chevron-right'></i>"
-          }
-        },
-        ajax: {
-          url: '/api/conversation/?format=datatables',
-          data: function (d) {
-            return $.extend(d, TableParams)
-          }
-        },
-        columnDefs: [
-          {
-            targets: 0,
-            visible: false
-          },
-          {
-            targets: 1,
-            render: function (data, type, row) {
-              user = row.user[0]
-              if(user.profile == null){
-                user.profile = '/static/assets/img/theme/team-1.jpg'
-              }
-              return `<div class="d-flex align-items-center"><a href="#" class="avatar avatar-sm rounded-circle" data-toggle="tooltip" data-original-title="${user.name}">
-                <img alt="Image placeholder" src="${user.profile}">
-              </a><span class="name mb-0 pl-2 text-sm"> ${user.name}</span></div>
-              `
-            }
-          },
-          {
-            targets: 2,
-            visible: false
-          },
-        ]
-      })
-      $('#datatable tbody').on('click', 'tr', function() {
-        // Get data of the clicked row
-        var rowData = table.row(this).data();
-        debugger
-        url = `{% url 'messaging:conversation_detail' pk=0 %}`
-        window.location.href = url.replace('0', rowData.id)
-    });
-    })
-  </script>
+
 {% endblock %}

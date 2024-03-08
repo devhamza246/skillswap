@@ -86,7 +86,7 @@ Forum Post List
           {
             targets: 3,
             render: function (data) {
-              return moment(data).format("dddd, MMMM Do YYYY, h:mm:ss a");
+              return moment(data).tz("UTC").format("dddd, MMMM Do YYYY, h:mm:ss a");
             }
           }
         ]

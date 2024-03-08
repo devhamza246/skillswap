@@ -119,22 +119,7 @@
             message: message
           })
         )
-        $.ajax({
-          type: "POST",
-          url: "{% url 'messaging:send_message' %}",
-          data: {
-            'sender': sender,
-            'receiver': receiver,
-            'message': message,
-            'conversation': {{ object.id }}
-          },
-          headers: {
-            'X-CSRFToken': '{{ csrf_token }}'
-          },
-          success: function (data) {
-            document.querySelector("#id_message").value = ''
-          }
-        })
+        document.querySelector("#id_message").value = ''
       })
     })
   </script>

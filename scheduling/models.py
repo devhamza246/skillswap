@@ -61,3 +61,10 @@ class MeetingProposal(BaseModel):
 
     def __str__(self):
         return f"{self.proposer.get_full_name()} proposed a meeting to {self.proposee.get_full_name()} at {self.proposed_time}"
+
+
+class ZoomAccessToken(BaseModel):
+    access_token = models.TextField()
+
+    def __str__(self):
+        return self.access_token
