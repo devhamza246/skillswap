@@ -30,10 +30,8 @@
           <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
             <div class="d-flex justify-content-between">
               <button type="button" id="btn-message" class="btn btn-sm btn-default float-left">Message</button>
-              <!--<a href="{% url 'feedback:review_create' reviewed_user=object.id %}" class="btn btn-sm btn-default float-right">Review</a>-->
-              <button type="button" class="btn btn-sm btn-default float-right" data-toggle="modal" data-target="#feedbackModal">
-                Review
-              </button>
+              <!-- <a href="{% url 'feedback:review_create' reviewed_user=object.id %}" class="btn btn-sm btn-default float-right">Review</a> -->
+              <button type="button" class="btn btn-sm btn-default float-left" data-toggle="modal" data-target="#feedbackModal">Review</button>
             </div>
           </div>
           <div class="card-body pt-2">
@@ -57,10 +55,8 @@
                 {% endfor %}
               </div>
               <div class="mt-5 col-6 mx-auto">
-                <!--<a href="{% url 'scheduling:meetingproposal_create' proposee=object.id %}" class="btn btn-default btn-block">Schedule</a>-->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#meetingModal">
-                  Schedule a Meeting
-                </button>
+                <!-- <a href="{% url 'scheduling:meetingproposal_create' proposee=object.id %}" class="btn btn-default btn-block">Schedule</a> -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#meetingModal">Schedule a Meeting</button>
               </div>
             </div>
           </div>
@@ -160,60 +156,55 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title">Schedule Meeting</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               </div>
               <div class="modal-body">
-              <form id="schedule-meeting-form" action="" method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="proposer" value="{{ request.user.id }}" />
-                <input type="hidden" name="proposee" value="{{ object.id }}" />
-                <div class="row d-flex justify-content-center">
-                  <div class="col-lg-6">
+                <form id="schedule-meeting-form" action="" method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="proposer" value="{{ request.user.id }}" />
+                  <input type="hidden" name="proposee" value="{{ object.id }}" />
+                  <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6">
                       <label class="form-control-label" for="proposed_time">Date</label>
                       <div class="form-group">
                         <div class="input-group">
                           <div class="input-group-prepend">
                             <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
                           </div>
-                          <input class="flatpickr datetimepicker form-control" name="proposed_time" id="proposed_time" type="text" placeholder="Select Date and Time">
+                          <input class="flatpickr datetimepicker form-control" name="proposed_time" id="proposed_time" type="text" placeholder="Select Date and Time" />
                         </div>
                       </div>
                     </div>
-                </div>
-                <div class="row d-flex justify-content-center">
-                  <div class="col-lg-6">
-                    <div class="form-group">
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="meeting_type" value="1" id="radio_button_online" checked>
-                          <label class="form-check-label" for="radio_button_online">
-                            Online
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="meeting_type" value="2" id="radio_button_in_person">
-                          <label class="form-check-label" for="radio_button_in_person">
-                            In-Person
-                          </label>
-                        </div>
-                    </div>
                   </div>
-                </div>
-                <div class="row d-flex justify-content-center">
-                  <div class="col-lg-6">
-                    <div class="form-group">
-                      <label class="form-control-label" for="proposed_location">Location</label>
-                      <div class="input-group">
-                        <input class="form-control" name="proposed_location" id="proposed_location" type="text" placeholder="Enter location" disabled>
+                  <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="meeting_type" value="1" id="radio_button_online" checked />
+                          <label class="form-check-label" for="radio_button_online">Online</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="meeting_type" value="2" id="radio_button_in_person" />
+                          <label class="form-check-label" for="radio_button_in_person">In-Person</label>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                  <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="proposed_location">Location</label>
+                        <div class="input-group">
+                          <input class="form-control" name="proposed_location" id="proposed_location" type="text" placeholder="Enter location" disabled />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <div class="modal-footer justify-content-center">
                     <button type="submit" class="btn btn-primary"><span>Request Meeting</span></button>
                   </div>
-              </form>
+                </form>
+              </div>
             </div>
           </div>
         </div>
@@ -224,9 +215,7 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title">Feedback</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               </div>
               <div class="modal-body">
                 <form id="feedback-form" action="" method="POST">
@@ -262,7 +251,7 @@
             </div>
           </div>
         </div>
-        <!-- Schedule Meeting Modal End -->
+        <!-- Feedback Modal End -->
       </div>
     </div>
 
@@ -272,101 +261,100 @@
 
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
-<script>
-  $(document).ready(function () {
-    const meetingTypeRadioButtons = document.querySelectorAll('input[name="meeting_type"]');
-    const proposed_location_field = document.getElementById('proposed_location');
-    // Add event listener to each radio button
-    meetingTypeRadioButtons.forEach((radioButton) => {
-        radioButton.addEventListener('change', function() {
-            // Check if the "In-Person" radio button is selected
-            if (this.value === '2') {
-                // If "In-Person" is selected, enable the input field
-                proposed_location_field.disabled = false;
-            } else {
-                // If "Online" is selected or if none is selected, disable the input field
-                proposed_location_field.disabled = true;
-            }
-        });
-    });
-    $("#schedule-meeting-form").on("submit", function (event) {
-      event.preventDefault();
-      form = $(this);
-      $.ajax({
-        type: "POST",
-        url: "/api/meetingproposal/",
-        data: form.serialize(),
-        headers: {
-          'X-CSRFToken': '{{ csrf_token }}'
-        },
-        success: function (data) {
-          debugger
-          $("#meetingModal").modal("hide");
-          form[0].reset();
-          Toast.fire({
-            title: "Meeting request sent successfully!",
-            icon: "success"
-          });
-        }
-
-      })
-    })
-
-    $("#feedback-form").on("submit", function (event) {
-      event.preventDefault();
-      form = $(this);
-      $.ajax({
-        type: "POST",
-        url: "/api/review/",
-        data: form.serialize(),
-        headers: {
-          'X-CSRFToken': '{{ csrf_token }}'
-        },
-        success: function (data) {
-          $("#feedbackModal").modal("hide");
-          Toast.fire({
-            title: "Feedback submitted successfully!",
-            icon: "success"
-          });
-        },
-        complete: function () {
-          window.location.reload()
-        }
-
-      })
-    })
-
-    const stars = document.querySelectorAll('.star')
-    stars.forEach(function (star) {
-      star.addEventListener('click', function () {
-        const rating = this.dataset.rating
-        document.getElementById('rating').value = rating // Set the value of the hidden input
-        stars.forEach(function (s) {
-          if (s.dataset.rating <= rating) {
-            s.style.color = 'orange' // Fill stars up to the selected rating
+  <script>
+    $(document).ready(function () {
+      const meetingTypeRadioButtons = document.querySelectorAll('input[name="meeting_type"]')
+      const proposed_location_field = document.getElementById('proposed_location')
+      // Add event listener to each radio button
+      meetingTypeRadioButtons.forEach((radioButton) => {
+        radioButton.addEventListener('change', function () {
+          // Check if the "In-Person" radio button is selected
+          if (this.value === '2') {
+            // If "In-Person" is selected, enable the input field
+            proposed_location_field.disabled = false
           } else {
-            s.style.color = '' // Empty stars after the selected rating
+            // If "Online" is selected or if none is selected, disable the input field
+            proposed_location_field.disabled = true
+          }
+        })
+      })
+      $('#schedule-meeting-form').on('submit', function (event) {
+        event.preventDefault()
+        form = $(this)
+        $.ajax({
+          type: 'POST',
+          url: '/api/meetingproposal/',
+          data: form.serialize(),
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          success: function (data) {
+            debugger
+            $('#meetingModal').modal('hide')
+            form[0].reset()
+            Toast.fire({
+              title: 'Meeting request sent successfully!',
+              icon: 'success'
+            })
+          }
+        })
+      })
+    
+      $('#feedback-form').on('submit', function (event) {
+        debugger
+        event.preventDefault()
+        form = $(this)
+        $.ajax({
+          type: 'POST',
+          url: '/api/review/',
+          data: form.serialize(),
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          success: function (data) {
+            $('#feedbackModal').modal('hide')
+            Toast.fire({
+              title: 'Feedback submitted successfully!',
+              icon: 'success'
+            })
+          },
+          complete: function () {
+            window.location.reload()
+          }
+        })
+      })
+    
+      const stars = document.querySelectorAll('.star')
+      stars.forEach(function (star) {
+        star.addEventListener('click', function () {
+          const rating = this.dataset.rating
+          document.getElementById('rating').value = rating // Set the value of the hidden input
+          stars.forEach(function (s) {
+            if (s.dataset.rating <= rating) {
+              s.style.color = 'orange' // Fill stars up to the selected rating
+            } else {
+              s.style.color = '' // Empty stars after the selected rating
+            }
+          })
+        })
+      })
+    
+      $('#btn-message').on('click', function () {
+        $.ajax({
+          type: 'POST',
+          url: '/api/conversation/',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          data: {
+            receiver: '{{ object.id }}'
+          },
+          success: function (data) {
+            url = "{% url 'messaging:conversation_detail' pk=0 %}"
+            window.location.href = url.replace('0', data.id)
           }
         })
       })
     })
-
-    $("#btn-message").on("click", function () {
-      $.ajax({
-        type: "POST",
-        url: "/api/conversation/",
-        headers: {
-          'X-CSRFToken': '{{ csrf_token }}'
-        },
-        data: {
-          "receiver": "{{ object.id }}",
-        },
-        success: function (data) {
-          url = "{% url 'messaging:conversation_detail' pk=0 %}"
-          window.location.href = url.replace('0', data.id)
-        }
-      })
-    })
-  })
-</script>
+  </script>
 {% endblock %}

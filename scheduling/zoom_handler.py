@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils import timezone
 import requests
 import base64
 from conf.settings import ZOOM_ACCOUNT_ID, ZOOM_CLIENT_ID, ZOOM_SECRET_KEY
