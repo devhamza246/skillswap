@@ -44,7 +44,6 @@ urlpatterns = [
     path("feedback/", include("feedback.urls")),
     path("matching/", include("matching.urls")),
     path("messaging/", include("messaging.urls")),
-    path("progress_tracking/", include("progress_tracking.urls")),
     path("scheduling/", include("scheduling.urls")),
     path("", include("accounts.urls")),
     path("", include("dashboards.urls")),
